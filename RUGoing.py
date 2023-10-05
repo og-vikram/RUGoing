@@ -103,15 +103,47 @@ def get_event_details(event_url):
     end_time = chrome.find_element(By.XPATH, end_time_xpath)
     location_xpath = "/html/body/div[2]/div/div/div/div/div/div/div[1]/div/div/div[2]/div[2]/div[2]/div/div[2]/p"
     location = chrome.find_element(By.XPATH, location_xpath)
-    desc_xpath = "/html/body/div[2]/div/div/div/div/div/div/div[2]/div[1]/div[2]/div/p"
+    # desc_xpath = "/html/body/div[2]/div/div/div/div/div/div/div[2]/div[1]/div[2]/div/p"
+    desc_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[2]/div[1]/div[2]'
     desc = chrome.find_element(By.XPATH, desc_xpath)
+    perks_xpath = "/html/body/div[2]/div/div/div/div/div/div/div[2]/div[1]/div[3]/div"
+    perks = chrome.find_element(By.XPATH, perks_xpath, )
+    
+    categories_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[2]/div[1]/div[4]/div'
+    categories = chrome.find_element(By.XPATH, categories_xpath, )
+    
+    rsvp_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/a'
+    rsvp = chrome.find_element(By.XPATH, rsvp_xpath, )
+    
+    host_org_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[3]/div/a/div/div/span/div/div/h3'
+    host_org = chrome.find_element(By.XPATH, host_org_xpath, )
+    
+    host_org_link_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[3]/div/a'
+    host_org_link = chrome.find_element(By.XPATH, host_org_link_xpath, )
+    
     print(name.text)
     print(start_time.text)
     print(end_time.text)
     print(location.text)
-    print(desc.text)
+    # print(desc.text)
+    desc_list = desc.text.splitlines()
+    perks_list = perks.text.splitlines()
+    categories_list = categories.text.splitlines()
+    for description in desc_list:
+        print(description)
+    for perk in perks_list:
+        print(perk)
+    for category in categories_list:
+        print(category)
+    print(rsvp.get_attribute('href'))
+    print(host_org.text)
+    print(host_org_link.get_attribute('href'))
    
-event1 = 'https://rutgers.campuslabs.com/engage/event/9468557' 
-event2 = 'https://rutgers.campuslabs.com/engage/event/9392626'
-event3 = 'https://rutgers.campuslabs.com/engage/event/9404883'
-get_event_details(event1)
+   
+# event1 = 'https://rutgers.campuslabs.com/engage/event/9468557' 
+# event2 = 'https://rutgers.campuslabs.com/engage/event/9392626'
+# event3 = 'https://rutgers.campuslabs.com/engage/event/9404883'
+# event4 = 'https://rutgers.campuslabs.com/engage/event/9454901'
+# event5 = 'https://rutgers.campuslabs.com/engage/event/9404883'
+# event6 = 'https://rutgers.campuslabs.com/engage/event/9467360'
+# get_event_details(event6)
