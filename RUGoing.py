@@ -142,8 +142,6 @@ def get_event_details(event_url):
 def get_org_details(org_url):
     chrome.get(org_url)
     time.sleep(3)
-    html = chrome.page_source
-    soup = BeautifulSoup(html, "lxml")
     
     name_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[1]/h1'
     name = chrome.find_element(By.XPATH, name_xpath, )
@@ -164,11 +162,12 @@ def get_org_details(org_url):
     print(about.text)
     print(contact.text)
     print(faq.text)
+    for social in socials:
+        print(social.get_attribute('href'))
    
         
-    
-   
-   
+# TESTING 
+
 # event1 = 'https://rutgers.campuslabs.com/engage/event/9468557' 
 # event2 = 'https://rutgers.campuslabs.com/engage/event/9392626'
 # event3 = 'https://rutgers.campuslabs.com/engage/event/9404883'
@@ -178,4 +177,6 @@ def get_org_details(org_url):
 # get_event_details(event6)
 
 club1 = 'https://rutgers.campuslabs.com/engage/organization/rutgerschessclub'
-get_org_details(club1)
+club2_thaakat = 'https://rutgers.campuslabs.com/engage/organization/thaakat'
+
+get_org_details(club2_thaakat)
