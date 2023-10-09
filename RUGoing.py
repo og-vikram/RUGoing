@@ -138,6 +138,33 @@ def get_event_details(event_url):
     print(rsvp.get_attribute('href'))
     print(host_org.text)
     print(host_org_link.get_attribute('href'))
+    
+def get_org_details(org_url):
+    chrome.get(org_url)
+    time.sleep(3)
+    html = chrome.page_source
+    soup = BeautifulSoup(html, "lxml")
+    
+    name_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[1]/h1'
+    name = chrome.find_element(By.XPATH, name_xpath, )
+    
+    about_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[2]'
+    about = chrome.find_element(By.XPATH, about_xpath, )
+    
+    contact_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[3]/div/div[2]'
+    contact = chrome.find_element(By.XPATH, contact_xpath, )
+    
+    socials_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[4]'
+    socials = chrome.find_element(By.XPATH, socials_xpath, )
+    
+    faq_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[5]/div/div[2]'
+    faq = chrome.find_element(By.XPATH, faq_xpath, )
+    
+    print(name.text)
+    print(about.text)
+    print(contact.text)
+    print(faq.text)
+    
    
    
 # event1 = 'https://rutgers.campuslabs.com/engage/event/9468557' 
@@ -147,3 +174,6 @@ def get_event_details(event_url):
 # event5 = 'https://rutgers.campuslabs.com/engage/event/9404883'
 # event6 = 'https://rutgers.campuslabs.com/engage/event/9467360'
 # get_event_details(event6)
+
+club1 = 'https://rutgers.campuslabs.com/engage/organization/rutgerschessclub'
+get_org_details(club1)
