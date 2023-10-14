@@ -3,13 +3,12 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException, NoSuchElementException
 import time
 
 chrome = webdriver.Chrome()
     
 def get_all_organizations():
-    base_url = 'https://rutgers.campuslabs.com'
     url = "https://rutgers.campuslabs.com/engage/organizations"
 
     # chrome.maximize_window()
@@ -19,7 +18,7 @@ def get_all_organizations():
     show_more_xpath = "/html/body/div[2]/div/div/div/div/div[2]/div[3]/div/div[2]/div[2]/button"
     show_more = chrome.find_element(By.XPATH, show_more_xpath, )
     
-    while True:
+    for _ in range(10):
         try:
             time.sleep(0.1)
             show_more.click()
@@ -42,9 +41,9 @@ def get_all_organizations():
     org_list_container = soup.find_all("div", id="org-search-results")
     org_list = org_list_container[0].find_all("a")
         
-    for org in org_list:
-        new_url = base_url + org['href']
-        print(new_url)
+    for org in org_list[:10]:
+        org_name = str(org['href']).split('/')[3]
+        print(org_name)
         print()
     print(len(org_list))
     
@@ -53,26 +52,44 @@ def get_org_details(org_url):
     time.sleep(3)
     
     name_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[1]/h1'
-    name = chrome.find_element(By.XPATH, name_xpath, )
+    try: 
+        name = chrome.find_element(By.XPATH, name_xpath, ).text
+    except NoSuchElementException as e:
+        name = None
     
     about_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[2]'
-    about = chrome.find_element(By.XPATH, about_xpath, )
+    try:
+        about = chrome.find_element(By.XPATH, about_xpath, ).text
+    except NoSuchElementException as e:
+        about = None
     
     contact_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[3]/div/div[2]'
-    contact = chrome.find_element(By.XPATH, contact_xpath, )
+    try:
+        contact = chrome.find_element(By.XPATH, contact_xpath, ).text
+    except NoSuchElementException as e:
+        contact = None
     
     socials_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[4]'
-    socials = chrome.find_element(By.XPATH, socials_xpath, ).find_elements(By.XPATH, './child::*')
-    
-    faq_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[5]/div/div[2]'
-    faq = chrome.find_element(By.XPATH, faq_xpath, )
-    
-    print(name.text)
-    print(about.text)
-    print(contact.text)
-    print(faq.text)
-    for social in socials:
-        print(social.get_attribute('href'))
+    try:
+        socials = chrome.find_element(By.XPATH, socials_xpath, ).find_elements(By.XPATH, './child::*')
+        socials = [social.get_attribute('href') for social in socials if social.get_attribute('href') is not None]
+    except NoSuchElementException as e:
+        socials = None
+        
+    if contact is None and not socials:
+        faq_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[4]/div/div[2]'
+    else:
+        faq_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[5]/div/div[2]'
+    try:
+        faq = chrome.find_element(By.XPATH, faq_xpath, ).text
+    except NoSuchElementException as e:
+        faq = None
+        
+    print(name)
+    print(about)
+    print(contact)
+    print(faq)
+    print(socials)
         
 def get_org_categories():
     url = 'https://rutgers.campuslabs.com/engage/organizations'
@@ -82,11 +99,15 @@ def get_org_categories():
     categories_list.click()
     
     categories_xpath = '/html/body/div[4]/div[3]/ul'
-    categories = chrome.find_element(By.XPATH, categories_xpath).find_elements(By.XPATH, './child::*')
-    
-    time.sleep(3)
-    for category in categories:
-        print(category.text)
+    try:
+        categories = chrome.find_element(By.XPATH, categories_xpath).find_elements(By.XPATH, './child::*')
+        time.sleep(3)
+        for category in categories:
+            print(category.text)
+    except NoSuchElementException as e:
+        categories = None
+        
+
         
 # TESTING 
 
@@ -95,3 +116,11 @@ def get_org_categories():
 
 # get_org_details(club2_thaakat)
 # get_org_categories()
+# club3_vorheesmentors = 'https://rutgers.campuslabs.com/engage/organization/barbaravoorheesmentors'
+# club4_house = 'https://rutgers.campuslabs.com/engage/organization/canterburyhouse'
+# club5_christiasn = 'https://rutgers.campuslabs.com/engage/organization/rucufi'
+
+# get_org_details(club3_vorheesmentors)
+# get_org_details(club5_christiasn)
+
+get_all_organizations()

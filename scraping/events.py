@@ -3,7 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException, NoSuchElementException
 import time
 
 chrome = webdriver.Chrome()
@@ -53,35 +53,66 @@ def get_event_details(event_url):
     time.sleep(3)
     
     name_xpath = "/html/body/div[2]/div/div/div/div/div/div/div[1]/div/div/div[2]/div[1]/div/div/span[1]/h1"
-    name = chrome.find_element(By.XPATH, name_xpath, )
+    try:
+        name = chrome.find_element(By.XPATH, name_xpath, ).text
+    except NoSuchElementException as e:
+        name = None
     
     start_time_xpath = "/html/body/div[2]/div/div/div/div/div/div/div[1]/div/div/div[2]/div[2]/div[1]/div/div[2]/p[1]"
-    start_time = chrome.find_element(By.XPATH, start_time_xpath)
+    try:
+        start_time = chrome.find_element(By.XPATH, start_time_xpath).text
+    except NoSuchElementException as e:
+        start_time = None
     
     end_time_xpath = "/html/body/div[2]/div/div/div/div/div/div/div[1]/div/div/div[2]/div[2]/div[1]/div/div[2]/p[2]"
-    end_time = chrome.find_element(By.XPATH, end_time_xpath)
+    try:
+        end_time = chrome.find_element(By.XPATH, end_time_xpath).text
+    except NoSuchElementException as e:
+        end_time = None
     
     location_xpath = "/html/body/div[2]/div/div/div/div/div/div/div[1]/div/div/div[2]/div[2]/div[2]/div/div[2]/p"
-    location = chrome.find_element(By.XPATH, location_xpath)
+    try: 
+        location = chrome.find_element(By.XPATH, location_xpath).text
+    except NoSuchElementException as e:
+        location = None
     
     online_loc_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[1]/div/div/div[2]/div[2]/div[3]/div/div[2]'
-    online_loc = chrome.find_element(By.XPATH, online_loc_xpath, )
+    try: 
+        online_loc = chrome.find_element(By.XPATH, online_loc_xpath, )
+    except NoSuchElementException as e:
+        online_loc = None
     
     desc_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[2]/div[1]/div[2]'
-    desc = chrome.find_element(By.XPATH, desc_xpath)
+    try: 
+        desc = chrome.find_element(By.XPATH, desc_xpath)
+    except NoSuchElementException as e:
+        desc = None
     
     perks_xpath = "/html/body/div[2]/div/div/div/div/div/div/div[2]/div[1]/div[3]/div"
-    perks = chrome.find_element(By.XPATH, perks_xpath, )
+    try:
+        perks = chrome.find_element(By.XPATH, perks_xpath, )
+    except NoSuchElementException as e:
+        perks = None
     
     categories_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[2]/div[1]/div[4]/div'
-    categories = chrome.find_element(By.XPATH, categories_xpath, )
+    try:
+        categories = chrome.find_element(By.XPATH, categories_xpath, )
+    except NoSuchElementException as e:
+        categories = None
     
     rsvp_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/a'
-    rsvp = chrome.find_element(By.XPATH, rsvp_xpath, )
+    try:
+        rsvp = chrome.find_element(By.XPATH, rsvp_xpath, )
+    except NoSuchElementException as e:
+        rsvp = None
     
-    host_org_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[3]/div/a/div/div/span/div/div/h3'
-    host_org = chrome.find_element(By.XPATH, host_org_xpath, )
+    # host_org_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[3]/div/a/div/div/span/div/div/h3'
+    # try:
+    #     host_org = chrome.find_element(By.XPATH, host_org_xpath, )
+    # except NoSuchElementException as e:
+    #     host_org = None
     
+    # just reference club table
     host_org_link_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[3]/div/a'
     host_org_link = chrome.find_element(By.XPATH, host_org_link_xpath, )
     
@@ -103,7 +134,7 @@ def get_event_details(event_url):
     print()
     print(rsvp.get_attribute('href'))
     print(host_org.text)
-    print(host_org_link.get_attribute('href'))
+    # print(host_org_link.get_attribute('href'))
    
 def get_event_categories():
     url = 'https://rutgers.campuslabs.com/engage/events'

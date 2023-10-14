@@ -4,7 +4,7 @@
 # if __name__ == '__main__':
 #     events.get_event_categories()
 
-import mysql.connector
+import mysql.connector as mysql
 
 
 # Replace with your own connection parameters
@@ -12,7 +12,7 @@ config = {
     
 }
 
-conn = mysql.connector.connect(**config)
+conn = mysql.connect(**config)
 cursor = conn.cursor()
 
 # Now you can execute SQL queries using cursor
