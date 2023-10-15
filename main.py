@@ -1,33 +1,26 @@
-# import RUGoing
-# import scraping.events as events
-
-# if __name__ == '__main__':
-#     events.get_event_categories()
-
 import mysql.connector as mysql
+import scraping.organizations as organizations
 
-
-# Replace with your own connection parameters
 config = {
-    'user': '',
-    'password': '',
-    'host': '',
-    'database': '',
-    'port': '3306',
+    'user': ' ',
+    'password': ' ',  
+    'host': ' ',
+    'database': ' ',
+    'port': ' ',
 }
 
 conn = mysql.connect(**config)
 cursor = conn.cursor()
 
-# Now you can execute SQL queries using cursor
 try:
-    cursor.execute("SELECT * FROM Events")
+    organizations.get_all_organizations(cursor)
+    cursor.execute("SELECT * FROM Organizations")
     rows = cursor.fetchall()  # Fetch all rows
     for row in rows:
         print(row)
-except mysql.connector.Error as err:
+    conn.commit()
+except mysql.Error as err:
     print(f"Error: {err}")
 
-# Don't forget to close the cursor and connection when done
 cursor.close()
 conn.close()

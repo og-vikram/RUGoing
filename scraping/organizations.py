@@ -8,7 +8,7 @@ import time
 
 chrome = webdriver.Chrome()
     
-def get_all_organizations():
+def get_all_organizations(cursor):
     url = "https://rutgers.campuslabs.com/engage/organizations"
 
     chrome.get(url)
@@ -40,16 +40,16 @@ def get_all_organizations():
     org_list_container = soup.find_all("div", id="org-search-results")
     org_list = org_list_container[0].find_all("a")
         
-    for org in org_list[:10]:
+    for org in org_list[:3]:
         org_id = str(org['href']).split('/')[3]
-        print(org_id)
-        print()
-    print(len(org_list))
+        get_org_details(cursor, org_id)
     
-def get_org_details(org_url):
+def get_org_details(cursor, org_id):
+    base_url = 'https://rutgers.campuslabs.com/engage/organization/'
+    org_url = base_url + org_id
     chrome.get(org_url)
     time.sleep(3)
-    
+        
     name_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[1]/h1'
     try: 
         name = chrome.find_element(By.XPATH, name_xpath, ).text
@@ -84,11 +84,16 @@ def get_org_details(org_url):
     except NoSuchElementException as e:
         faq = None
         
-    print(name)
-    print(about)
-    print(contact)
-    print(faq)
-    print(socials)
+    query = """INSERT INTO Organizations (org_id, name, about, contact, faq)
+           VALUES (%s, %s, %s, %s, %s)
+           ON DUPLICATE KEY UPDATE
+           name = VALUES(name),
+           about = VALUES(about),
+           contact = VALUES(contact),
+           faq = VALUES(faq);"""
+
+    # Execute the query with the data
+    cursor.execute(query, (org_id, name, about, contact, faq))
         
 def get_categories():
     url = 'https://rutgers.campuslabs.com/engage/organizations'
@@ -99,7 +104,7 @@ def get_categories():
     categories_xpath = '/html/body/div[4]/div[3]/ul'
     
     try:
-        categories_length = chrome.find_element(By.XPATH, categories_xpath).find_elements(By.XPATH, './child::*')
+        categories_length = len(chrome.find_element(By.XPATH, categories_xpath).find_elements(By.XPATH, './child::*'))
         time.sleep(0.1)
         for i in range(categories_length):
             category = chrome.find_element(By.XPATH, categories_xpath).find_elements(By.XPATH, './child::*')[i]
@@ -174,4 +179,4 @@ def get_org_categories(category_url):
 # get_all_organizations()
 # get_org_categories('/html/body/div[4]/div[3]/ul/li[1]')
 
-get_categories()
+# get_categories()
