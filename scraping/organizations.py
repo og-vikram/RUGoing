@@ -11,14 +11,13 @@ chrome = webdriver.Chrome()
 def get_all_organizations():
     url = "https://rutgers.campuslabs.com/engage/organizations"
 
-    # chrome.maximize_window()
     chrome.get(url)
     time.sleep(3)
     chrome.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     show_more_xpath = "/html/body/div[2]/div/div/div/div/div[2]/div[3]/div/div[2]/div[2]/button"
     show_more = chrome.find_element(By.XPATH, show_more_xpath, )
     
-    for _ in range(10):
+    while True:
         try:
             time.sleep(0.1)
             show_more.click()
@@ -42,8 +41,8 @@ def get_all_organizations():
     org_list = org_list_container[0].find_all("a")
         
     for org in org_list[:10]:
-        org_name = str(org['href']).split('/')[3]
-        print(org_name)
+        org_id = str(org['href']).split('/')[3]
+        print(org_id)
         print()
     print(len(org_list))
     
@@ -91,23 +90,72 @@ def get_org_details(org_url):
     print(faq)
     print(socials)
         
-def get_org_categories():
+def get_categories():
     url = 'https://rutgers.campuslabs.com/engage/organizations'
     chrome.get(url)
 
     categories_list = chrome.find_element(By.ID, "categories")
     categories_list.click()
-    
     categories_xpath = '/html/body/div[4]/div[3]/ul'
+    
     try:
-        categories = chrome.find_element(By.XPATH, categories_xpath).find_elements(By.XPATH, './child::*')
-        time.sleep(3)
-        for category in categories:
+        categories_length = chrome.find_element(By.XPATH, categories_xpath).find_elements(By.XPATH, './child::*')
+        time.sleep(0.1)
+        for i in range(categories_length):
+            category = chrome.find_element(By.XPATH, categories_xpath).find_elements(By.XPATH, './child::*')[i]
             print(category.text)
+            category.click()
+            category_url = chrome.current_url
+            get_org_categories(category_url)
+            time.sleep(0.1)
+            chrome.get(url)
+            time.sleep(0.1)
+            categories_list = chrome.find_element(By.ID, "categories")
+            categories_list.click()
     except NoSuchElementException as e:
         categories = None
-        
 
+def get_org_categories(category_url):
+    chrome.get(category_url)
+    
+    try:
+        chrome.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        load_more_xpath = '/html/body/div[2]/div/div/div/div/div[2]/div[3]/div/div[2]/div[2]/button/div'
+
+        for _ in range(10):
+            try:
+                load_more = chrome.find_element(By.XPATH, load_more_xpath, )
+                time.sleep(0.1)
+                load_more.click()
+                # check if element is visible -- this will throw TimeoutException if not
+                WebDriverWait(chrome, 10).until(
+                    EC.visibility_of_element_located(
+                        (
+                            By.XPATH,
+                            load_more_xpath,
+                        )
+                    )
+                )
+            except StaleElementReferenceException:
+                break
+            except TimeoutException:
+                break
+            except NoSuchElementException:
+                break
+        
+        html = chrome.page_source
+        soup = BeautifulSoup(html, "lxml")
+        time.sleep(3)
+        org_list_container = soup.find_all("div", id="org-search-results")
+        org_list = org_list_container[0].find_all("a")
+            
+        for org in org_list:
+            org_id = str(org['href']).split('/')[3]
+            print(org_id)
+            print()
+        print(len(org_list))
+    except NoSuchElementException as e:
+        org_id = None
         
 # TESTING 
 
@@ -123,4 +171,7 @@ def get_org_categories():
 # get_org_details(club3_vorheesmentors)
 # get_org_details(club5_christiasn)
 
-get_all_organizations()
+# get_all_organizations()
+# get_org_categories('/html/body/div[4]/div[3]/ul/li[1]')
+
+get_categories()
