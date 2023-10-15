@@ -9,10 +9,10 @@ import mysql.connector as mysql
 
 # Replace with your own connection parameters
 config = {
-    'user': 'mrr225',
-    'password': 'ilovedogs123',
-    'host': '128.6.37.221',
-    'database': 'ruswe_rugoing',
+    'user': '',
+    'password': '',
+    'host': '',
+    'database': '',
     'port': '3306',
 }
 
