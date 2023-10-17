@@ -15,9 +15,9 @@ const RootStack = () => {
     return(
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteNAme="Login"
+                initialRouteNAme="LoginPage"
             >
-                <Stack.Screen name="Login" component={LoginPage}/>
+                <Stack.Screen name="LoginPage" component={LoginPage}/>
                 <Stack.Screen name="AccountCreationPage" component={AccountCreationPage}/>  
                 <Stack.Screen name="OrganizationInfoPage" component={OrganizationInfoPage}/>
             </Stack.Navigator>

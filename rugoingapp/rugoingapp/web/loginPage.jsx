@@ -5,10 +5,6 @@ const LoginPage = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    // Add your login logic here
-    console.log("Logging in with:", username, password);
-  };
 
   const handleForgotPassword = () => {
     // Add your forgot password logic here
