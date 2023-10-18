@@ -1,5 +1,7 @@
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import { FIREBASE_AUTH } from "../firebaseconfig";
 
 const AccountCreationPage = ({navigation}) => {
 
@@ -18,6 +20,8 @@ const AccountCreationPage = ({navigation}) => {
 
   const email = emailPrefix + defaultEmailDomain;
 
+  const auth = FIREBASE_AUTH;
+
   const isValidEmail = () => {
     const emailRegex = /^[^\s@]+@scarletmail\.rutgers\.edu$/;
     return emailRegex.test(email);
@@ -34,6 +38,7 @@ const AccountCreationPage = ({navigation}) => {
   };
 
   const handleSubmit = async () => {
+
     if (!isValidEmail()) {
       setInvalidEmail(true);
       return;
@@ -65,13 +70,26 @@ const AccountCreationPage = ({navigation}) => {
     if (password === confirmPassword) {
       setPasswordMismatch(false);
 
-        navigation.navigate('LoginPage');
+      createAccount;
 
 
     } else {
       setPasswordMismatch(true);
     }
   };
+
+  const createAccount = async () =>{
+    setLoading(true);
+    try{
+      const response = await createUserWithEmailAndPassword(auth, email, password);
+      console.log(response);
+    } catch (error){
+      console.log(error);
+      alert('Sign in failed: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   
 

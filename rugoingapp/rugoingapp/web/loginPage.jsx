@@ -1,15 +1,31 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { FIREBASE_AUTH } from "../firebaseconfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 const LoginPage = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const auth = FIREBASE_AUTH;
 
 
   const handleForgotPassword = () => {
     // Add your forgot password logic here
     console.log("Forgot password for:", username);
   };
+
+  const logIn = async () =>{
+    setLoading(true);
+    try{
+      const response = await signInWithEmailAndPassword(auth, email, password);
+      console.log(response);
+    } catch (error){
+      console.log(error);
+      alert('Sign in failed: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -32,7 +48,7 @@ const LoginPage = ({ navigation }) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <Button title="Login" onPress={() => navigation.navigate('OrganizationInfoPage')} />
+        <Button title="Login" onPress={logIn} />
       </View>
       <View style={styles.buttonContainer}>
         <Button title="Create Account" onPress={() => navigation.navigate('AccountCreationPage')} />
