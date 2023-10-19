@@ -1,10 +1,17 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { Button } from "@rneui/base";
+import { auth } from "../firebase.config";
+import { signOut } from "firebase/auth";
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ navigation }) => {
+  const handleLogout = () => {
+    signOut(auth).then(navigation.navigate());
+  };
+
   return (
     <View>
-      <Text>ProfileScreen</Text>
+      <Button onPress={handleLogout}>Logout</Button>
     </View>
   );
 };

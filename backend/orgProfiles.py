@@ -52,7 +52,7 @@ def get_all_organizations():
     cursor = conn.cursor()
 
     try:
-        cursor.execute("SELECT name, contact, about, faq FROM Organizations")
+        cursor.execute("SELECT org_id, name, contact, about, faq FROM Organizations")
         # rows = cursor.fetchall()  # Fetch all rows
         # for row in rows:
         #     print(row)

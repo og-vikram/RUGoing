@@ -107,7 +107,7 @@ export default (props) => {
               style={styles.image}
               resizeMode="contain"
               source={{
-                uri: "https://avatars0.githubusercontent.com/u/32242596?s=460&u=1ea285743fc4b083f95d6ee0be2e7bb8dcfc676e&v=4",
+                uri: "https://upload.wikimedia.org/wikipedia/commons/6/69/Rutgers_Athletics_Logo.png",
               }}
             />
           </View>
@@ -153,8 +153,8 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   image: {
-    width: "100%",
-    height: 100,
+    width: 75,
+    height: 75,
   },
   title: {
     fontSize: 17,

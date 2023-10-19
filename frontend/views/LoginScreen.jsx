@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  KeyboardAvoidingView,
+} from "react-native";
 import { auth } from "../firebase.config";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { Alert } from "react-native";
@@ -31,7 +38,7 @@ const LoginPage = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container} behavior="height">
       <Text style={styles.title}>Login</Text>
       <View style={styles.inputContainer}>
         <TextInput
@@ -62,7 +69,7 @@ const LoginPage = ({ navigation }) => {
       <View style={styles.buttonContainer}>
         <Button title="Forgot Password" onPress={handleForgotPassword} />
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
