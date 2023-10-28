@@ -155,7 +155,7 @@ def get_org_details(org_url):
     socials_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[4]'
     socials = chrome.find_element(By.XPATH, socials_xpath, ).find_elements(By.XPATH, './child::*')
     
-    faq_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[5]/div/div[2]'
+    faq_xpath = '/html/bodfdy/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[5]/div/div[2]'
     faq = chrome.find_element(By.XPATH, faq_xpath, )
     
     print(name.text)

@@ -39,16 +39,43 @@ def get_all_organizations(cursor):
     soup = BeautifulSoup(html, "lxml")
     org_list_container = soup.find_all("div", id="org-search-results")
     org_list = org_list_container[0].find_all("a")
+    org_descs = org_list_container[0].find_all("span")
         
-    for org in org_list[:3]:
+    # scrape in intervals of 50 to avoid request overload
+    for i, org in enumerate(org_list[351:]):
         org_id = str(org['href']).split('/')[3]
-        get_org_details(cursor, org_id)
+        org_img = org_descs[i].find('img')
+        if org_img is not None:
+            # The <img> element was found
+            image_id = str(org_img['src']).split('/')[5]
+        else:
+            # The <img> element was not found
+            image_id = 'no_img'
+        
+        # get_org_details(cursor, org_id)
+        get_org_images(cursor, org_id, image_id)
+
+        
+def get_org_images(cursor, org_id, image_id):
+    query = """INSERT INTO Organizations (org_id, image_id)
+               VALUES(%s, %s) 
+               ON DUPLICATE KEY UPDATE
+               image_id = VALUES(image_id);"""
+
+    # Execute the query with the data
+    cursor.execute(query, (org_id, image_id))
     
 def get_org_details(cursor, org_id):
     base_url = 'https://rutgers.campuslabs.com/engage/organization/'
     org_url = base_url + org_id
     chrome.get(org_url)
     time.sleep(3)
+    
+    # image_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[1]/img'
+    # try: 
+    #     image_id = chrome.find_element(By.XPATH, image_xpath).get_attribute('src').split('/')[3]
+    # except NoSuchElementException as e:
+    #     image_id = None
         
     name_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[1]/h1'
     try: 
@@ -95,7 +122,7 @@ def get_org_details(cursor, org_id):
     # Execute the query with the data
     cursor.execute(query, (org_id, name, about, contact, faq))
         
-def get_categories():
+def get_categories(conn, cursor):
     url = 'https://rutgers.campuslabs.com/engage/organizations'
     chrome.get(url)
 
@@ -107,11 +134,38 @@ def get_categories():
         categories_length = len(chrome.find_element(By.XPATH, categories_xpath).find_elements(By.XPATH, './child::*'))
         time.sleep(0.1)
         for i in range(categories_length):
-            category = chrome.find_element(By.XPATH, categories_xpath).find_elements(By.XPATH, './child::*')[i]
-            print(category.text)
+            WebDriverWait(chrome, 10).until(
+                EC.visibility_of_element_located(
+                    (
+                        By.XPATH,
+                        categories_xpath,
+                    )
+                )
+            )
+            
+            categories = chrome.find_element(By.XPATH, categories_xpath)
+
+            WebDriverWait(categories, 10).until(
+                EC.visibility_of_all_elements_located((By.XPATH, './child::*'))
+            )
+            
+            category = categories.find_elements(By.XPATH, './child::*')[i]
+            # category = chrome.find_element(By.XPATH, categories_xpath).find_elements(By.XPATH, './child::*')[i]
+            name = category.text
             category.click()
             category_url = chrome.current_url
-            get_org_categories(category_url)
+            category_id = str(category_url).split('=')[1]
+            
+            query = """INSERT INTO OrganizationCategories (category_id, name)
+                       VALUES (%s, %s)
+                       ON DUPLICATE KEY UPDATE
+                       name = VALUES(name);"""
+                       
+            cursor.execute(query, (category_id, name))
+            conn.commit()
+            
+            get_org_categories(cursor, category_id)
+
             time.sleep(0.1)
             chrome.get(url)
             time.sleep(0.1)
@@ -120,9 +174,11 @@ def get_categories():
     except NoSuchElementException as e:
         categories = None
 
-def get_org_categories(category_url):
+def get_org_categories(cursor, category_id):
+    base_url = 'https://rutgers.campuslabs.com/engage/organizations?categories='
+    category_url = base_url + category_id
     chrome.get(category_url)
-    
+        
     try:
         chrome.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         load_more_xpath = '/html/body/div[2]/div/div/div/div/div[2]/div[3]/div/div[2]/div[2]/button/div'
@@ -156,9 +212,14 @@ def get_org_categories(category_url):
             
         for org in org_list:
             org_id = str(org['href']).split('/')[3]
-            print(org_id)
-            print()
-        print(len(org_list))
+            
+            query = """INSERT INTO CategorizedOrganizations (org_id, category_id)
+                       VALUES (%s, %s)
+                       ON DUPLICATE KEY UPDATE
+                       org_id = VALUES(org_id),
+                       category_id = VALUES(category_id);"""
+            cursor.execute(query, (org_id, category_id))
+            
     except NoSuchElementException as e:
         org_id = None
         
@@ -179,4 +240,6 @@ def get_org_categories(category_url):
 # get_all_organizations()
 # get_org_categories('/html/body/div[4]/div[3]/ul/li[1]')
 
-# get_categories()
+# get_all_organizations(cursor)
+# get_org_categories('https://rutgers.campuslabs.com/engage/organizations?categories=17973')
+
