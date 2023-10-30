@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { auth } from "../firebase.config";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { Switch } from "react-native";
+import { sendEmailVerification } from "firebase/auth";
+import firebase from "firebase/app";
 
 const CreateAccountScreen = ({ navigation }) => {
   const defaultEmailDomain = "@scarletmail.rutgers.edu";
@@ -16,6 +19,8 @@ const CreateAccountScreen = ({ navigation }) => {
   const [isInvalidLastName, setInvalidLastName] = useState(false);
   const [isInvalidPassword, setInvalidPassword] = useState(false);
   const [isPasswordMismatch, setPasswordMismatch] = useState(false);
+  const [isOfficer, setIsOfficer] = useState(false);
+  const [organizationName, setOrganizationName] = useState('');
 
   const email = emailPrefix + defaultEmailDomain;
 
@@ -76,9 +81,11 @@ const CreateAccountScreen = ({ navigation }) => {
           email,
           password
         );
+        userCredential.user.sendEmailVerification();
         const user = userCredential.user;
         console.log(user);
-        navigation.navigate("Login");
+        const user1 = firebase.auth().currentUser;
+        navigation.navigate("LoginScreen");
       } catch (error) {
         const errorCode = error.code;
         const errorMessage = error.message;
@@ -166,7 +173,30 @@ const CreateAccountScreen = ({ navigation }) => {
           </Text>
         )}
       </View>
+      <View style = {styles.inputContainer}>
+        <Text>Are you an organization officer?</Text>
+        <View style={styles.switchContainer}>
+        <Text style={styles.switchText}>No</Text>
+        <Switch
+          value={isOfficer}
+          onValueChange={(value) => setIsOfficer(value)}
+        />
+        <Text style={styles.switchText}>Yes</Text>
+      </View>
+        {isOfficer && (
+          <View>
+            <Text>Please enter the organization name:</Text>
+            <TextInput
+              style={styles.input}
+              value={organizationName}
+              onChangeText={text => setOrganizationName(text)}
+            />
+          </View>
+        )}
+      </View>
       <Button title="Sign Up" onPress={handleSubmit} />
+      
+      
     </View>
   );
 };
@@ -211,6 +241,13 @@ const styles = StyleSheet.create({
   invalidText: {
     color: "red",
     marginTop: 5,
+  },
+  switchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  switchText: {
+    marginHorizontal: 10,
   },
 });
 

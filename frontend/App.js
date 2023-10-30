@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import LoginScreen from "./views/LoginScreen";
 import MainScreen from "./views/MainScreen";
+import ForgotPassword from "./views/ForgetPassword";
 import { createStackNavigator } from "@react-navigation/stack";
 import CreateAccountScreen from "./views/CreateAccountScreen";
 import { onAuthStateChanged } from "firebase/auth";
@@ -18,7 +19,7 @@ export default function App() {
       if (user) {
         setUser(user);
         console.log("user", user);
-      }
+      } 
     });
   }, []);
 
@@ -38,11 +39,12 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Login"
+        initialRouteName="LoginScreen"
         screenOptions={{ headerShown: false, gestureEnabled: false }}
       >
-        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
       </Stack.Navigator>
     </NavigationContainer>
   );

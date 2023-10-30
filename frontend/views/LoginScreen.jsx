@@ -15,10 +15,6 @@ const LoginPage = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleForgotPassword = () => {
-    // Add your forgot password logic here
-    console.log("Forgot password for:", username);
-  };
 
   const handleLogin = async () => {
     try {
@@ -67,11 +63,14 @@ const LoginPage = ({ navigation }) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <Button title="Forgot Password" onPress={handleForgotPassword} />
+        <Button 
+          title="Forgot Password" 
+          onPress={() => navigation.navigate("ForgotPassword")} 
+        />
       </View>
     </KeyboardAvoidingView>
   );
-};
+};  
 
 const styles = StyleSheet.create({
   container: {
