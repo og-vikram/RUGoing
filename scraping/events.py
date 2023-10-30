@@ -8,8 +8,7 @@ import time
 
 chrome = webdriver.Chrome()
 
-def get_all_events():
-    base_url = 'https://rutgers.campuslabs.com'
+def get_all_events(cursor):
     url = "https://rutgers.campuslabs.com/engage/events"
 
     # chrome.maximize_window()
@@ -42,15 +41,16 @@ def get_all_events():
     event_list_container = soup.find_all("div", id="event-discovery-list")
     event_list = event_list_container[0].find_all("a")
         
-    for event in event_list:
-        new_url = base_url + event['href']
-        print(new_url)
-        print()
+    for event in event_list[101:151]:
+        event_id = str(event['href']).split('/')[3]
+        get_event_details(cursor, event_id)
     print(len(event_list))
 
-def get_event_details(event_url):
-    chrome.get(event_url)
-    time.sleep(3)
+def get_event_details(cursor, event_id):
+    base_url = 'https://rutgers.campuslabs.com/engage/event/'
+    url = base_url + event_id
+    chrome.get(url)
+    time.sleep(1.5)
     
     name_xpath = "/html/body/div[2]/div/div/div/div/div/div/div[1]/div/div/div[2]/div[1]/div/div/span[1]/h1"
     try:
@@ -60,33 +60,43 @@ def get_event_details(event_url):
     
     start_time_xpath = "/html/body/div[2]/div/div/div/div/div/div/div[1]/div/div/div[2]/div[2]/div[1]/div/div[2]/p[1]"
     try:
-        start_time = chrome.find_element(By.XPATH, start_time_xpath).text
+        start = chrome.find_element(By.XPATH, start_time_xpath).text
     except NoSuchElementException as e:
-        start_time = None
+        start = None
     
     end_time_xpath = "/html/body/div[2]/div/div/div/div/div/div/div[1]/div/div/div[2]/div[2]/div[1]/div/div[2]/p[2]"
     try:
-        end_time = chrome.find_element(By.XPATH, end_time_xpath).text
+        end = chrome.find_element(By.XPATH, end_time_xpath).text
     except NoSuchElementException as e:
-        end_time = None
+        end = None
     
-    location_xpath = "/html/body/div[2]/div/div/div/div/div/div/div[1]/div/div/div[2]/div[2]/div[2]/div/div[2]/p"
+    location_xpath = "/html/body/div[2]/div/div/div/div/div/div/div[1]/div/div/div[2]/div[2]/div[2]/div/div[2]"
     try: 
-        location = chrome.find_element(By.XPATH, location_xpath).text
+        location_list = chrome.find_element(By.XPATH, location_xpath).find_elements(By.XPATH, './child::*')
+        location = ''
+        for element in location_list:
+            if element.tag_name != 'a':
+                location += element.text + '\n'
     except NoSuchElementException as e:
         location = None
     
-    online_loc_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[1]/div/div/div[2]/div[2]/div[3]/div/div[2]'
+    online_location_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[1]/div/div/div[2]/div[2]/div[3]/div/div[2]/a'
     try: 
-        online_loc = chrome.find_element(By.XPATH, online_loc_xpath, )
+        online_location = chrome.find_element(By.XPATH, online_location_xpath, ).get_attribute('href')
     except NoSuchElementException as e:
-        online_loc = None
+        online_location = None
+        
+    is_online = False if online_location is None else True
     
-    desc_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[2]/div[1]/div[2]'
+    description_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[2]/div[1]/div[2]'
     try: 
-        desc = chrome.find_element(By.XPATH, desc_xpath)
+        description = chrome.find_element(By.XPATH, description_xpath) 
+        desc_list = description.text.splitlines()
+        description = ''
+        for desc in desc_list[1:]:
+            description += desc + '\n'
     except NoSuchElementException as e:
-        desc = None
+        description = None
     
     perks_xpath = "/html/body/div[2]/div/div/div/div/div/div/div[2]/div[1]/div[3]/div"
     try:
@@ -102,41 +112,56 @@ def get_event_details(event_url):
     
     rsvp_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/a'
     try:
-        rsvp = chrome.find_element(By.XPATH, rsvp_xpath, )
+        rsvp = chrome.find_element(By.XPATH, rsvp_xpath, ).get_attribute('href')
     except NoSuchElementException as e:
         rsvp = None
     
-    # host_org_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[3]/div/a/div/div/span/div/div/h3'
-    # try:
-    #     host_org = chrome.find_element(By.XPATH, host_org_xpath, )
-    # except NoSuchElementException as e:
-    #     host_org = None
-    
-    # just reference club table
     host_org_link_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[3]/div/a'
-    host_org_link = chrome.find_element(By.XPATH, host_org_link_xpath, )
+    try:
+        host_org_link = chrome.find_element(By.XPATH, host_org_link_xpath, )
+        host_org_id = str(host_org_link.get_attribute('href')).split('/')[5]
+    except NoSuchElementException as e:
+        host_org_id = None
     
-    print(name.text)
-    print(start_time.text)
-    print(end_time.text)
-    print(location.text)
+    # print(name)
+    # print(start_time)
+    # print(end_time)
+    # print(location)
+    # print(online_loc)
+    # print(host_org_id)
+    # print(rsvp.get_attribute('href'))
+        
+    query = """INSERT INTO Events (event_id, name, start, end, location, online_location, is_online, description, rsvp)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+               ON DUPLICATE KEY UPDATE 
+               name = VALUES(name), 
+               start = VALUES(start), 
+               end = VALUES(end), 
+               location = VALUES(location), 
+               online_location = VALUES(online_location), 
+               is_online = VALUES(is_online), 
+               description = VALUES(description), 
+               rsvp = VALUES(rsvp);"""
+               
+    cursor.execute(query, (event_id, name, start, end, location, online_location, is_online, description, rsvp))
+
     # print(desc.text)
-    desc_list = desc.text.splitlines()
-    perks_list = perks.text.splitlines()
-    categories_list = categories.text.splitlines()
-    for description in desc_list:
-        print(description)
-    for perk in perks_list:
-        print(perk)
-    for category in categories_list:
-        print(category)
-    
-    print()
-    print(rsvp.get_attribute('href'))
-    print(host_org.text)
-    # print(host_org_link.get_attribute('href'))
+    # if desc is not None:
+        # desc_list = desc.text.splitlines()
+        # for description in desc_list[1:]:
+        #     print(description)
+    if perks is not None:
+        perks_list = perks.text.splitlines()
+        for perk in perks_list:
+            print(perk)
+    if categories is not None:
+        categories_list = categories.text.splitlines()
+        for category in categories_list:
+            print(category)
+    print(host_org_id)
+
    
-def get_event_categories():
+def get_categories(conn, cursor):
     url = 'https://rutgers.campuslabs.com/engage/events'
     chrome.get(url)
 
@@ -144,11 +169,98 @@ def get_event_categories():
     categories_list.click()
     
     categories_xpath = '/html/body/div[4]/div[3]/ul'
-    categories = chrome.find_element(By.XPATH, categories_xpath).find_elements(By.XPATH, './child::*')
+    try:
+        categories_length = len(chrome.find_element(By.XPATH, categories_xpath).find_elements(By.XPATH, './child::*'))
+        time.sleep(0.1)
+        for i in range(categories_length):
+            WebDriverWait(chrome, 10).until(
+                EC.visibility_of_element_located(
+                    (
+                        By.XPATH,
+                        categories_xpath,
+                    )
+                )
+            )
+            
+            categories = chrome.find_element(By.XPATH, categories_xpath)
+
+            WebDriverWait(categories, 10).until(
+                EC.visibility_of_all_elements_located((By.XPATH, './child::*'))
+            )
+            
+            category = categories.find_elements(By.XPATH, './child::*')[i]
+            name = category.text
+            category.click()
+            category_url = chrome.current_url
+            category_id = str(category_url).split('=')[1]
+            
+            query = """INSERT INTO EventCategories (category_id, name)
+                       VALUES (%s, %s)
+                       ON DUPLICATE KEY UPDATE
+                       name = VALUES(name);"""
+                       
+            cursor.execute(query, (category_id, name))
+            conn.commit()
+            
+            get_event_categories(cursor, category_id)
+
+            time.sleep(0.1)
+            chrome.get(url)
+            time.sleep(0.1)
+            categories_list = chrome.find_element(By.ID, "categories")
+            categories_list.click()
+    except NoSuchElementException as e:
+        categories = None
+        
+def get_event_categories(cursor, category_id):
+    base_url = 'https://rutgers.campuslabs.com/engage/events?categories='
+    category_url = base_url + category_id
+    chrome.get(category_url)
+        
+    try:
+        chrome.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        load_more_xpath = '/html/body/div[2]/div/div/div/div/div[4]/div/div/div[2]/div[2]/div[2]/button/div/div'
+
+        while True:
+            try:
+                load_more = chrome.find_element(By.XPATH, load_more_xpath, )
+                time.sleep(0.1)
+                load_more.click()
+                # check if element is visible -- this will throw TimeoutException if not
+                WebDriverWait(chrome, 10).until(
+                    EC.visibility_of_element_located(
+                        (
+                            By.XPATH,
+                            load_more_xpath,
+                        )
+                    )
+                )
+            except StaleElementReferenceException:
+                break
+            except TimeoutException:
+                break
+            except NoSuchElementException:
+                break
+        
+        html = chrome.page_source
+        soup = BeautifulSoup(html, "lxml")
+        time.sleep(3)
+        event_list_container = soup.find_all("div", id="event-discovery-list")
+        event_list = event_list_container[0].find_all("a")
+            
+        for org in event_list:
+            event_id = str(org['href']).split('/')[3]
+            
+            query = """INSERT INTO CategorizedEvents (org_id, category_id)
+                       VALUES (%s, %s)
+                       ON DUPLICATE KEY UPDATE
+                       event_id = VALUES(event_id),
+                       category_id = VALUES(category_id);"""
+            cursor.execute(query, (event_id, category_id))
+            
+    except NoSuchElementException as e:
+        event_id = None
     
-    time.sleep(3)
-    for category in categories:
-        print(category.text)
     
 def get_event_perks():
     url = 'https://rutgers.campuslabs.com/engage/events'
@@ -191,3 +303,5 @@ def get_event_themes():
 # get_event_themes()
 # get_event_categories()
 # get_event_perks()
+
+# get_event_details('https://rutgers.campuslabs.com/engage/event/9551789')
