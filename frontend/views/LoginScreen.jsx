@@ -15,7 +15,6 @@ const LoginPage = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-
   const handleLogin = async () => {
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -23,8 +22,11 @@ const LoginPage = ({ navigation }) => {
         username,
         password
       );
+      if (!userCredential.user.emailVerified) {
+        Alert.alert("Please verify your email");
+        return;
+      }
       console.log("User logged in:", userCredential.user);
-      navigation.navigate("Main");
     } catch (error) {
       console.log(error);
       if (error.code === "auth/invalid-login-credentials") {
@@ -63,14 +65,14 @@ const LoginPage = ({ navigation }) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <Button 
-          title="Forgot Password" 
-          onPress={() => navigation.navigate("ForgotPassword")} 
+        <Button
+          title="Forgot Password"
+          onPress={() => navigation.navigate("ForgotPassword")}
         />
       </View>
     </KeyboardAvoidingView>
   );
-};  
+};
 
 const styles = StyleSheet.create({
   container: {

@@ -10,3 +10,5 @@ firebase.config.js
 
 yarn.lock
 package-lock.json
+
+service-account-file.json

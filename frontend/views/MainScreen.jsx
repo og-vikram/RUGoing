@@ -12,6 +12,8 @@ import {
   faMagnifyingGlass,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
+import EventProfileScreen from "./EventProfileScreen";
+import OrganizationsScreen from "./OrganizationsScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -36,6 +38,7 @@ const MainScreen = () => {
               );
             },
             title: "",
+            headerTitle: "Home",
           }}
         />
         <Tab.Screen
@@ -52,6 +55,7 @@ const MainScreen = () => {
               );
             },
             title: "",
+            headerTitle: "Explore",
           }}
         />
         <Tab.Screen
@@ -64,6 +68,7 @@ const MainScreen = () => {
               );
             },
             title: "",
+            headerTitle: "Profile",
           }}
         />
       </Tab.Navigator>

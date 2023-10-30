@@ -1,91 +1,114 @@
-import {
-  ActivityIndicator,
-  FlatList,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import OrganizationCard from "../components/OrganizationCard";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import { SearchBar } from "@rneui/themed";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import OrganizationsScreen from "./OrganizationsScreen";
+import EventsScreen from "./EventsScreen";
+import EventProfileScreen from "./EventProfileScreen";
+import OrganizationProfileScreen from "./OrganizationProfileScreen";
 
-const url =
-  "https://absolute-willing-salmon.ngrok-free.app/api/organization/all";
+const ExploreStack = createNativeStackNavigator();
 
-const ExploreScreen = () => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+const ExploreMain = ({ navigation }) => {
+  const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    fetch(url, {
-      // headers: new Headers({
-      //   "ngrok-skip-browser-warning": "true",
-      // }),
-    })
-      .then((response) => response.json())
-      .then((json) => setData(json))
-      .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (!loading) {
-    return (
-      <FlatList
-        data={data}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => {
-              console.log(item.org_id);
-            }}
-          >
-            <OrganizationCard
-              title={item.name}
-              description={item.description}
-              category="test_category"
-            />
-          </TouchableOpacity>
-        )}
-        key={(item) => item.org_id}
-      />
-    );
-    // <Text>{}</Text>
-    // )
-  }
+  const updateSearch = (search) => {
+    setSearch(search);
+  };
 
   return (
-    // <ScrollView>
-    //   <OrganizationCard
-    //     title="Test Organization 1"
-    //     description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-    //     category="TestCategory"
-    //   />
-    //   <OrganizationCard
-    //     title="Test Organization 2"
-    //     description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-    //     category="TestCategory"
-    //   />
-    //   <OrganizationCard
-    //     title="Test Organization 3"
-    //     description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-    //     category="TestCategory"
-    //   />
-    //   <OrganizationCard
-    //     title="Test Organization 4"
-    //     description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-    //     category="TestCategory"
-    //   />
-    //   <OrganizationCard
-    //     title="Test Organization 5"
-    //     description="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-    //     category="TestCategory"
-    //   />
-    // </ScrollView>
-    <ActivityIndicator size="large" color="#000000" />
+    <View>
+      <SearchBar
+        placeholder="Type Here..."
+        platform="ios"
+        onChangeText={updateSearch}
+      />
+      <View className="buttons-container" style={styles.button_container}>
+        <TouchableOpacity
+          className="events-button"
+          style={styles.event_button}
+          onPress={() => {
+            navigation.navigate("Events");
+          }}
+        >
+          <Text>Events</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          className="organizations-button"
+          style={styles.organizations_button}
+          onPress={() => {
+            navigation.navigate("Organizations");
+          }}
+        >
+          <Text>Organizations</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
+const ExploreScreen = () => {
+  return (
+    <ExploreStack.Navigator>
+      <ExploreStack.Screen
+        name="Explore-Main"
+        component={ExploreMain}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ExploreStack.Screen
+        name="Organizations"
+        component={OrganizationsScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ExploreStack.Screen
+        name="Events"
+        component={EventsScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ExploreStack.Screen
+        name="Event Profile"
+        component={EventProfileScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ExploreStack.Screen
+        name="OrganizationProfileScreen"
+        component={OrganizationProfileScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+    </ExploreStack.Navigator>
   );
 };
 
 export default ExploreScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  event_button: {
+    backgroundColor: "#123120",
+    width: "50%",
+    height: 100,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  organizations_button: {
+    backgroundColor: "#BA3B46",
+    width: "50%",
+    height: 100,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  button_container: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+});
