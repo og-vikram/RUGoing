@@ -27,8 +27,7 @@ def get_event(event_id):
 
     try:
         cursor.execute(
-            "SELECT name, start, end, location, online_location, is_online, description, rsvp FROM Events WHERE event_id = %s",
-            (event,),
+            f"SELECT name, start, end, location, online_location, is_online, description, rsvp FROM Events WHERE event_id = {event};"
         )
         
     except mysql.Error as err:
@@ -49,7 +48,7 @@ def get_all_events():
     cursor = conn.cursor()
 
     try:
-        cursor.execute("SELECT event_id, name, start, end, location, online_location, is_online, description, rsvp FROM Organizations")
+        cursor.execute("SELECT event_id, name, start, end, location, online_location, is_online, description, rsvp FROM Events;")
 
     except mysql.Error as err:
         print(f"Error: {err}")
