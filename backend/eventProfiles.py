@@ -1,3 +1,4 @@
+
 import flask
 from flask import Flask, request, jsonify
 import mysql.connector as mysql
@@ -17,22 +18,19 @@ config = {
     "port": os.getenv("DB_PORT"),
 }
 
-@app.route("/api/organization/<variable>")
-def get_organization_info(variable):
-    org = variable
+@app.route("/api/event/<event_id>")
+def get_event(event_id):
+    event = event_id
 
     conn = mysql.connect(**config)
     cursor = conn.cursor()
 
     try:
         cursor.execute(
-            "SELECT name, contact, about, faq FROM Organizations WHERE org_id = %s",
-            (org,),
+            "SELECT name, start, end, location, online_location, is_online, description, rsvp FROM Events WHERE event_id = %s",
+            (event,),
         )
-        # rows = cursor.fetchall()  # Fetch all rows
-        # for row in rows:
-        #     print(row)
-        #     print("\n")
+        
     except mysql.Error as err:
         print(f"Error: {err}")
 
@@ -45,17 +43,14 @@ def get_organization_info(variable):
     return json.dumps(r[0]) if r else None
 
 
-@app.route("/api/organization/all")
-def get_all_organizations():
+@app.route("/api/event/all")
+def get_all_events():
     conn = mysql.connect(**config)
     cursor = conn.cursor()
 
     try:
-        cursor.execute("SELECT org_id, name, contact, about, faq FROM Organizations")
-        # rows = cursor.fetchall()  # Fetch all rows
-        # for row in rows:
-        #     print(row)
-        #     print("\n")
+        cursor.execute("SELECT event_id, name, start, end, location, online_location, is_online, description, rsvp FROM Organizations")
+
     except mysql.Error as err:
         print(f"Error: {err}")
 
@@ -67,7 +62,5 @@ def get_all_organizations():
     conn.close()
     return json.dumps(r) if r else None
 
-
 if __name__ == "__main__":
     app.run(debug=True)
-# get_organization_info()
