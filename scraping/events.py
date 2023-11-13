@@ -275,6 +275,56 @@ def get_event_categories(cursor, category_id):
     except NoSuchElementException as e:
         event_id = None
     
+def get_perks():
+    url = 'https://rutgers.campuslabs.com/engage/events?perks='
+    chrome.get(url)
+
+    perks_list = chrome.find_element(By.ID, "perks")
+    perks_list.click()
+    
+    perks_xpath = '/html/body/div[4]/div[3]/ul'
+    try:
+        perks_length = len(chrome.find_element(By.XPATH, perks_xpath).find_elements(By.XPATH, './child::*'))
+        time.sleep(0.1)
+        for i in range(perks_length):
+            WebDriverWait(chrome, 10).until(
+                EC.visibility_of_element_located(
+                    (
+                        By.XPATH,
+                        perks_xpath,
+                    )
+                )
+            )
+            
+            perks = chrome.find_element(By.XPATH, perks_xpath)
+
+            WebDriverWait(categories, 10).until(
+                EC.visibility_of_all_elements_located((By.XPATH, './child::*'))
+            )
+            
+            category = categories.find_elements(By.XPATH, './child::*')[i]
+            name = category.text
+            category.click()
+            category_url = chrome.current_url
+            category_id = str(category_url).split('=')[1]
+            
+            query = """INSERT INTO EventCategories (category_id, name)
+                       VALUES (%s, %s)
+                       ON DUPLICATE KEY UPDATE
+                       name = VALUES(name);"""
+                       
+            cursor.execute(query, (category_id, name))
+            conn.commit()
+            
+            get_event_categories(cursor, category_id)
+
+            time.sleep(0.1)
+            chrome.get(url)
+            time.sleep(0.1)
+            categories_list = chrome.find_element(By.ID, "categories")
+            categories_list.click()
+    except NoSuchElementException as e:
+        categories = None
     
 def get_event_perks():
     url = 'https://rutgers.campuslabs.com/engage/events'
@@ -373,7 +423,7 @@ def modify_dates(cursor):
 
 # get_event_themes()
 # get_event_categories()
-# get_event_perks()
+get_event_perks()
 
 # get_event_details('https://rutgers.campuslabs.com/engage/event/9551789')
 # get_event_details('9509343')

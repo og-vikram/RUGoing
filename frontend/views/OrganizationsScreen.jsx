@@ -29,7 +29,7 @@ const OrganizationsScreen = ({ navigation }) => {
       // }),
     })
       .then((response) => response.json())
-      .then((json) => setData(json))
+      .then((json) => setData(json.orgs))
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
   }, []);

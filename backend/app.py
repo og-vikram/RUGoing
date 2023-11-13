@@ -98,10 +98,20 @@ def get_organizations():
     return json.dumps({'orgs': org_list})
 
 @app.route('/api/organization/<id>')
-def get_organization():
-    org = Organizations.query.filter_by(org_id=id)
-    org_details_list = [org_details[0] for org_details in org]
-    return json.dumps({'org_': org_details_list})
+def get_organization(id):
+    org = Organizations.query.filter_by(org_id=id).first()
+    if org:
+        org_details = {
+    	    'org_id': org.org_id,
+    	    'image_id': org.image_id, 
+            'name': org.name,
+            'about': org.about, 
+            'contact': org.contact,
+            'faq': org.faq, 
+    	}
+        return json.dumps({'org': org_details})
+    else:
+        return json.dumps({'error': 'Organization not found'})
 
 @app.route('/api/organization/categories')
 def get_organization_categories():
