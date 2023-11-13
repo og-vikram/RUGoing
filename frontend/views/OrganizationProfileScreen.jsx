@@ -23,7 +23,7 @@ const OrganizationProfileScreen = ({ navigation }) => {
   const route = useRoute();
   const organizationId = route.params.organizationId;
   const newUrl = url + organizationId;
-  const [organizationData, setOrganizationData] = useState("");
+  const [organizationData, setOrganizationData] = useState({});
 
   useEffect(() => {
     fetch(newUrl, {
@@ -32,7 +32,11 @@ const OrganizationProfileScreen = ({ navigation }) => {
       // }),
     })
       .then((response) => response.json())
-      .then((json) => setOrganizationData(json))
+      .then((json) => {
+        if (json && json.org) {
+          setOrganizationData(json.org);
+        }
+      })
       .catch((error) => console.log(error));
   }, []);
   const imageUrl = "https://se-images.campuslabs.com/clink/images/";

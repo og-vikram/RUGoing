@@ -29,7 +29,7 @@ const OrganizationsScreen = ({ navigation }) => {
       // }),
     })
       .then((response) => response.json())
-      .then((json) => setData(json))
+      .then((json) => setData(json.orgs))
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
   }, []);
@@ -42,7 +42,7 @@ const OrganizationsScreen = ({ navigation }) => {
           <TouchableOpacity
             onPress={() => {
               navigation.navigate("OrganizationProfileScreen", {
-                organizationId: item.org_id,
+                organizationId: item.id,
               });
             }}
           >

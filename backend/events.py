@@ -1,13 +1,11 @@
 from flask import Blueprint, jsonify 
 from models import Events
-from app import db
 
 main_routes = Blueprint('events', __name__)
 
 @main_routes.route('/events')
 def get_users():
-    #all_events = Events.query.all()
-    all_events = db.session.execute(db.select(Events))
+    all_events = Events.query.all()
     event_list = []
     for event in all_events:
         event_list.append({

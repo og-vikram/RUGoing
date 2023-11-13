@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, Image,Button } from 'react-native';
 import { auth } from '../firebase.config'; // Assuming you have your Firebase configuration correctly set up in 'firebase.config'
 import {sendPasswordResetEmail} from "firebase/auth";
 
@@ -27,7 +27,13 @@ const ForgotPassword = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Forgot Password</Text>
+      <View style={[styles.logoContainer]}>
+        <Image
+          source={require('../assets/Screenshot_(276)-transformed.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+      </View>
       {sentPasswordReset && (
         <Text style={styles.infoText}>
           If this user exists, we have sent you an email to reset your password.
@@ -50,6 +56,12 @@ const ForgotPassword = ({ navigation }) => {
       >
         <Text style={styles.buttonText}>Reset My Password</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.loginbutton}
+        onPress={() => navigation.navigate("LoginScreen")}
+      >
+        <Text style={styles.loginButtonText}>Login</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -60,11 +72,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
+    backgroundColor: '#E6E6E6',
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 16,
+    marginBottom: 16, 
+    color: '#FF392E',
   },
   infoText: {
     marginBottom: 16,
@@ -82,22 +96,45 @@ const styles = StyleSheet.create({
   emailInput: {
     flex: 1,
     height: 40,
-    borderColor: 'gray',
     borderWidth: 1,
     padding: 8,
+    borderRadius: 15,
   },
   fixedText: {
     marginLeft: 8,
-    color: 'black',
+    color: '#FF392E',
   },
   button: {
-    backgroundColor: 'blue',
+    backgroundColor: '#FF392E',
     padding: 10,
     width: '80%',
+    borderRadius: 15,
   },
   buttonText: {
     color: 'white',
     textAlign: 'center',
+    fontSize: 18,
+  },
+  loginButtonText:{
+    color: '#FF392E',
+    textAlign: 'center',
+    fontSize: 18,
+  },
+  loginbutton: {
+    marginTop: 12,
+    backgroundColor: 'white',
+    padding: 10,
+    width: '80%',
+    borderRadius: 15,
+  },
+  logoContainer: {
+    position: 'absolute',
+    top: 260, // Adjust to move the logo higher
+    alignItems: 'center',
+  },
+  logo: {
+    width: 300, // Adjust to make the logo smaller
+    height: 120, // Adjust to make the logo smaller
   },
 });
 

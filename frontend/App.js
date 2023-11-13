@@ -59,6 +59,7 @@ export default function App() {
               paddingBottom: 0,
             },
             headerShown: true,
+            headerTintColor: '#FF392E',
           }}
         >
           <Tab.Screen
@@ -67,7 +68,7 @@ export default function App() {
             options={{
               tabBarIcon: ({ color, size, focused }) => {
                 return (
-                  <FontAwesomeIcon icon={faHouse} size={size} color={color} />
+                  <FontAwesomeIcon icon={faHouse} size={size} color={'#FF392E'} />
                 );
               },
               title: "",
@@ -83,7 +84,7 @@ export default function App() {
                   <FontAwesomeIcon
                     icon={faMagnifyingGlass}
                     size={size}
-                    color={color}
+                    color={'#FF392E'}
                   />
                 );
               },
@@ -97,7 +98,7 @@ export default function App() {
             options={{
               tabBarIcon: ({ color, size, focused }) => {
                 return (
-                  <FontAwesomeIcon icon={faUser} size={size} color={color} />
+                  <FontAwesomeIcon icon={faUser} size={size} color={'#FF392E'} />
                 );
               },
               title: "",
@@ -105,6 +106,7 @@ export default function App() {
             }}
           />
         </Tab.Navigator>
+
       </NavigationContainer>
     );
   }
