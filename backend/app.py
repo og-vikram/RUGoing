@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import PrimaryKeyConstraint
 import json
@@ -115,7 +115,6 @@ class Users(db.Model):
     user_id = db.Column(db.String(50), primary_key=True)
     netid = db.Column(db.String(50))
     username = db.Column(db.String(50), nullable=False)
-    password = db.Column(db.String(100), nullable=False)
     profile_pic = db.Column(db.String(200))
 
 @app.route('/api/event/all')
@@ -195,6 +194,7 @@ def add_user(uid, email):
         netid = email.split('@')[0],
         username = email.split('@')[0],
     )
+    print(user.user_id)
     db.session.add(user)
     db.session.commit()
     return json.dumps({'success': True})

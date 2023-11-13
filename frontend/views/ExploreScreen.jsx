@@ -71,6 +71,7 @@ const ExploreMain = ({ navigation }) => {
 
     const newfuse = new Fuse(EventData, fuseOptions);
     newresult = newfuse.search(query);
+    console.log("newresult:" + newresult);
     setEventSearchResults(
       newresult.map(({ item }) => ({ name: item.name, fid: item.fid }))
     );
