@@ -97,6 +97,12 @@ def get_organizations():
         org_list.append(org_dict)
     return json.dumps({'orgs': org_list})
 
+@app.route('/api/organization/<id>')
+def get_organization():
+    org = Organizations.query.filter_by(org_id=id)
+    org_details_list = [org_details[0] for org_details in org]
+    return json.dumps({'org_': org_details_list})
+
 @app.route('/api/organization/categories')
 def get_organization_categories():
     all_categories = OrganizationCategories.query.all()
