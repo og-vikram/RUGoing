@@ -42,7 +42,7 @@ const OrganizationsScreen = ({ navigation }) => {
           <TouchableOpacity
             onPress={() => {
               navigation.navigate("OrganizationProfileScreen", {
-                organizationId: item.org_id,
+                organizationId: item.id,
               });
             }}
           >
