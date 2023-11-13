@@ -6,6 +6,9 @@ import {
   Button,
   StyleSheet,
   KeyboardAvoidingView,
+  Image,
+  TouchableOpacity,
+  Keyboard,
 } from "react-native";
 import { auth } from "../firebase.config";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -14,6 +17,7 @@ import { Alert } from "react-native";
 const LoginPage = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [logoTop, setLogoTop] = useState(210);
 
   const handleLogin = async () => {
     try {
@@ -35,9 +39,28 @@ const LoginPage = ({ navigation }) => {
     }
   };
 
+  const keyboardDidShowListener = Keyboard.addListener(
+    'keyboardDidShow',
+    () => {
+      setLogoTop(40); 
+    }
+  );
+  const keyboardDidHideListener = Keyboard.addListener(
+    'keyboardDidHide',
+    () => {
+      setLogoTop(210); 
+    }
+  );
+
   return (
     <KeyboardAvoidingView style={styles.container} behavior="height">
-      <Text style={styles.title}>Login</Text>
+      <View style={[styles.logoContainer, {top: logoTop}]}>
+        <Image
+          source={require('../assets/Screenshot_(276)-transformed.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+      </View>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -54,22 +77,30 @@ const LoginPage = ({ navigation }) => {
           value={password}
           onChangeText={(text) => setPassword(text)}
         />
+        <View style={styles.forgotPasswordContainer}>
+          <Text 
+            style={styles.forgotPasswordText}
+            onPress={() => navigation.navigate("ForgotPassword")}
+          >
+            Forgot Password?
+          </Text>
+        </View>
       </View>
-      <View style={styles.buttonContainer}>
-        <Button title="Login" onPress={handleLogin} />
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Create Account"
-          onPress={() => navigation.navigate("CreateAccount")}
-        />
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Forgot Password"
-          onPress={() => navigation.navigate("ForgotPassword")}
-        />
-      </View>
+      <TouchableOpacity
+        style={styles.loginButton}
+        onPress={handleLogin}
+      >
+        <Text style={styles.loginButtonText}>Login</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.accountButton}
+        onPress={() => navigation.navigate("CreateAccount")}
+      >
+        <Text style={styles.accountButtonText}>Create Account</Text>
+      </TouchableOpacity>
+
+
     </KeyboardAvoidingView>
   );
 };
@@ -80,6 +111,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
+    backgroundColor: '#E6E6E6',
   },
   title: {
     fontSize: 20,
@@ -92,15 +124,57 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderColor: "gray",
     borderWidth: 1,
     padding: 8,
     width: "100%",
+    color: "#4A4A4A",
+    borderRadius: 15,
   },
-  buttonContainer: {
+
+  logoContainer: {
+    position: 'absolute',
+    top: 160, // Adjust to move the logo higher
+    alignItems: 'center',
+  },
+  logo: {
+    width: 300, // Adjust to make the logo smaller
+    height: 120, // Adjust to make the logo smaller
+  },
+
+  forgotPasswordContainer: {
+    marginTop: 5,
+    alignItems: "flex-end", 
+  },
+  forgotPasswordText: {
+    color: "#FF392E", 
+  },
+  loginButton: {
+    backgroundColor: "#FF392E", 
+    padding: 15,
     marginTop: 10,
-    width: "80%",
+    width: "80%", 
+    alignItems: "center",
+    borderRadius: 15,
   },
+  loginButtonText: {
+    color: "#E6E6E6", 
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  accountButton: {
+    backgroundColor: "white", 
+    padding: 15,
+    marginTop: 10,
+    width: "80%", 
+    alignItems: "center",
+    borderRadius: 15,
+  },
+  accountButtonText: {
+    color: "#FF392E", 
+    fontSize: 16,
+    fontWeight: "bold",
+  }
+
 });
 
 export default LoginPage;

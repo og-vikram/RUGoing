@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, Image, Keyboard } from "react-native";
 import { auth } from "../firebase.config";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { Switch } from "react-native";
 import { getAuth } from "firebase/auth";
 import firebase from "firebase/app";
+import { Icon } from 'react-native-elements';
 
 const CreateAccountScreen = ({ navigation }) => {
   const defaultEmailDomain = "@scarletmail.rutgers.edu";
@@ -21,8 +22,32 @@ const CreateAccountScreen = ({ navigation }) => {
   const [isPasswordMismatch, setPasswordMismatch] = useState(false);
   const [isOfficer, setIsOfficer] = useState(false);
   const [organizationName, setOrganizationName] = useState("");
+  const [logoTop, setLogoTop] = useState(90);
 
   const email = emailPrefix + defaultEmailDomain;
+
+  const handleSwitchChange = (value) => {
+    setIsOfficer(value);
+
+    if (isOfficer == false){
+      setLogoTop(70);
+    }else{
+      setLogoTop(90);
+    } 
+  };
+
+  const keyboardDidShowListener = Keyboard.addListener(
+    'keyboardDidShow',
+    () => {
+      setLogoTop(80); 
+    }
+  );
+  const keyboardDidHideListener = Keyboard.addListener(
+    'keyboardDidHide',
+    () => {
+      setLogoTop(90); 
+    }
+  );
 
   const isValidEmail = () => {
     const emailRegex = /^[^\s@]+@scarletmail\.rutgers\.edu$/;
@@ -95,9 +120,15 @@ const CreateAccountScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Create an Account</Text>
+      <View style={[styles.logoContainer, {top: logoTop}]}>
+        <Image
+          source={require('../assets/Screenshot_(276)-transformed.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+      </View>
       <View style={styles.inputContainer}>
-        <Text>First Name:</Text>
+        
         <TextInput
           style={styles.input}
           placeholder="First Name"
@@ -111,7 +142,7 @@ const CreateAccountScreen = ({ navigation }) => {
         )}
       </View>
       <View style={styles.inputContainer}>
-        <Text>Last Name:</Text>
+        
         <TextInput
           style={styles.input}
           placeholder="Last Name"
@@ -125,7 +156,7 @@ const CreateAccountScreen = ({ navigation }) => {
         )}
       </View>
       <View style={styles.inputContainer}>
-        <Text>Email Address:</Text>
+        
         <View style={styles.emailInputContainer}>
           <TextInput
             style={styles.emailInput}
@@ -142,7 +173,7 @@ const CreateAccountScreen = ({ navigation }) => {
         )}
       </View>
       <View style={styles.inputContainer}>
-        <Text>Password:</Text>
+        
         <TextInput
           style={styles.input}
           placeholder="Password"
@@ -158,7 +189,7 @@ const CreateAccountScreen = ({ navigation }) => {
         )}
       </View>
       <View style={styles.inputContainer}>
-        <Text>Confirm Password:</Text>
+        
         <TextInput
           style={styles.input}
           placeholder="Confirm Password"
@@ -173,19 +204,20 @@ const CreateAccountScreen = ({ navigation }) => {
         )}
       </View>
       <View style={styles.inputContainer}>
-        <Text>Are you an organization officer?</Text>
+        <Text style={{color: "#FF392E", fontSize: 15}}>Are you an organization officer?</Text>
         <View style={styles.switchContainer}>
           <Text style={styles.switchText}>No</Text>
           <Switch
             value={isOfficer}
-            onValueChange={(value) => setIsOfficer(value)}
+            onValueChange={handleSwitchChange}
+            trackColor={{ false: 'blue', true: '#FF392E' }}
           />
           <Text style={styles.switchText}>Yes</Text>
         </View>
         {isOfficer && (
-          <View>
-            <Text>Please enter the organization name:</Text>
+          <View style={styles.inputSwitchContainer}>
             <TextInput
+              placeholder="Please enter the organization name"
               style={styles.input}
               value={organizationName}
               onChangeText={(text) => setOrganizationName(text)}
@@ -193,17 +225,39 @@ const CreateAccountScreen = ({ navigation }) => {
           </View>
         )}
       </View>
-      <Button title="Sign Up" onPress={handleSubmit} />
+      <TouchableOpacity
+        style={styles.signupButton}
+        onPress={handleSubmit}
+      >
+        <Text style={styles.signupButtonText}>Sign Up</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.loginButton}
+        onPress={() => navigation.navigate("LoginScreen")}
+      >
+        <Text style={styles.loginButtonText}>Login</Text>
+      </TouchableOpacity>
+
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  logoContainer: {
+    position: 'absolute',
+    top: 160, // Adjust to move the logo higher
+    alignItems: 'center',
+  },
+  logo: {
+    width: 300, // Adjust to make the logo smaller
+    height: 120, // Adjust to make the logo smaller
+  },
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
+    backgroundColor: '#E6E6E6',
   },
   title: {
     fontSize: 20,
@@ -214,26 +268,33 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     width: "80%",
   },
+  inputSwitchContainer: {
+    marginTop: 12,
+    width: "100%",
+  },
   emailInputContainer: {
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
+    borderRadius: 15,
   },
   input: {
     height: 40,
-    borderColor: "gray",
     borderWidth: 1,
     padding: 8,
     width: "100%",
+    borderRadius: 15,
   },
   emailInput: {
     flex: 1,
     height: 40,
     borderWidth: 1,
     padding: 8,
+    borderRadius: 15,
   },
   fixedText: {
     marginLeft: 8,
+    color: "#FF392E"
   },
   invalidText: {
     color: "red",
@@ -245,7 +306,36 @@ const styles = StyleSheet.create({
   },
   switchText: {
     marginHorizontal: 10,
+    color: "#FF392E",
   },
+  signupButton: {
+    backgroundColor: "#FF392E", 
+    padding: 15,
+    marginTop: 10,
+    width: "80%", 
+    alignItems: "center",
+    borderRadius: 15,
+  },
+  signupButtonText: {
+    color: "#E6E6E6", 
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  loginButton:{
+    backgroundColor: "white", 
+    padding: 15,
+    marginTop: 10,
+    width: "80%", 
+    alignItems: "center",
+    borderRadius: 15,
+  },
+  loginButtonText:{
+    color: "#FF392E",
+    fontSize: 16,
+    fontWeight: "bold",
+  }
+
+
 });
 
 export default CreateAccountScreen;

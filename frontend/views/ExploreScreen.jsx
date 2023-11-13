@@ -1,5 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View, Switch, TextInput} from "react-native";
+import React, { useState, useRef } from "react";
 import { SearchBar } from "@rneui/themed";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import OrganizationsScreen from "./OrganizationsScreen";
@@ -16,33 +16,48 @@ const ExploreMain = ({ navigation }) => {
     setSearch(search);
   };
 
+  const searchBarRef = useRef(null);
+
+  const handleButtonClick = () => {
+    // Programmatically focus the SearchBar when the button is clicked
+    searchBarRef.current && searchBarRef.current.focus();
+  };
+
+
   return (
     <View>
       <SearchBar
+        ref={searchBarRef}
         placeholder="Type Here..."
         platform="ios"
         onChangeText={updateSearch}
       />
-      <View className="buttons-container" style={styles.button_container}>
-        <TouchableOpacity
-          className="events-button"
-          style={styles.event_button}
-          onPress={() => {
-            navigation.navigate("Events");
-          }}
-        >
-          <Text>Events</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          className="organizations-button"
-          style={styles.organizations_button}
-          onPress={() => {
-            navigation.navigate("Organizations");
-          }}
-        >
-          <Text>Organizations</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        className="events-button"
+        style={[styles.event_button,{marginBottom: 12,}]}
+        onPress={() => {
+          navigation.navigate("Events");
+        }}
+      >
+        <Text style = {styles.eventText}>Events</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        className="organizations-button"
+        style={[styles.organizations_button ]}
+        onPress={() => {
+          navigation.navigate("Organizations");
+        }}
+      >
+        <Text style = {styles.organizationsText}>Organizations</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.event_button ]}
+        onPress={handleButtonClick}
+      >
+        <Text style = {styles.eventText}>Search Users</Text>
+      </TouchableOpacity>
+        
+      
     </View>
   );
 };
@@ -93,22 +108,36 @@ export default ExploreScreen;
 
 const styles = StyleSheet.create({
   event_button: {
-    backgroundColor: "#123120",
-    width: "50%",
-    height: 100,
+    backgroundColor: "#FF392E",
+    width: "90%",
+    height: 200,
     alignItems: "center",
     justifyContent: "center",
+    borderRadius: 15,
+    alignSelf: "center",
+    marginTop: 12,
   },
   organizations_button: {
-    backgroundColor: "#BA3B46",
-    width: "50%",
-    height: 100,
+    backgroundColor: "white",
+    width: "90%",
+    height: 200,
     alignItems: "center",
     justifyContent: "center",
+    borderRadius: 15,
+    alignSelf: "center",
   },
-  button_container: {
+  eventText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: 'white',
+  },
+  organizationsText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: '#FF392E',
+  },
+  buttonWrapper: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    backgroundColor: "#E6E6E6", 
   },
 });
