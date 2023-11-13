@@ -31,6 +31,14 @@ const LoginPage = ({ navigation }) => {
         return;
       }
       console.log("User logged in:", userCredential.user);
+      fetch(
+        "https://absolute-willing-salmon.ngrok-free.app/api/user/add?email=" +
+          username +
+          "&name=" +
+          userCredential.user.email +
+          "&uid=" +
+          userCredential.user.uid
+      );
     } catch (error) {
       console.log(error);
       if (error.code === "auth/invalid-login-credentials") {
@@ -40,23 +48,23 @@ const LoginPage = ({ navigation }) => {
   };
 
   const keyboardDidShowListener = Keyboard.addListener(
-    'keyboardDidShow',
+    "keyboardDidShow",
     () => {
-      setLogoTop(40); 
+      setLogoTop(40);
     }
   );
   const keyboardDidHideListener = Keyboard.addListener(
-    'keyboardDidHide',
+    "keyboardDidHide",
     () => {
-      setLogoTop(210); 
+      setLogoTop(210);
     }
   );
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="height">
-      <View style={[styles.logoContainer, {top: logoTop}]}>
+      <View style={[styles.logoContainer, { top: logoTop }]}>
         <Image
-          source={require('../assets/Screenshot_(276)-transformed.png')}
+          source={require("../assets/Screenshot_(276)-transformed.png")}
           style={styles.logo}
           resizeMode="contain"
         />
@@ -78,7 +86,7 @@ const LoginPage = ({ navigation }) => {
           onChangeText={(text) => setPassword(text)}
         />
         <View style={styles.forgotPasswordContainer}>
-          <Text 
+          <Text
             style={styles.forgotPasswordText}
             onPress={() => navigation.navigate("ForgotPassword")}
           >
@@ -86,10 +94,7 @@ const LoginPage = ({ navigation }) => {
           </Text>
         </View>
       </View>
-      <TouchableOpacity
-        style={styles.loginButton}
-        onPress={handleLogin}
-      >
+      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>Login</Text>
       </TouchableOpacity>
 
@@ -99,8 +104,6 @@ const LoginPage = ({ navigation }) => {
       >
         <Text style={styles.accountButtonText}>Create Account</Text>
       </TouchableOpacity>
-
-
     </KeyboardAvoidingView>
   );
 };
@@ -111,7 +114,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
-    backgroundColor: '#E6E6E6',
+    backgroundColor: "#E6E6E6",
   },
   title: {
     fontSize: 20,
@@ -132,9 +135,9 @@ const styles = StyleSheet.create({
   },
 
   logoContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 160, // Adjust to move the logo higher
-    alignItems: 'center',
+    alignItems: "center",
   },
   logo: {
     width: 300, // Adjust to make the logo smaller
@@ -143,38 +146,37 @@ const styles = StyleSheet.create({
 
   forgotPasswordContainer: {
     marginTop: 5,
-    alignItems: "flex-end", 
+    alignItems: "flex-end",
   },
   forgotPasswordText: {
-    color: "#FF392E", 
+    color: "#FF392E",
   },
   loginButton: {
-    backgroundColor: "#FF392E", 
+    backgroundColor: "#FF392E",
     padding: 15,
     marginTop: 10,
-    width: "80%", 
+    width: "80%",
     alignItems: "center",
     borderRadius: 15,
   },
   loginButtonText: {
-    color: "#E6E6E6", 
+    color: "#E6E6E6",
     fontSize: 16,
     fontWeight: "bold",
   },
   accountButton: {
-    backgroundColor: "white", 
+    backgroundColor: "white",
     padding: 15,
     marginTop: 10,
-    width: "80%", 
+    width: "80%",
     alignItems: "center",
     borderRadius: 15,
   },
   accountButtonText: {
-    color: "#FF392E", 
+    color: "#FF392E",
     fontSize: 16,
     fontWeight: "bold",
-  }
-
+  },
 });
 
 export default LoginPage;
