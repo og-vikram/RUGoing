@@ -188,8 +188,16 @@ def get_org_ids_by_category(id):
     org_id_list = [org_id[0] for org_id in org_ids]
     return json.dumps({'org_ids': org_id_list})
 
-@app.route('api/users/add/<uid>', methods=['POST'])
-def add_user(id):
+@app.route('api/users/add?uid=<uid>&email=<email>', methods=['POST'])
+def add_user(uid, email):
+    user = Users(
+        user_id = uid,
+        netid = email.split('@')[0],
+        username = email.split('@')[0],
+    )
+    db.session.add(user)
+    db.session.commit()
+    return json.dumps({'success': True})
     
     
 if __name__ == '__main__':

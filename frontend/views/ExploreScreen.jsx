@@ -1,5 +1,11 @@
-import { StyleSheet, Text, TouchableOpacity, View, SectionList } from "react-native";
-import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  SectionList,
+} from "react-native";
+import React, { useEffect, useRef, useState } from "react";
 import { SearchBar } from "@rneui/themed";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import OrganizationsScreen from "./OrganizationsScreen";
@@ -11,17 +17,18 @@ import Fuse from "fuse.js";
 const ExploreStack = createNativeStackNavigator();
 
 const ExploreMain = ({ navigation }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [orgSearchResults, setOrgSearchResults] = useState([]);
   const [eventSearchResults, setEventSearchResults] = useState([]);
- 
+
   const fuseOptions = {
-    keys: ['name'],
-    threshold: .25
+    keys: ["name"],
+    threshold: 0.25,
     //use threshold to tune how sensitive search is (lower is more precise)
   };
 
-  const url = "https://absolute-willing-salmon.ngrok-free.app/api/organization/all";
+  const url =
+    "https://absolute-willing-salmon.ngrok-free.app/api/organization/all";
   const [orgData, setOrgData] = useState([]);
   const [EventData, setEventData] = useState([]);
   const [userData, setUserData] = useState([]);
@@ -36,32 +43,38 @@ const ExploreMain = ({ navigation }) => {
       // }),
     })
       .then((response) => response.json())
-      .then((json) => setOrgData(json.map(({org_id, name}) => ({org_id, name}))))
+      .then((json) =>
+        setOrgData(json.map(({ org_id, name }) => ({ org_id, name })))
+      )
       .catch((error) => console.log(error));
 
-
-      fetch("https://absolute-willing-salmon.ngrok-free.app/events/all", {
-    // headers: new Headers({
+    fetch("https://absolute-willing-salmon.ngrok-free.app/events/all", {
+      // headers: new Headers({
       //   "ngrok-skip-browser-warning": "true",
       // }),
-      })
+    })
       .then((response) => response.json())
-      .then((json) => setEventData(json.map(({event_id, name}) => ({event_id, name}))))
+      .then((json) =>
+        setEventData(json.map(({ event_id, name }) => ({ event_id, name })))
+      )
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
   }, []);
 
-
   const performSearch = (query) => {
     const fuse = new Fuse(orgData, fuseOptions);
     const result = fuse.search(query);
-    setOrgSearchResults(result.map(({item }) => ({name: item.name, id: item.id})));
-   // console.log('orgs', orgSearchResults)
- 
+    setOrgSearchResults(
+      result.map(({ item }) => ({ name: item.name, id: item.id }))
+    );
+    // console.log('orgs', orgSearchResults)
+
     const newfuse = new Fuse(EventData, fuseOptions);
     newresult = newfuse.search(query);
-    setEventSearchResults(newresult.map(({item }) => ({name: item.name, fid: item.fid})));
-   // console.log('events', eventSearchResults)
+    setEventSearchResults(
+      newresult.map(({ item }) => ({ name: item.name, fid: item.fid }))
+    );
+    // console.log('events', eventSearchResults)
   };
 
   const handleSearchChange = (text) => {
@@ -77,77 +90,85 @@ const ExploreMain = ({ navigation }) => {
   };
 
   const SearchOrgItem = ({ item }) => (
-    <TouchableOpacity onPress={() => {
-      navigation.navigate("OrganizationProfileScreen", {
-        organizationId: item.org_id,
-      });
-    }}
-    style={styles.item}>
+    <TouchableOpacity
+      onPress={() => {
+        navigation.navigate("OrganizationProfileScreen", {
+          organizationId: item.org_id,
+        });
+      }}
+      style={styles.item}
+    >
       <Text>{item.name}</Text>
     </TouchableOpacity>
   );
-  
+
   const SearchEventItem = ({ item }) => (
-    <TouchableOpacity onPress = {() => navigation.navigate('event', {eventId: item.event_id})}
-    style={styles.item}>
+    <TouchableOpacity
+      onPress={() => navigation.navigate("event", { eventId: item.event_id })}
+      style={styles.item}
+    >
       <Text>{item.name}</Text>
     </TouchableOpacity>
   );
-
-
 
   if (!loading) {
-  return (
-    <View>
-     
-     <SearchBar
-        ref={searchBarRef}
-        placeholder="Search"
-        platform="ios"
-        onChangeText={handleSearchChange}
-      />
+    return (
+      <View>
+        <SearchBar
+          ref={searchBarRef}
+          placeholder="Search"
+          platform="ios"
+          onChangeText={handleSearchChange}
+        />
 
-      {searchTerm !== '' && (
-      <SectionList
-      renderSectionHeader={({section: {title}}) => <Text style={{fontWeight: 'bold', padding:2}}>{title}</Text>}
-      style={styles.sectionList}
-      
-      sections={[
-        {title: 'Organizations', data: orgSearchResults.splice(0,5), renderItem: ({item }) => <SearchOrgItem item={item}/>},
-        {title: 'Events', data: eventSearchResults.splice(0,5), renderItem: ({item}) => <SearchEventItem item={item}/>}
-      ]}
-      />
-   )}
+        {searchTerm !== "" && (
+          <SectionList
+            renderSectionHeader={({ section: { title } }) => (
+              <Text style={{ fontWeight: "bold", padding: 2 }}>{title}</Text>
+            )}
+            style={styles.sectionList}
+            sections={[
+              {
+                title: "Organizations",
+                data: orgSearchResults.splice(0, 5),
+                renderItem: ({ item }) => <SearchOrgItem item={item} />,
+              },
+              {
+                title: "Events",
+                data: eventSearchResults.splice(0, 5),
+                renderItem: ({ item }) => <SearchEventItem item={item} />,
+              },
+            ]}
+          />
+        )}
 
-
-<TouchableOpacity
-        className="events-button"
-        style={[styles.event_button,{marginBottom: 12,}]}
-        onPress={() => {
-          navigation.navigate("Events");
-        }}
-      >
-        <Text style = {styles.eventText}>Events</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        className="organizations-button"
-        style={[styles.organizations_button ]}
-        onPress={() => {
-          navigation.navigate("Organizations");
-        }}
-      >
-        <Text style = {styles.organizationsText}>Organizations</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.event_button ]}
-        onPress={handleButtonClick}
-      >
-        <Text style = {styles.eventText}>Search Users</Text>
-      </TouchableOpacity>
-        
-    </View>
-  );
-        }
+        <TouchableOpacity
+          className="events-button"
+          style={[styles.event_button, { marginBottom: 12 }]}
+          onPress={() => {
+            navigation.navigate("Events");
+          }}
+        >
+          <Text style={styles.eventText}>Events</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          className="organizations-button"
+          style={[styles.organizations_button]}
+          onPress={() => {
+            navigation.navigate("Organizations");
+          }}
+        >
+          <Text style={styles.organizationsText}>Organizations</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.event_button]}
+          onPress={handleButtonClick}
+        >
+          <Text style={styles.eventText}>Search Users</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 };
 
 const ExploreScreen = () => {
@@ -217,16 +238,16 @@ const styles = StyleSheet.create({
   eventText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: 'white',
+    color: "white",
   },
   organizationsText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: '#FF392E',
+    color: "#FF392E",
   },
   buttonWrapper: {
     flexDirection: "row",
-    backgroundColor: "#E6E6E6", 
+    backgroundColor: "#E6E6E6",
   },
   button_container: {
     flexDirection: "row",
@@ -235,26 +256,25 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     paddingLeft: 10,
-    width: '100%',
-   // marginBottom: 16,
-    marginTop: '30%'
+    width: "100%",
+    // marginBottom: 16,
+    marginTop: "30%",
   },
   sectionList: {
-    marginTop: 16, 
-    width: '100%',
+    marginTop: 16,
+    width: "100%",
     paddingBottom: 2,
   },
   item: {
     borderBottomWidth: 1,
     //borderBottomColor: 'gray',
-    borderColor: 'gray',
-    borderTopColor: 'gray',
-    textAlign: 'left',
+    borderColor: "gray",
+    borderTopColor: "gray",
+    textAlign: "left",
     fontSize: 20,
     paddingVertical: 8,
   },
-
 });
