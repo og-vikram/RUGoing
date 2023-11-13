@@ -37,5 +37,6 @@ const styles = StyleSheet.create({
   fonts: {
     fontFamily: "",
     fontSize: 13,
+    color: "#FF392E",
   },
 });

@@ -7,6 +7,7 @@ import {
   FlatList,
   StyleSheet,
   Image,
+  TouchableOpacity
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 
@@ -48,39 +49,54 @@ const OrganizationProfileScreen = ({ navigation }) => {
         source={{ uri: imageUrl + organizationData.image_id }}
         style={{ width: "100%", height: 200 }}
       />
-      <View>
-        <Text>Hello</Text>
+      <View style={styles.orgDetails}>
+        <View style={styles.header}>
+          <Image
+            source={{ uri: organizationData.image_id }}
+            style={styles.profileImage}
+          />
+          <Text style={styles.organizationName}>{organizationData.name}</Text>
+        </View>
+        <View style={styles.memberSection}>
+          <Text style={styles.memberCount}>{"# Members"}</Text>
+          <TouchableOpacity
+            style={styles.joinButton}
+            onPress={()=>{}}
+          >
+            <Text style={styles.joinButtonText}>Join</Text>
+          </TouchableOpacity>
+
+        </View>
       </View>
 
-      <View style={styles.header}>
-        <Image
-          source={{ uri: organizationData.image_id }}
-          style={styles.profileImage}
-        />
-        <Text style={styles.organizationName}>{organizationData.name}</Text>
-      </View>
-      <View style={styles.memberSection}>
-        <Text style={styles.memberCount}>{"# Members"}</Text>
-        <Button title="Join" onPress={() => {}} />
+      <View style={styles.orgInfo}>
+        <Text style={styles.about}>{organizationData.about}</Text>
       </View>
 
-      <Text style={styles.about}>{organizationData.about}</Text>
+
 
       <Text style={styles.frq}>{organizationData.frq}</Text>
 
-      <Text style={styles.eventsHeader}>Events</Text>
-      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-        {events.map((event, index) => (
-          <View style={styles.eventContainer} key={index}>
-            <Text style={styles.eventItem}>{event}</Text>
-          </View>
-        ))}
-      </ScrollView>
-
-      <Text style={styles.contactInfo}>
-        {"Contact Information:"}
-        {organizationData.contact}
-      </Text>
+      <View style={styles.orgEvent}>
+        <Text style={styles.eventsHeader}>Events</Text>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          {events.map((event, index) => (
+            <View style={styles.eventContainer} key={index}>
+              <Text style={styles.eventItem}>{event}</Text>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+      
+      <View style={styles.contactContainer}>
+        <Text style={styles.contactHeader}>
+          {"Contact Information:"}
+        </Text>
+        <Text style={styles.contactInfo}>
+          {organizationData.contact}
+        </Text>
+      </View>
+      
     </ScrollView>
   );
 };
@@ -90,15 +106,59 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white", // Background color
   },
+  orgDetails: {
+    backgroundColor: 'white',
+    borderRadius: 15,
+    padding: 15,
+    margin: 15,
+  },
+  orgInfo: {
+    backgroundColor: 'white',
+    borderRadius: 15,
+    padding: 15,
+    margin: 15,
+    marginTop: "1%",
+  },
+  contactContainer: {
+    backgroundColor: 'white',
+    borderRadius: 15,
+    padding: 15,
+    margin: 15,
+    marginTop: "1%",
+  },
+  orgEvent: {
+    backgroundColor: 'white',
+    borderRadius: 15,
+    padding: 15,
+    margin: 15,
+    marginTop: "-10%",
+  },
   bannerImage: {
     width: "100%",
     height: 200,
   },
-  header: {
-    flexDirection: "row",
+  joinButton: {
+    backgroundColor: "#FF392E", 
+    padding: 10,
+    width: 75,
     alignItems: "center",
-    padding: 15,
+    borderRadius: 15,
+    marginLeft: "auto",
+    marginTop: "-8%",
+    
+
+  },
+  joinButtonText: {
+    color: "white", 
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  header: {
+    alignItems: "left",
+    padding: 5,
     paddingBottom: 0,
+    marginTop: -50,
+    
   },
   profileImage: {
     width: 50,
@@ -109,20 +169,23 @@ const styles = StyleSheet.create({
   organizationName: {
     fontSize: 24,
     fontWeight: "bold",
+
+
   },
   memberSection: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 15,
+    padding: 5,
     paddingTop: 0,
   },
   memberCount: {
     fontSize: 18,
     paddingRight: 200,
+    marginTop: "5%",
   },
   about: {
     fontSize: 16,
-    padding: 15,
+    padding: 0,
   },
   frq: {
     fontSize: 16,
@@ -136,30 +199,42 @@ const styles = StyleSheet.create({
   eventContainer: {
     flexDirection: "row",
     padding: 10,
+
   },
   eventItem: {
     width: 150, // Width of each event item
     margin: 10,
     padding: 10,
-    borderRadius: 10,
-    backgroundColor: "#f0f0f0", // Event item background color
+    borderRadius: 15,
+    backgroundColor: "#FF392E", // Event item background color
+
   },
   eventName: {
     fontSize: 18,
     fontWeight: "bold",
+    color: "white",
   },
   eventDate: {
     fontSize: 14,
+    color: "white",
   },
   eventLocation: {
     fontSize: 14,
+    color: "white",
   },
   eventDescription: {
     fontSize: 14,
+    color: "white",
+  },
+  contactHeader: {
+    fontSize: 20,
+    padding: 15,
+    fontWeight: "bold",
   },
   contactInfo: {
     fontSize: 16,
     padding: 15,
+    marginTop: "-5%",
   },
 });
 

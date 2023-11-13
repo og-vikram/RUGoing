@@ -4,7 +4,7 @@ import EventCard from "../components/EventCard";
 
 const EventsScreen = () => {
   return (
-    <ScrollView>
+    <ScrollView style = {styles.container}>
       <EventCard title="Event 1" host="Host Name" category="Category" />
       <EventCard title="Event 2" host="Host Name" category="Category" />
       <EventCard title="Event 3" host="Host Name" category="Category" />
@@ -17,4 +17,11 @@ const EventsScreen = () => {
 
 export default EventsScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#FF392E", 
+  },
+  eventCard: {
+    color: "red",
+  },
+});

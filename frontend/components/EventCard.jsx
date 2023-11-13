@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     // marginBottom: 8,
     fontSize: 13,
     fontWeight: "400",
+    color: "#FF392E",
   },
   user: {
     flexDirection: "row",
@@ -79,5 +80,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 17,
     fontWeight: "bold",
+    color: "#FF392E",
   },
 });

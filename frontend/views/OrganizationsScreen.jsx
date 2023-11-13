@@ -37,6 +37,7 @@ const OrganizationsScreen = ({ navigation }) => {
   if (!loading) {
     return (
       <FlatList
+        style = {styles.flatList}
         data={data}
         renderItem={({ item }) => (
           <TouchableOpacity
@@ -72,4 +73,8 @@ const OrganizationsScreen = ({ navigation }) => {
 
 export default OrganizationsScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  flatList:{
+    backgroundColor: "#FF392E"
+  }
+});

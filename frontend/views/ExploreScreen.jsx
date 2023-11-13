@@ -54,7 +54,7 @@ const ExploreMain = ({ navigation }) => {
         style={[styles.event_button ]}
         onPress={handleButtonClick}
       >
-        <Text style = {styles.eventText}>Search Users</Text>
+        <Text style = {styles.eventText}>Users</Text>
       </TouchableOpacity>
         
       
@@ -110,34 +110,34 @@ const styles = StyleSheet.create({
   event_button: {
     backgroundColor: "#FF392E",
     width: "90%",
-    height: 200,
+    height: "28%",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 15,
     alignSelf: "center",
-    marginTop: 12,
+    marginTop: "2.5%",
   },
   organizations_button: {
     backgroundColor: "white",
     width: "90%",
-    height: 200,
+    height: "28%",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 15,
     alignSelf: "center",
   },
   eventText: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "bold",
     color: 'white',
   },
   organizationsText: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "bold",
     color: '#FF392E',
   },
   buttonWrapper: {
-    flexDirection: "row",
+    flexDirection: "column",
     backgroundColor: "#E6E6E6", 
   },
 });
