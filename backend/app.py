@@ -26,8 +26,9 @@ class Events(db.Model):
 
     event_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(500))
-    start = db.Column(db.Time)
-    end = db.Column(db.Time)
+    start = db.Column(db.DateTime)
+    end = db.Column(db.DateTime)
+    is_cancelled = db.Column(db.Boolean)
     location = db.Column(db.String(255))
     online_location = db.Column(db.String(150))
     is_online = db.Column(db.Boolean)
@@ -70,6 +71,7 @@ def get_events():
             'name': event.name, 
             'start': str(event.start) if event.start else None,
             'end': str(event.end) if event.end else None,
+            'is_cancelled': event.is_cancelled,
             'location': event.location,
             'online_location': event.online_location,
             'is_online': event.is_online,
@@ -110,10 +112,7 @@ def get_organization_categories():
 @app.route('/api/organization/categories/<int:id>', methods=['GET'])
 def get_org_ids_by_category(id):
     org_ids = CategorizedOrganizations.query.filter_by(category_id=id).with_entities(CategorizedOrganizations.org_id).all()
-    
-    # Extract org_id values from the list of tuples
     org_id_list = [org_id[0] for org_id in org_ids]
-    
     return json.dumps({'org_ids': org_id_list})
 
 if __name__ == '__main__':
