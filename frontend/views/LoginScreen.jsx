@@ -32,13 +32,13 @@ const LoginPage = ({ navigation }) => {
       }
       console.log("User logged in:", userCredential.user);
       fetch(
-        "https://absolute-willing-salmon.ngrok-free.app/api/user/add?email=" +
-          username +
-          "&name=" +
-          userCredential.user.email +
-          "&uid=" +
-          userCredential.user.uid
-      );
+        `https://absolute-willing-salmon.ngrok-free.app/api/users/add?uid=` +
+        userCredential.user.uid + 
+        "&email=" +
+        userCredential.user.email          
+      , {
+        method: "POST"
+      });
     } catch (error) {
       console.log(error);
       if (error.code === "auth/invalid-login-credentials") {
