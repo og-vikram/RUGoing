@@ -187,21 +187,19 @@ def get_org_ids_by_category(id):
     org_id_list = [org_id[0] for org_id in org_ids]
     return json.dumps({'org_ids': org_id_list})
 
-@app.route('/api/users/add', methods=['POST'])
+@app.route('/api/users/add/', methods=['POST'])
 def add_user():
-	uid = request.args.get('uid')
-	email = request.args.get('email')
-	if uid and email:
-		user = Users(
-			user_id = uid,
-			netid = email.split('@')[0],
-			username = email.split('@')[0],
-			)
-		db.session.add(user)
-		db.session.commit()
-		return json.dumps({'success': True})
-	else:
-    		return json.dumps({'error': 'Missing UID or email'})
+    data = request.get_data()
+    data = json.loads(data)
+    uid = data['uid']
+    email = data['email']
+    netid = data['email'].split('@')[0]
+    user = Users(user_id=uid, netid=netid, username=netid)
+    db.session.add(user)
+    db.session.commit()
+    return json.dumps({'success': True})
+
+   
     
     
 if __name__ == '__main__':
