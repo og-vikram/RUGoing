@@ -1,17 +1,17 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { Button } from "@rneui/base";
 import { auth } from "../firebase.config";
 import { signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
+import { reloadAsync } from "expo-updates";
 
 const ProfileScreen = () => {
-
   const navigation = useNavigation();
 
   const handleLogout = () => {
     signOut(auth);
-
+    reloadAsync();
   };
 
   return (
@@ -24,22 +24,20 @@ const ProfileScreen = () => {
   );
 };
 
-
-
 const styles = StyleSheet.create({
   customButtonContainer: {
-    backgroundColor: '#FF392E',
+    backgroundColor: "#FF392E",
     borderRadius: 15,
     padding: 10,
-    alignItems: 'center',
+    alignItems: "center",
     height: 50,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   customButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
     fontSize: 16,
-    alignItems: 'center',
+    alignItems: "center",
   },
 });
 

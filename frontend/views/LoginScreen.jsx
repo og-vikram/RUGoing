@@ -31,13 +31,12 @@ const LoginPage = ({ navigation }) => {
         return;
       }
       console.log("User logged in:", userCredential.user);
-      fetch(
-        `https://absolute-willing-salmon.ngrok-free.app/api/users/add?uid=` +
-        userCredential.user.uid + 
-        "&email=" +
-        userCredential.user.email          
-      , {
-        method: "POST"
+      fetch(`https://absolute-willing-salmon.ngrok-free.app/api/users/add/`, {
+        method: "POST",
+        body: JSON.stringify({
+          uid: userCredential.user.uid,
+          email: userCredential.user.email,
+        }),
       });
     } catch (error) {
       console.log(error);
