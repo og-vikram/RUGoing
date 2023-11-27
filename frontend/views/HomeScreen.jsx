@@ -1,48 +1,118 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import React from "react";
 
 const HomeScreen = () => {
   return (
     <View>
-
       <View style={styles.eventsCard}>
-        <Text style={styles.eventHeader}> Your Events </Text>
-      
+        <Text style={styles.eventHeader}> Recommended Events </Text>
+
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          <View style={{ flexDirection: 'row', flex: 1, alignItems: 'center', marginTop: "-3%"}}>    
+          <View
+            style={{
+              flexDirection: "row",
+              flex: 1,
+              alignItems: "center",
+              marginTop: "-3%",
+            }}
+          >
             {/* Content inside the horizontal ScrollView */}
             <View style={styles.eventsMiniCards}>
-              <Text style = {{alignSelf: "center", textAlignVertical: "center", color: "#FF392E"}}>Event #1</Text>
+              <Text
+                style={{
+                  alignSelf: "center",
+                  textAlignVertical: "center",
+                  color: "#FF392E",
+                }}
+              >
+                Event #1
+              </Text>
             </View>
             <View style={styles.eventsMiniCards}>
-              <Text style = {{alignSelf: "center", textAlignVertical: "center", color: "#FF392E"}}>Event #2</Text>
+              <Text
+                style={{
+                  alignSelf: "center",
+                  textAlignVertical: "center",
+                  color: "#FF392E",
+                }}
+              >
+                Event #2
+              </Text>
             </View>
             <View style={styles.eventsMiniCards}>
-              <Text style = {{alignSelf: "center", textAlignVertical: "center", color: "#FF392E"}}>Event #3</Text>
+              <Text
+                style={{
+                  alignSelf: "center",
+                  textAlignVertical: "center",
+                  color: "#FF392E",
+                }}
+              >
+                Event #3
+              </Text>
             </View>
             {/* Add more items as needed */}
           </View>
         </ScrollView>
-
       </View>
 
       <View style={styles.orgsCard}>
-        <Text style={styles.orgHeader}> Your Organizations </Text>
-      
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.orgsInfo}>
-            <View style={{ flexDirection: 'row', flex: 1, alignItems: 'center', marginTop: "-3%"}}>
-              {/* Content inside the horizontal ScrollView */}
-              <View style={styles.orgsMiniCards}>
-                <Text style = {{alignSelf: "center", textAlignVertical: "center", color: "white"}}>Org 1</Text>
-              </View>
-              <View style={styles.orgsMiniCards}>
-                <Text style = {{alignSelf: "center", textAlignVertical: "center", color: "white"}}>Org 2</Text>
-              </View>
-              <View style={styles.orgsMiniCards}>
-                <Text style = {{alignSelf: "center", textAlignVertical: "center", color: "white"}}>Org 3</Text>
-              </View>
-              {/* Add more items as needed */}
+        <Text style={styles.orgHeader}> Recommended Organizations </Text>
+
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={styles.orgsInfo}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              flex: 1,
+              alignItems: "center",
+              marginTop: "-3%",
+            }}
+          >
+            {/* Content inside the horizontal ScrollView */}
+            <View style={styles.orgsMiniCards}>
+              <Text
+                style={{
+                  alignSelf: "center",
+                  textAlignVertical: "center",
+                  color: "white",
+                }}
+              >
+                Org 1
+              </Text>
             </View>
+            <View style={styles.orgsMiniCards}>
+              <Text
+                style={{
+                  alignSelf: "center",
+                  textAlignVertical: "center",
+                  color: "white",
+                }}
+              >
+                Org 2
+              </Text>
+            </View>
+            <View style={styles.orgsMiniCards}>
+              <Text
+                style={{
+                  alignSelf: "center",
+                  textAlignVertical: "center",
+                  color: "white",
+                }}
+              >
+                Org 3
+              </Text>
+            </View>
+            {/* Add more items as needed */}
+          </View>
         </ScrollView>
       </View>
     </View>
@@ -52,7 +122,7 @@ const HomeScreen = () => {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  eventsCard:{
+  eventsCard: {
     backgroundColor: "#FF392E",
     borderRadius: 15,
     alignSelf: "center",
@@ -61,7 +131,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: "2.5%",
   },
-  orgsCard:{
+  orgsCard: {
     backgroundColor: "white",
     borderRadius: 15,
     alignSelf: "center",
@@ -85,16 +155,16 @@ const styles = StyleSheet.create({
     marginTop: "3%",
   },
   eventsMiniCards: {
-    width: 200, 
-    height: 200, 
-    backgroundColor: 'white', 
+    width: 200,
+    height: 200,
+    backgroundColor: "white",
     margin: 10,
     borderRadius: 15,
   },
-  orgsMiniCards:{
-    width: 200, 
-    height: 200, 
-    backgroundColor: '#FF392E', 
+  orgsMiniCards: {
+    width: 200,
+    height: 200,
+    backgroundColor: "#FF392E",
     margin: 10,
     borderRadius: 15,
   },

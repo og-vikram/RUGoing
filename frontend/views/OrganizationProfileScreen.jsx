@@ -7,11 +7,19 @@ import {
   FlatList,
   StyleSheet,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+const Stack = createNativeStackNavigator();
 
 const url = "https://absolute-willing-salmon.ngrok-free.app/api/organization/";
+const eventHosts =
+  "https://absolute-willing-salmon.ngrok-free.app/api/organization/events/";
+const eventEndpoint =
+  "https://absolute-willing-salmon.ngrok-free.app/api/event/";
+
 const OrganizationProfileScreen = ({ navigation }) => {
   const events = [
     "Event 1",
@@ -24,14 +32,12 @@ const OrganizationProfileScreen = ({ navigation }) => {
   const route = useRoute();
   const organizationId = route.params.organizationId;
   const newUrl = url + organizationId;
+  const newEventHosts = eventHosts + organizationId;
   const [organizationData, setOrganizationData] = useState({});
+  const [eventHostData, setEventHostData] = useState([]);
 
   useEffect(() => {
-    fetch(newUrl, {
-      // headers: new Headers({
-      //   "ngrok-skip-browser-warning": "true",
-      // }),
-    })
+    fetch(newUrl)
       .then((response) => response.json())
       .then((json) => {
         if (json && json.org) {
@@ -40,6 +46,29 @@ const OrganizationProfileScreen = ({ navigation }) => {
       })
       .catch((error) => console.log(error));
   }, []);
+
+  useEffect(() => {
+    fetch(newEventHosts)
+      .then((response) => response.json())
+      .then((json) => {
+        if (json && json.events) {
+          for (let i = 0; i < json.events.length; i++) {
+            fetch(eventEndpoint + json.events[i])
+              .then((response) => response.json())
+              .then((json) => {
+                if (json && json.event) {
+                  setEventHostData((eventHostData) => [
+                    ...eventHostData,
+                    json.event.name,
+                  ]);
+                }
+              })
+              .catch((error) => console.log(error));
+          }
+        }
+      });
+  }, []);
+
   const imageUrl = "https://se-images.campuslabs.com/clink/images/";
 
   return (
@@ -59,13 +88,9 @@ const OrganizationProfileScreen = ({ navigation }) => {
         </View>
         <View style={styles.memberSection}>
           <Text style={styles.memberCount}>{"# Members"}</Text>
-          <TouchableOpacity
-            style={styles.joinButton}
-            onPress={()=>{}}
-          >
+          <TouchableOpacity style={styles.joinButton} onPress={() => {}}>
             <Text style={styles.joinButtonText}>Join</Text>
           </TouchableOpacity>
-
         </View>
       </View>
 
@@ -73,30 +98,32 @@ const OrganizationProfileScreen = ({ navigation }) => {
         <Text style={styles.about}>{organizationData.about}</Text>
       </View>
 
-
-
       <Text style={styles.frq}>{organizationData.frq}</Text>
 
       <View style={styles.orgEvent}>
         <Text style={styles.eventsHeader}>Events</Text>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          {events.map((event, index) => (
-            <View style={styles.eventContainer} key={index}>
-              <Text style={styles.eventItem}>{event}</Text>
-            </View>
+          {eventHostData.map((event, index) => (
+            <TouchableOpacity
+              key={index}
+              // onPress={() => {
+              //   navigation.navigate("EventProfileScreen", {
+              //     eventId: event.id,
+              //   });
+              // }}
+            >
+              <View style={styles.eventContainer}>
+                <Text style={styles.eventItem}>{event}</Text>
+              </View>
+            </TouchableOpacity>
           ))}
         </ScrollView>
       </View>
-      
+
       <View style={styles.contactContainer}>
-        <Text style={styles.contactHeader}>
-          {"Contact Information:"}
-        </Text>
-        <Text style={styles.contactInfo}>
-          {organizationData.contact}
-        </Text>
+        <Text style={styles.contactHeader}>{"Contact Information:"}</Text>
+        <Text style={styles.contactInfo}>{organizationData.contact}</Text>
       </View>
-      
     </ScrollView>
   );
 };
@@ -107,27 +134,27 @@ const styles = StyleSheet.create({
     backgroundColor: "white", // Background color
   },
   orgDetails: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 15,
     padding: 15,
     margin: 15,
   },
   orgInfo: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 15,
     padding: 15,
     margin: 15,
     marginTop: "1%",
   },
   contactContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 15,
     padding: 15,
     margin: 15,
     marginTop: "1%",
   },
   orgEvent: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 15,
     padding: 15,
     margin: 15,
@@ -138,18 +165,16 @@ const styles = StyleSheet.create({
     height: 200,
   },
   joinButton: {
-    backgroundColor: "#FF392E", 
+    backgroundColor: "#FF392E",
     padding: 10,
     width: 75,
     alignItems: "center",
     borderRadius: 15,
     marginLeft: "auto",
     marginTop: "-8%",
-    
-
   },
   joinButtonText: {
-    color: "white", 
+    color: "white",
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -158,7 +183,6 @@ const styles = StyleSheet.create({
     padding: 5,
     paddingBottom: 0,
     marginTop: -50,
-    
   },
   profileImage: {
     width: 50,
@@ -169,8 +193,6 @@ const styles = StyleSheet.create({
   organizationName: {
     fontSize: 24,
     fontWeight: "bold",
-
-
   },
   memberSection: {
     flexDirection: "row",
@@ -199,7 +221,6 @@ const styles = StyleSheet.create({
   eventContainer: {
     flexDirection: "row",
     padding: 10,
-
   },
   eventItem: {
     width: 150, // Width of each event item
@@ -207,7 +228,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 15,
     backgroundColor: "#FF392E", // Event item background color
-
   },
   eventName: {
     fontSize: 18,

@@ -1,25 +1,74 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
+import React, { useEffect, useState } from "react";
 import EventCard from "../components/EventCard";
 
 const EventsScreen = () => {
-  return (
-    <ScrollView style = {styles.container}>
-      <EventCard title="Event 1" host="Host Name" category="Category" />
-      <EventCard title="Event 2" host="Host Name" category="Category" />
-      <EventCard title="Event 3" host="Host Name" category="Category" />
-      <EventCard title="Event 4" host="Host Name" category="Category" />
-      <EventCard title="Event 5" host="Host Name" category="Category" />
-      <EventCard title="Event 6" host="Host Name" category="Category" />
-    </ScrollView>
-  );
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const url = "https://absolute-willing-salmon.ngrok-free.app/api/event/all";
+  useEffect(() => {
+    fetch(url, {
+      // headers: new Headers({
+      //   "ngrok-skip-browser-warning": "true",
+      // }),
+    })
+      .then((response) => response.json())
+      .then((json) => setData(json.events))
+      .catch((error) => console.log(error))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (!loading) {
+    return (
+      <FlatList
+        style={styles.flatList}
+        data={data}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("EventProfileScreen", {
+                eventId: item.event_id,
+              });
+            }}
+          >
+            <EventCard
+              title={item.name}
+              description={item.description}
+              category="test_category"
+              image_id={
+                "https://se-images.campuslabs.com/clink/images/" + item.image_id
+              }
+            />
+          </TouchableOpacity>
+        )}
+        key={(item) => item.event_id}
+      />
+      // <EventCard
+      //   host="somedude"
+      //   title="Come join us for coffee!"
+      //   category="hello"
+      //   eventid="1"
+      // />
+    );
+  }
+
+  return <ActivityIndicator size="large" color="#000000" />;
 };
 
 export default EventsScreen;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#FF392E", 
+    backgroundColor: "#FF392E",
   },
   eventCard: {
     color: "red",
