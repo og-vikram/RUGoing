@@ -20,6 +20,8 @@ const ExploreMain = ({ navigation }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [orgSearchResults, setOrgSearchResults] = useState([]);
   const [eventSearchResults, setEventSearchResults] = useState([]);
+  const [filteredItems, setFilteredItems] = useState(orgData);
+
 
   const fuseOptions = {
     keys: ["name"],
@@ -44,42 +46,77 @@ const ExploreMain = ({ navigation }) => {
     })
       .then((response) => response.json())
       .then((json) =>
-        setOrgData(json.map(({ org_id, name }) => ({ org_id, name })))
+        setOrgData(json.orgs)
       )
       .catch((error) => console.log(error));
 
-    fetch("https://absolute-willing-salmon.ngrok-free.app/events/all", {
+    fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/all", {
       // headers: new Headers({
       //   "ngrok-skip-browser-warning": "true",
       // }),
     })
       .then((response) => response.json())
       .then((json) =>
-        setEventData(json.map(({ event_id, name }) => ({ event_id, name })))
+        setEventData(json.events)
       )
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
   }, []);
 
+
   const performSearch = (query) => {
-    const fuse = new Fuse(orgData, fuseOptions);
-    const result = fuse.search(query);
-    setOrgSearchResults(
-      result.map(({ item }) => ({ name: item.name, id: item.id }))
-    );
+    //const fuse = new Fuse(data, fuseOptions);
+    const searchTerms = query.toLowerCase().split(' ');
+    const filteredOrgs = orgData.filter(org => {
+      const orgName = org.name.toLowerCase();
+      for (const term of searchTerms) {
+        if (!orgName.includes(term)) {
+          return false;
+        }
+      }
+      return true;
+    }).map(org => ({
+      name: org.name,
+      id: org.id
+    }));
+    setOrgSearchResults(filteredOrgs);
+
+
+
+    const filteredEvents = EventData.filter(event => {
+      const eventName = event.name.toLowerCase();
+      for (const term of searchTerms) {
+        if (!eventName.includes(term)) {
+          return false;
+        }
+      }
+      return true;
+    }).map(event => ({
+      name: event.name,
+      id: event.id
+    }));
+    setEventSearchResults(filteredEvents);
+    
+
+   // console.log(filteredOrgs.slice(0,5))
+    //const result = fuse.search(query);
+    //setOrgSearchResults(
+    //  result.map(({ item }) => ({ name: item.name, id: item.id }))
+    //);
     // console.log('orgs', orgSearchResults)
 
-    const newfuse = new Fuse(EventData, fuseOptions);
-    newresult = newfuse.search(query);
-    console.log("newresult:" + newresult);
-    setEventSearchResults(
-      newresult.map(({ item }) => ({ name: item.name, fid: item.fid }))
-    );
+    //const newfuse = new Fuse(data, fuseOptions);
+    //newresult = newfuse.search(query);
+    //console.log("newresult:" + newresult);
+  //  setEventSearchResults(
+    //  newresult.map(({ item }) => ({ name: item.name, fid: item.fid }))
+    //);
     // console.log('events', eventSearchResults)
   };
 
   const handleSearchChange = (text) => {
     setSearchTerm(text);
+    if(text.length > 2)
     performSearch(text);
   };
 
@@ -93,8 +130,9 @@ const ExploreMain = ({ navigation }) => {
   const SearchOrgItem = ({ item }) => (
     <TouchableOpacity
       onPress={() => {
+        console.log(item.id)
         navigation.navigate("OrganizationProfileScreen", {
-          organizationId: item.org_id,
+          organizationId: item.id,
         });
       }}
       style={styles.item}
@@ -105,8 +143,10 @@ const ExploreMain = ({ navigation }) => {
 
   const SearchEventItem = ({ item }) => (
     <TouchableOpacity
-      onPress={() => navigation.navigate("event", { eventId: item.event_id })}
-      style={styles.item}
+      onPress={() => {
+        console.log(item.id)
+        navigation.navigate("EventProfileScreen", { eventId: item.id });}}
+        style={styles.item}
     >
       <Text>{item.name}</Text>
     </TouchableOpacity>
@@ -114,20 +154,21 @@ const ExploreMain = ({ navigation }) => {
 
   if (!loading) {
     return (
-      <View>
+      <View >
         <SearchBar
           ref={searchBarRef}
           placeholder="Search"
+          value = {searchTerm}
           platform="ios"
           onChangeText={handleSearchChange}
         />
 
-        {searchTerm !== "" && (
+        {searchTerm !== "" && searchTerm.length > 2 && (
           <SectionList
+          style = {styles.sectionList}
             renderSectionHeader={({ section: { title } }) => (
               <Text style={{ fontWeight: "bold", padding: 2 }}>{title}</Text>
             )}
-            style={styles.sectionList}
             sections={[
               {
                 title: "Organizations",
@@ -265,9 +306,12 @@ const styles = StyleSheet.create({
     marginTop: "30%",
   },
   sectionList: {
-    marginTop: 16,
     width: "100%",
-    paddingBottom: 2,
+      height: "200%",
+    //paddingBottom: 200,
+    length: 100,
+    backgroundColor: "white"
+    
   },
   item: {
     borderBottomWidth: 1,
