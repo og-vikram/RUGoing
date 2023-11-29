@@ -166,7 +166,24 @@ def get_event(id):
         return json.dumps({'event': event_details})
     else:
         return json.dumps({'error': 'Event not found'})
-
+    
+@app.route('/api/event/host/<int:id>')
+def get_event_host(id):
+    host = EventHosts.query.filter_by(event_id=id).with_entities(EventHosts.org_id).first()
+    
+    if host:
+        organization = Organizations.query.filter_by(org_id=host).first()
+        if organization:
+            org_name = organization.name
+            return json.dumps({
+                'org_id': host,
+                'org_name': org_name
+            })
+        else:
+            return json.dumps({'error': 'Organization not found'})
+    else:
+        return json.dumps({'error': 'Event host not found'})
+    
 @app.route('/api/organization/all')
 def get_organizations():
     all_orgs = Organizations.query.all()
@@ -216,6 +233,19 @@ def get_org_ids_by_category(id):
     org_ids = CategorizedOrganizations.query.filter_by(category_id=id).with_entities(CategorizedOrganizations.org_id).all()
     org_id_list = [org_id[0] for org_id in org_ids]
     return json.dumps({'org_ids': org_id_list})
+
+@app.route('/api/organization/categories/<string:id>')
+def get_organization_categories(id):
+    categories = CategorizedOrganizations.query.filter_by(org_id=id).with_entities(CategorizedOrganizations.category_id).all()
+    
+    category_ids = [category[0] for category in categories]
+    category_names = []
+    for cat_id in category_ids:
+        category = OrganizationCategories.query.filter_by(category_id=cat_id).first()
+        if category and category not in category_names:
+            category_names.append(category.name)
+    
+    return json.dumps({'org_id': id, 'categories': category_names})
 
 @app.route('/api/organization/events/<id>')
 def get_all_events_from_org(id):
