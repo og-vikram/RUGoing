@@ -265,7 +265,10 @@ def add_user():
     uid = data['uid']
     email = data['email']
     netid = data['email'].split('@')[0]
-    user = Users(user_id=uid, netid=netid, username=netid)
+    firstname = data['firstname']
+    lastname = data['lastname']
+    isOfficer = data['isOfficer']
+    user = Users(user_id=uid, netid=netid, username=netid, firstname=firstname, lastname=lastname, email=email, isOfficer=isOfficer)
     account = Users.query.filter_by(user_id=uid).first()
     if account is None:
         db.session.add(user)
