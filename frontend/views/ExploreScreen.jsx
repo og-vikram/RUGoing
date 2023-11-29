@@ -22,7 +22,6 @@ const ExploreMain = ({ navigation }) => {
   const [eventSearchResults, setEventSearchResults] = useState([]);
   const [filteredItems, setFilteredItems] = useState(orgData);
 
-
   const fuseOptions = {
     keys: ["name"],
     threshold: 0.25,
@@ -45,45 +44,42 @@ const ExploreMain = ({ navigation }) => {
       // }),
     })
       .then((response) => response.json())
-      .then((json) =>
-        setOrgData(json.orgs)
-      )
+      .then((json) => setOrgData(json.orgs))
       .catch((error) => console.log(error));
+  }, []);
 
+  useEffect(() => {
     fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/all", {
       // headers: new Headers({
       //   "ngrok-skip-browser-warning": "true",
       // }),
     })
       .then((response) => response.json())
-      .then((json) =>
-        setEventData(json.events)
-      )
+      .then((json) => setEventData(json.events))
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
   }, []);
 
-
   const performSearch = (query) => {
     //const fuse = new Fuse(data, fuseOptions);
-    const searchTerms = query.toLowerCase().split(' ');
-    const filteredOrgs = orgData.filter(org => {
-      const orgName = org.name.toLowerCase();
-      for (const term of searchTerms) {
-        if (!orgName.includes(term)) {
-          return false;
+    const searchTerms = query.toLowerCase().split(" ");
+    const filteredOrgs = orgData
+      .filter((org) => {
+        const orgName = org.name.toLowerCase();
+        for (const term of searchTerms) {
+          if (!orgName.includes(term)) {
+            return false;
+          }
         }
-      }
-      return true;
-    }).map(org => ({
-      name: org.name,
-      id: org.id
-    }));
+        return true;
+      })
+      .map((org) => ({
+        name: org.name,
+        id: org.id,
+      }));
     setOrgSearchResults(filteredOrgs);
 
-
-
-    const filteredEvents = EventData.filter(event => {
+    const filteredEvents = EventData.filter((event) => {
       const eventName = event.name.toLowerCase();
       for (const term of searchTerms) {
         if (!eventName.includes(term)) {
@@ -91,14 +87,13 @@ const ExploreMain = ({ navigation }) => {
         }
       }
       return true;
-    }).map(event => ({
+    }).map((event) => ({
       name: event.name,
-      id: event.id
+      id: event.id,
     }));
     setEventSearchResults(filteredEvents);
-    
 
-   // console.log(filteredOrgs.slice(0,5))
+    // console.log(filteredOrgs.slice(0,5))
     //const result = fuse.search(query);
     //setOrgSearchResults(
     //  result.map(({ item }) => ({ name: item.name, id: item.id }))
@@ -108,7 +103,7 @@ const ExploreMain = ({ navigation }) => {
     //const newfuse = new Fuse(data, fuseOptions);
     //newresult = newfuse.search(query);
     //console.log("newresult:" + newresult);
-  //  setEventSearchResults(
+    //  setEventSearchResults(
     //  newresult.map(({ item }) => ({ name: item.name, fid: item.fid }))
     //);
     // console.log('events', eventSearchResults)
@@ -116,8 +111,7 @@ const ExploreMain = ({ navigation }) => {
 
   const handleSearchChange = (text) => {
     setSearchTerm(text);
-    if(text.length > 2)
-    performSearch(text);
+    if (text.length > 2) performSearch(text);
   };
 
   const searchBarRef = useRef(null);
@@ -130,7 +124,7 @@ const ExploreMain = ({ navigation }) => {
   const SearchOrgItem = ({ item }) => (
     <TouchableOpacity
       onPress={() => {
-        console.log(item.id)
+        console.log(item.id);
         navigation.navigate("OrganizationProfileScreen", {
           organizationId: item.id,
         });
@@ -144,9 +138,10 @@ const ExploreMain = ({ navigation }) => {
   const SearchEventItem = ({ item }) => (
     <TouchableOpacity
       onPress={() => {
-        console.log(item.id)
-        navigation.navigate("EventProfileScreen", { eventId: item.id });}}
-        style={styles.item}
+        console.log(item.id);
+        navigation.navigate("EventProfileScreen", { eventId: item.id });
+      }}
+      style={styles.item}
     >
       <Text>{item.name}</Text>
     </TouchableOpacity>
@@ -154,18 +149,18 @@ const ExploreMain = ({ navigation }) => {
 
   if (!loading) {
     return (
-      <View >
+      <View>
         <SearchBar
           ref={searchBarRef}
           placeholder="Search"
-          value = {searchTerm}
+          value={searchTerm}
           platform="ios"
           onChangeText={handleSearchChange}
         />
 
         {searchTerm !== "" && searchTerm.length > 2 && (
           <SectionList
-          style = {styles.sectionList}
+            style={styles.sectionList}
             renderSectionHeader={({ section: { title } }) => (
               <Text style={{ fontWeight: "bold", padding: 2 }}>{title}</Text>
             )}
@@ -307,11 +302,10 @@ const styles = StyleSheet.create({
   },
   sectionList: {
     width: "100%",
-      height: "200%",
+    height: "200%",
     //paddingBottom: 200,
     length: 100,
-    backgroundColor: "white"
-    
+    backgroundColor: "white",
   },
   item: {
     borderBottomWidth: 1,

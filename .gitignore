@@ -12,3 +12,5 @@ yarn.lock
 package-lock.json
 
 service-account-file.json
+
+.DS_Store
