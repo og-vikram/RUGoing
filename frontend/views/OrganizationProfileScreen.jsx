@@ -9,7 +9,7 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const Stack = createNativeStackNavigator();
@@ -20,15 +20,8 @@ const eventHosts =
 const eventEndpoint =
   "https://absolute-willing-salmon.ngrok-free.app/api/event/";
 
-const OrganizationProfileScreen = ({ navigation }) => {
-  const events = [
-    "Event 1",
-    "Event 2",
-    "Event 3",
-    "Event 4",
-    "Event 5",
-    "Event 6",
-  ];
+const OrganizationProfileScreen = () => {
+  const navigation = useNavigation();
   const route = useRoute();
   const organizationId = route.params.organizationId;
   const newUrl = url + organizationId;
@@ -59,7 +52,7 @@ const OrganizationProfileScreen = ({ navigation }) => {
                 if (json && json.event) {
                   setEventHostData((eventHostData) => [
                     ...eventHostData,
-                    json.event.name,
+                    json.event,
                   ]);
                 }
               })
@@ -106,14 +99,14 @@ const OrganizationProfileScreen = ({ navigation }) => {
           {eventHostData.map((event, index) => (
             <TouchableOpacity
               key={index}
-              // onPress={() => {
-              //   navigation.navigate("EventProfileScreen", {
-              //     eventId: event.id,
-              //   });
-              // }}
+              onPress={() => {
+                navigation.navigate("Event Profile", {
+                  eventId: event.id,
+                });
+              }}
             >
               <View style={styles.eventContainer}>
-                <Text style={styles.eventItem}>{event}</Text>
+                <Text style={styles.eventItem}>{event.name}</Text>
               </View>
             </TouchableOpacity>
           ))}

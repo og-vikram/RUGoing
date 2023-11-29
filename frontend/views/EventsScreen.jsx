@@ -35,8 +35,8 @@ const EventsScreen = () => {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("EventProfileScreen", {
-                eventId: item.event_id,
+              navigation.navigate("Event Profile", {
+                eventId: item.id,
               });
             }}
           >
@@ -47,10 +47,11 @@ const EventsScreen = () => {
               image_id={
                 "https://se-images.campuslabs.com/clink/images/" + item.image_id
               }
+              eventId={item.id}
             />
           </TouchableOpacity>
         )}
-        key={(item) => item.event_id}
+        key={(item) => item.id}
       />
       // <EventCard
       //   host="somedude"

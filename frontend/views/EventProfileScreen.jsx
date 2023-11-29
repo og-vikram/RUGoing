@@ -2,20 +2,20 @@ import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "@rneui/themed";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
-const EventProfileScreen = ({ route }) => {
+const EventProfileScreen = (props) => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const eventId = route.params.eventId
+    ? route.params.eventId
+    : route.params.selectedProps.eventId;
   const [data, setData] = useState([]);
   useEffect(() => {
-    // fetch(
-    //   `https://absolute-willing-salmon.ngrok-free.app/api/event/${route.params.selectedProps.eventId}`,
-    //   {
-    //     method: "GET",
-    //   }
-    // )
-    //   .then((response) => response.json())
-    //   .then((json) => setData(json.event))
-    //   .catch((error) => console.log(error));
-    // console.log(event_id);
+    fetch(`https://absolute-willing-salmon.ngrok-free.app/api/event/${eventId}`)
+      .then((response) => response.json())
+      .then((json) => setData(json.event))
+      .catch((error) => console.log(error));
   }, []);
 
   return (
@@ -25,19 +25,20 @@ const EventProfileScreen = ({ route }) => {
       </View>
       <View className="details-container">
         <View className="basiceventinfo" style={styles.basicInfo}>
-          <Text style={styles.header}>{route.params.selectedProps.title}</Text>
-          <Text>{route.params.selectedProps.host}</Text>
-          <Text>{route.params.selectedProps.category}</Text>
+          <Text style={styles.header}>{data.name}</Text>
+          <Text>{data.host}</Text>
+          <Text>{}</Text>
         </View>
 
         <View className="location" style={styles.location}>
           <Text style={styles.header}>Location</Text>
-          <Text>Event Location</Text>
+          <Text>{data.location}</Text>
         </View>
 
         <View className="location" style={styles.location}>
           <Text style={styles.header}>Date And Time</Text>
-          <Text>Event time/date</Text>
+          <Text>{data.start}</Text>
+          <Text>{data.end}</Text>
         </View>
 
         <View style={styles.attendingContainer}>
