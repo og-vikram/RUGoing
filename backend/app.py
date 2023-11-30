@@ -126,6 +126,9 @@ class Users(db.Model):
     netid = db.Column(db.String(50))
     username = db.Column(db.String(50), nullable=False)
     profile_pic = db.Column(db.String(200))
+    firstname = db.Column(db.String(50))
+    lastname = db.Column(db.String(50))
+    isOfficer = db.Column(db.Boolean)
 
 @app.route('/api/event/all')
 def get_events():
@@ -166,11 +169,11 @@ def get_event(id):
         return json.dumps({'event': event_details})
     else:
         return json.dumps({'error': 'Event not found'})
-    
+
 @app.route('/api/event/host/<int:id>')
 def get_event_host(id):
     host = EventHosts.query.filter_by(event_id=id).with_entities(EventHosts.org_id).first()
-    
+
     if host:
         organization = Organizations.query.filter_by(org_id=host).first()
         if organization:
@@ -183,7 +186,7 @@ def get_event_host(id):
             return json.dumps({'error': 'Organization not found'})
     else:
         return json.dumps({'error': 'Event host not found'})
-    
+
 @app.route('/api/organization/all')
 def get_organizations():
     all_orgs = Organizations.query.all()
@@ -234,18 +237,19 @@ def get_org_ids_by_category(id):
     org_id_list = [org_id[0] for org_id in org_ids]
     return json.dumps({'org_ids': org_id_list})
 
-@app.route('/api/organization/categories/<string:id>')
-def get_organization_categories(id):
-    categories = CategorizedOrganizations.query.filter_by(org_id=id).with_entities(CategorizedOrganizations.category_id).all()
-    
-    category_ids = [category[0] for category in categories]
-    category_names = []
-    for cat_id in category_ids:
-        category = OrganizationCategories.query.filter_by(category_id=cat_id).first()
-        if category and category not in category_names:
-            category_names.append(category.name)
-    
-    return json.dumps({'org_id': id, 'categories': category_names})
+@app.route('/api/organization/categories/all')
+def get_categories_by_org():
+    result = db.session.query(
+        CategorizedOrganizations.org_id,
+        db.func.group_concat(OrganizationCategories.name).label('category_names')
+    ).join(
+        OrganizationCategories,
+        CategorizedOrganizations.category_id == OrganizationCategories.category_id
+    ).group_by(CategorizedOrganizations.org_id).all()
+    categorized_orgs = [{'org_id': org_id, 'category_names': category_names.split(',')} for org_id, category_names in result]
+    return json.dumps(categorized_orgs)
+
+
 
 @app.route('/api/organization/events/<id>')
 def get_all_events_from_org(id):
@@ -263,19 +267,20 @@ def add_user():
     data = request.get_data()
     data = json.loads(data)
     uid = data['uid']
-    email = data['email']
-    netid = data['email'].split('@')[0]
-    firstname = data['firstname']
-    lastname = data['lastname']
-    isOfficer = data['isOfficer']
-    user = Users(user_id=uid, netid=netid, username=netid, firstname=firstname, lastname=lastname, email=email, isOfficer=isOfficer)
+    netid = data['netid']
+    firstname = data['firstName']
+    lastname = data['lastName']
+    isOfficer = 1 if data['isOfficer'] else 0
+    user = Users(user_id=uid, netid=netid, username=netid, firstname=firstname, lastname=lastname, isOfficer=isOfficer)
     account = Users.query.filter_by(user_id=uid).first()
     if account is None:
         db.session.add(user)
         db.session.commit()
-        return json.dumps({'success': True})
+        return json.dumps({'success': True, 'uid': uid, 'netid': netid, 'firstName': firstname, 'lastName': lastname, 'isOfficer': isOfficer})
     else:
         return json.dumps({'account already exists': True})
+    print(data)
+    return(json.dumps({'success': True, 'uid': uid, 'netid': netid, 'firstName': firstname, 'lastName': lastname, 'isOfficer': isOfficer}))
 
 
 if __name__ == '__main__':
