@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 300, // Adjust to make the logo smaller
-    height: 120, // Adjust to make the logo smaller
+    height: 90, // Adjust to make the logo smaller
   },
 });
 

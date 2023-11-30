@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 300, // Adjust to make the logo smaller
-    height: 120, // Adjust to make the logo smaller
+    height: 90, // Adjust to make the logo smaller
   },
 
   forgotPasswordContainer: {
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   accountButton: {
     backgroundColor: "white",
     padding: 15,
-    marginTop: 10,
+    marginTop: 11,
     width: "80%",
     alignItems: "center",
     borderRadius: 15,
