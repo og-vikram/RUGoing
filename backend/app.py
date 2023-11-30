@@ -152,8 +152,17 @@ def get_events():
 
 @app.route('/api/event/<int:id>')
 def get_event(id):
-    event = Events.query.filter_by(event_id=id).first()
-    if event:
+    event_data = db.session.query(
+        Events, EventHosts.org_id.label('host_org_id')
+    ).join(
+        EventHosts, Events.event_id == EventHosts.event_id
+    ).filter(
+        Events.event_id == id
+    ).first()
+
+    if event_data:
+        print(event_data)
+        event, host_org_id = event_data
         event_details = {
             'id': event.event_id,
             'name': event.name,
@@ -165,6 +174,7 @@ def get_event(id):
             'is_online': event.is_online,
             'description': event.description,
             'rsvp': event.rsvp,
+            'host_org_id': host_org_id,
         }
         return json.dumps({'event': event_details})
     else:
@@ -279,9 +289,6 @@ def add_user():
         return json.dumps({'success': True, 'uid': uid, 'netid': netid, 'firstName': firstname, 'lastName': lastname, 'isOfficer': isOfficer})
     else:
         return json.dumps({'account already exists': True})
-    print(data)
-    return(json.dumps({'success': True, 'uid': uid, 'netid': netid, 'firstName': firstname, 'lastName': lastname, 'isOfficer': isOfficer}))
-
 
 if __name__ == '__main__':
     app.run(debug=True)
