@@ -1,11 +1,21 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, Image, Keyboard } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+  Image,
+  Keyboard,
+} from "react-native";
 import { auth } from "../firebase.config";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { Switch } from "react-native";
 import { getAuth } from "firebase/auth";
 import firebase from "firebase/app";
-import { Icon } from 'react-native-elements';
+import { Icon } from "react-native-elements";
 
 const CreateAccountScreen = ({ navigation }) => {
   const defaultEmailDomain = "@scarletmail.rutgers.edu";
@@ -29,23 +39,23 @@ const CreateAccountScreen = ({ navigation }) => {
   const handleSwitchChange = (value) => {
     setIsOfficer(value);
 
-    if (isOfficer == false){
+    if (isOfficer == false) {
       setLogoTop(70);
-    }else{
+    } else {
       setLogoTop(90);
-    } 
+    }
   };
 
   const keyboardDidShowListener = Keyboard.addListener(
-    'keyboardDidShow',
+    "keyboardDidShow",
     () => {
-      setLogoTop(80); 
+      setLogoTop(80);
     }
   );
   const keyboardDidHideListener = Keyboard.addListener(
-    'keyboardDidHide',
+    "keyboardDidHide",
     () => {
-      setLogoTop(90); 
+      setLogoTop(90);
     }
   );
 
@@ -107,7 +117,17 @@ const CreateAccountScreen = ({ navigation }) => {
           password
         );
         const user = userCredential.user;
-        console.log(user);
+
+        fetch(`https://absolute-willing-salmon.ngrok-free.app/api/users/add/`, {
+          method: "POST",
+          body: JSON.stringify({
+            uid: userCredential.user.uid,
+            netid: userCredential.user.email.split("@")[0],
+            firstName: firstName,
+            lastName: lastName,
+            isOfficer: isOfficer,
+          }),
+        });
 
         navigation.navigate("LoginScreen");
       } catch (error) {
@@ -120,15 +140,14 @@ const CreateAccountScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.logoContainer, {top: logoTop}]}>
+      <View style={[styles.logoContainer, { top: logoTop }]}>
         <Image
-          source={require('../assets/Screenshot_(276)-transformed.png')}
+          source={require("../assets/Screenshot_(276)-transformed.png")}
           style={styles.logo}
           resizeMode="contain"
         />
       </View>
       <View style={styles.inputContainer}>
-        
         <TextInput
           style={styles.input}
           placeholder="First Name"
@@ -142,7 +161,6 @@ const CreateAccountScreen = ({ navigation }) => {
         )}
       </View>
       <View style={styles.inputContainer}>
-        
         <TextInput
           style={styles.input}
           placeholder="Last Name"
@@ -156,7 +174,6 @@ const CreateAccountScreen = ({ navigation }) => {
         )}
       </View>
       <View style={styles.inputContainer}>
-        
         <View style={styles.emailInputContainer}>
           <TextInput
             style={styles.emailInput}
@@ -173,7 +190,6 @@ const CreateAccountScreen = ({ navigation }) => {
         )}
       </View>
       <View style={styles.inputContainer}>
-        
         <TextInput
           style={styles.input}
           placeholder="Password"
@@ -189,7 +205,6 @@ const CreateAccountScreen = ({ navigation }) => {
         )}
       </View>
       <View style={styles.inputContainer}>
-        
         <TextInput
           style={styles.input}
           placeholder="Confirm Password"
@@ -204,13 +219,15 @@ const CreateAccountScreen = ({ navigation }) => {
         )}
       </View>
       <View style={styles.inputContainer}>
-        <Text style={{color: "#FF392E", fontSize: 15}}>Are you an organization officer?</Text>
+        <Text style={{ color: "#FF392E", fontSize: 15 }}>
+          Are you an organization officer?
+        </Text>
         <View style={styles.switchContainer}>
           <Text style={styles.switchText}>No</Text>
           <Switch
             value={isOfficer}
             onValueChange={handleSwitchChange}
-            trackColor={{ false: 'blue', true: '#FF392E' }}
+            trackColor={{ false: "blue", true: "#FF392E" }}
           />
           <Text style={styles.switchText}>Yes</Text>
         </View>
@@ -225,10 +242,7 @@ const CreateAccountScreen = ({ navigation }) => {
           </View>
         )}
       </View>
-      <TouchableOpacity
-        style={styles.signupButton}
-        onPress={handleSubmit}
-      >
+      <TouchableOpacity style={styles.signupButton} onPress={handleSubmit}>
         <Text style={styles.signupButtonText}>Sign Up</Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -237,16 +251,15 @@ const CreateAccountScreen = ({ navigation }) => {
       >
         <Text style={styles.loginButtonText}>Login</Text>
       </TouchableOpacity>
-
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   logoContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 160, // Adjust to move the logo higher
-    alignItems: 'center',
+    alignItems: "center",
   },
   logo: {
     width: 300, // Adjust to make the logo smaller
@@ -257,7 +270,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
-    backgroundColor: '#E6E6E6',
+    backgroundColor: "#E6E6E6",
   },
   title: {
     fontSize: 20,
@@ -294,7 +307,7 @@ const styles = StyleSheet.create({
   },
   fixedText: {
     marginLeft: 8,
-    color: "#FF392E"
+    color: "#FF392E",
   },
   invalidText: {
     color: "red",
@@ -309,33 +322,31 @@ const styles = StyleSheet.create({
     color: "#FF392E",
   },
   signupButton: {
-    backgroundColor: "#FF392E", 
+    backgroundColor: "#FF392E",
     padding: 15,
     marginTop: 10,
-    width: "80%", 
+    width: "80%",
     alignItems: "center",
     borderRadius: 15,
   },
   signupButtonText: {
-    color: "#E6E6E6", 
+    color: "#E6E6E6",
     fontSize: 16,
     fontWeight: "bold",
   },
-  loginButton:{
-    backgroundColor: "white", 
+  loginButton: {
+    backgroundColor: "white",
     padding: 15,
     marginTop: 10,
-    width: "80%", 
+    width: "80%",
     alignItems: "center",
     borderRadius: 15,
   },
-  loginButtonText:{
+  loginButtonText: {
     color: "#FF392E",
     fontSize: 16,
     fontWeight: "bold",
-  }
-
-
+  },
 });
 
 export default CreateAccountScreen;

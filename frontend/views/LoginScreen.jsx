@@ -30,14 +30,7 @@ const LoginPage = ({ navigation }) => {
         Alert.alert("Please verify your email");
         return;
       }
-      console.log("User logged in:", userCredential.user);
-      fetch(`https://absolute-willing-salmon.ngrok-free.app/api/users/add/`, {
-        method: "POST",
-        body: JSON.stringify({
-          uid: userCredential.user.uid,
-          email: userCredential.user.email,
-        }),
-      });
+      // console.log("User logged in:", userCredential.user);
     } catch (error) {
       console.log(error);
       if (error.code === "auth/invalid-login-credentials") {
