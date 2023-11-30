@@ -84,7 +84,7 @@ class EventHosts(db.Model):
     )
 
 class CategorizedEvents(db.Model):
-    __tablename__ = 'CategorizedEvents'  # Replace 'CategorizedEvents' with your actual table name
+    __tablename__ = 'CategorizedEvents'  
 
     event_id = db.Column(db.Integer, primary_key=True)
     category_id = db.Column(db.Integer, primary_key=True)
@@ -125,7 +125,7 @@ class Users(db.Model):
     user_id = db.Column(db.String(50), primary_key=True)
     netid = db.Column(db.String(50))
     username = db.Column(db.String(50), nullable=False)
-    profile_pic = db.Column(db.String(200))
+    bio_descrip = db.Column(db.Text)
     firstname = db.Column(db.String(50))
     lastname = db.Column(db.String(50))
     isOfficer = db.Column(db.Boolean)
@@ -196,6 +196,42 @@ def get_event_host(id):
             return json.dumps({'error': 'Organization not found'})
     else:
         return json.dumps({'error': 'Event host not found'})
+    
+@app.route('/api/event/categories/all')
+def get_categories_by_event():
+    result = db.session.query(
+        CategorizedEvents.event_id,
+        db.func.group_concat(EventCategories.name).label('category_names')
+    ).join(
+        EventCategories,
+        CategorizedEvents.category_id == EventCategories.category_id
+    ).group_by(CategorizedEvents.event_id).all()
+    categorized_events = [{'event_id': event_id, 'category_names': category_names.split(',')} for event_id, category_names in result]
+    return json.dumps(categorized_events)
+
+@app.route('/api/event/themes/all')
+def get_themes_by_event():
+    result = db.session.query(
+        ThemedEvents.event_id,
+        db.func.group_concat(EventThemes.name).label('theme_names')
+    ).join(
+        EventThemes,
+        ThemedEvents.theme_id == EventThemes.theme_id
+    ).group_by(ThemedEvents.event_id).all()
+    themed_events = [{'event_id': event_id, 'theme_names': theme_names.split(',')} for event_id, theme_names in result]
+    return json.dumps(themed_events)
+
+@app.route('/api/event/perks/all')
+def get_perks_by_event():
+    result = db.session.query(
+        PerkedEvents.event_id,
+        db.func.group_concat(EventPerks.name).label('perk_names')
+    ).join(
+        EventPerks,
+        PerkedEvents.perk_id == EventPerks.perk_id
+    ).group_by(PerkedEvents.event_id).all()
+    perked_events = [{'event_id': event_id, 'perk_names': perk_names.split(',')} for event_id, perk_names in result]
+    return json.dumps(perked_events)
 
 @app.route('/api/organization/all')
 def get_organizations():
