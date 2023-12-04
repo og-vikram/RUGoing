@@ -326,5 +326,59 @@ def add_user():
     else:
         return json.dumps({'account already exists': True})
 
+##FINISH PLEASE PLEASE PLEASE
+@app.route('/api/users/joinorg/', methods=['POST'])
+def user_join_org():
+    data = request.get_data()
+    data = json.loads(data)
+    user = data['uid']
+    org = data['org_id']
+
+##update when we add user columns lol
+@app.route('/api/users/fetchall')
+def get_users():
+    all_users = Users.query.all()
+    user_list = []
+    for user in all_users:
+        user_dict = {
+            'user_id': user.user_id,
+            'netid': user.netid,
+            'username': user.username,
+            'bio_descrip': user.bio_descrip,
+            'firstname': user.firstname,
+            'lastname': user.lastname,
+            'isOfficer': user.isOfficer,
+            }
+        user_list.append(user_dict)
+    return json.dumps({'orgs': user_list})
+
+
+@app.route('/api/users/<id>')
+def get_user(id):
+    user  = Users.query.filter_by(user_id=id).first()
+    if user:
+        user_info = {
+            'user_id': user.user_id,
+            'netid': user.netid,
+            'username': user.username,
+            'bio_descrip': user.bio_descrip,
+            'firstname': user.firstname,
+            'lastname': user.lastname,
+            'isOfficer': user.isOfficer,
+            }
+        return json.dumps({'user': user_info})
+    else:
+        return json.dumps({'error': 'User not found'})
+    
+
+@app.route('/api/users/<id>/<newBio>')
+def update_bio(id, newBio):
+    user = Users.query.filter_by(user_id=id).first()
+    if user:
+        user.bio_descrip = newBio
+        return json.dumps({'success': True})
+    else:
+        return json.dumps({'error': 'User not found'})
+
 if __name__ == '__main__':
     app.run(debug=True)
