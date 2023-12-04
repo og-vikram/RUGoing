@@ -21,6 +21,9 @@ const url =
 const OrganizationsScreen = ({ navigation }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loading2, setLoading2] = useState(true);
+
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     fetch(url, {
@@ -30,14 +33,39 @@ const OrganizationsScreen = ({ navigation }) => {
     })
       .then((response) => response.json())
       .then((json) => setData(json.orgs))
+      // .then(() => console.log(data))
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
   }, []);
+  useEffect(() => {
+    fetch(
+      "https://absolute-willing-salmon.ngrok-free.app/api/organization/categories/all"
+    )
+      .then((response) => response.json())
+      .then((json) => setCategories(json))
+      .catch((error) => console.log(error))
+      .finally(() => setLoading2(false));
+  }, []);
 
-  if (!loading) {
+  const returnCategories = (org_id) => {
+    let item_categories = [];
+    for (let i = 0; i < categories.length; i++) {
+      if (categories[i].org_id == org_id) {
+        item_categories.push(categories[i].category_names);
+      }
+    }
+    return item_categories;
+    // categories.map((category) => {
+    //   if (category.org_id == org_id) {
+    //     return category.category_names;
+    //   }
+    // });
+  };
+
+  if (!loading && !loading2) {
     return (
       <FlatList
-        style = {styles.flatList}
+        style={styles.flatList}
         data={data}
         renderItem={({ item }) => (
           <TouchableOpacity
@@ -49,8 +77,8 @@ const OrganizationsScreen = ({ navigation }) => {
           >
             <OrganizationCard
               title={item.name}
-              description={item.description}
-              category="test_category"
+              description={item.about}
+              categories={returnCategories(item.id)}
               image_id={
                 "https://se-images.campuslabs.com/clink/images/" + item.image_id
               }
@@ -59,12 +87,6 @@ const OrganizationsScreen = ({ navigation }) => {
         )}
         key={(item) => item.org_id}
       />
-      // <EventCard
-      //   host="somedude"
-      //   title="Come join us for coffee!"
-      //   category="hello"
-      //   eventid="1"
-      // />
     );
   }
 
@@ -74,7 +96,7 @@ const OrganizationsScreen = ({ navigation }) => {
 export default OrganizationsScreen;
 
 const styles = StyleSheet.create({
-  flatList:{
-    backgroundColor: "#FF392E"
-  }
+  flatList: {
+    backgroundColor: "#FF392E",
+  },
 });
