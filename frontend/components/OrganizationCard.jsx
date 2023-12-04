@@ -1,9 +1,22 @@
 import * as React from "react";
 import { Card, Text } from "@rneui/base";
-import { View, Image, StyleSheet } from "react-native";
+import { View, Image, StyleSheet, ScrollView } from "react-native";
 import Category from "./Category";
+import { useEffect } from "react";
 
 export default (props) => {
+  const categories = props.categories[0];
+  useEffect(() => {
+    // console.log(props.categories[0]);
+  }, [categories]);
+
+  const checkForEmptyCategories = () => {
+    if (categories === undefined) {
+      return [];
+    } else {
+      return categories;
+    }
+  };
   return (
     <>
       <Card
@@ -28,7 +41,21 @@ export default (props) => {
             <Text style={styles.fonts} numberOfLines={2}>
               {props.description}
             </Text>
-            <Category category={props.category} />
+            <ScrollView horizontal={true}>
+              {/* {
+                
+
+              } */}
+
+              {/* {categories.map((category) => {
+                <Category key={category} category={category} />;
+              })} */}
+              {checkForEmptyCategories().map((category) => {
+                return <Category key={category} category={category} />;
+              })}
+              {/* <Category key="Hello" category="Hello" />
+              <Category key="Hello" category="Hello" /> */}
+            </ScrollView>
           </View>
         </View>
       </Card>
