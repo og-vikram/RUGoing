@@ -13,6 +13,8 @@ import EventCard from "../components/EventCard";
 const EventsScreen = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loading2, setLoading2] = useState(true);
+  const [categories, setCategories] = useState([]);
 
   const url = "https://absolute-willing-salmon.ngrok-free.app/api/event/all";
   useEffect(() => {
@@ -27,7 +29,27 @@ const EventsScreen = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  if (!loading) {
+  useEffect(() => {
+    fetch(
+      "https://absolute-willing-salmon.ngrok-free.app/api/event/categories/all"
+    )
+      .then((response) => response.json())
+      .then((json) => setCategories(json))
+      .catch((error) => console.log(error))
+      .finally(() => setLoading2(false));
+  }, []);
+
+  const returnCategories = (event_id) => {
+    let item_categories = [];
+    for (let i = 0; i < categories.length; i++) {
+      if (categories[i].event_id == event_id) {
+        item_categories.push(categories[i].category_names);
+      }
+    }
+    return item_categories;
+  };
+
+  if (!loading && !loading2) {
     return (
       <FlatList
         style={styles.flatList}
@@ -43,7 +65,7 @@ const EventsScreen = () => {
             <EventCard
               title={item.name}
               description={item.description}
-              category="test_category"
+              categories={returnCategories(item.id)}
               image_id={
                 "https://se-images.campuslabs.com/clink/images/" + item.image_id
               }
@@ -53,12 +75,6 @@ const EventsScreen = () => {
         )}
         key={(item) => item.id}
       />
-      // <EventCard
-      //   host="somedude"
-      //   title="Come join us for coffee!"
-      //   category="hello"
-      //   eventid="1"
-      // />
     );
   }
 
