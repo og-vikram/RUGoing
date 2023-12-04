@@ -55,11 +55,6 @@ const OrganizationsScreen = ({ navigation }) => {
       }
     }
     return item_categories;
-    // categories.map((category) => {
-    //   if (category.org_id == org_id) {
-    //     return category.category_names;
-    //   }
-    // });
   };
 
   if (!loading && !loading2) {
