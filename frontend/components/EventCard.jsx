@@ -9,21 +9,32 @@ import {
 } from "react-native";
 import Category from "./Category";
 import { useNavigation } from "@react-navigation/native";
-import { useEffect } from "react";
 
 export default (props) => {
   const navigation = useNavigation();
   const categories = props.categories[0];
-
-  // useEffect(() => {
-  // console.log(categories);
-  // }, [categories]);
+  const perks = props.perks[0];
+  const themes = props.themes[0];
 
   const checkForEmptyCategories = () => {
     if (categories === undefined) {
       return [];
     } else {
       return categories;
+    }
+  };
+  const checkForEmptyPerks = () => {
+    if (perks === undefined) {
+      return [];
+    } else {
+      return perks;
+    }
+  };
+  const checkForEmptyThemes = () => {
+    if (themes === undefined) {
+      return [];
+    } else {
+      return themes;
     }
   };
   return (
@@ -57,8 +68,19 @@ export default (props) => {
               <Text style={styles.fonts} numberOfLines={2}>
                 {props.host}
               </Text>
-              <ScrollView horizontal={true}>
+              <ScrollView
+                horizontal={true}
+                contentContainerStyle={{
+                  marginLeft: 10,
+                }}
+              >
                 {checkForEmptyCategories().map((category) => {
+                  return <Category key={category} category={category} />;
+                })}
+                {checkForEmptyThemes().map((category) => {
+                  return <Category key={category} category={category} />;
+                })}
+                {checkForEmptyPerks().map((category) => {
                   return <Category key={category} category={category} />;
                 })}
               </ScrollView>
