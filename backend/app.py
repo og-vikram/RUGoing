@@ -174,16 +174,19 @@ def get_events():
 @app.route('/api/event/<int:id>')
 def get_event(id):
     event_data = db.session.query(
-        Events, EventHosts.org_id.label('host_org_id')
+        Events, EventHosts.org_id.label('host_org_id'), Organizations.name.label('host_org_name')
     ).join(
         EventHosts, Events.event_id == EventHosts.event_id
+    ).join(
+        Organizations,
+        Organizations.org_id == EventHosts.org_id
     ).filter(
         Events.event_id == id
     ).first()
 
     if event_data:
         print(event_data)
-        event, host_org_id = event_data
+        event, host_org_id, host_org_name = event_data
         event_details = {
             'id': event.event_id,
             'name': event.name,
@@ -196,6 +199,7 @@ def get_event(id):
             'description': event.description,
             'rsvp': event.rsvp,
             'host_org_id': host_org_id,
+            'host_org_name': host_org_name,
         }
         return json.dumps({'event': event_details})
     else:
@@ -257,15 +261,31 @@ def remove_event_attendee():
 
 @app.route('/api/event/attending/<uid>', methods=['GET'])
 def get_attending_events(uid):
-    event_ids = AttendingEvents.query.filter_by(user_id=uid).with_entities(AttendingEvents.event_id).all()
-    events = [event_id[0] for event_id in event_ids]
+    event_data = db.session.query(
+        AttendingEvents.event_id, Events.name
+    ).join(
+        Events, Events.event_id == AttendingEvents.event_id
+    ).filter(
+        AttendingEvents.user_id == uid
+    ).all()
+    events = []
+    for event in event_data:
+        event_id, name = event
+        event_dict = {
+            'id': event_id,
+            'name': name,
+        }
+        events.append(event_dict)
     return json.dumps({'user': uid, 'events': events})
 
 @app.route('/api/event/attending/<int:event_id>', methods=['GET'])
-def get_event_attends(event_id):
+def get_event_attendees(event_id):
     user_ids = AttendingEvents.query.filter_by(event_id=event_id).with_entities(AttendingEvents.user_id).all()
     users = [user_id[0] for user_id in user_ids]
-    return json.dumps({'event': event_id, 'users': users})
+    
+    total_users_count = len(users)
+
+    return json.dumps({'event': event_id, 'users': users, 'total_users_count': total_users_count})
 
     
 @app.route('/api/event/categories/all')
