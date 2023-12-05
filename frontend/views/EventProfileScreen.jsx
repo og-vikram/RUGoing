@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { Image, StyleSheet, Text, View, TouchableOpacity, ScrollView } from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "@rneui/themed";
@@ -33,6 +33,7 @@ const EventProfileScreen = (props) => {
   }, []);
 
   return (
+    <ScrollView>
     <View className="container" style={styles.container}>
       <View className="image-container">
         <Image source={require("../assets/icon.png")} style={styles.image} />
@@ -73,6 +74,7 @@ const EventProfileScreen = (props) => {
         </View>
       </View>
     </View>
+    </ScrollView>
   );
 };
 
