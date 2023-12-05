@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { auth } from "../firebase.config";
 
 const Stack = createNativeStackNavigator();
 
@@ -62,6 +63,28 @@ const OrganizationProfileScreen = () => {
       });
   }, []);
 
+  const handleJoin = async () => {
+    {
+      try {
+        const user = auth.currentUser;
+
+        fetch(`https://absolute-willing-salmon.ngrok-free.app/api/organization/joined/add/`, {
+          method: "POST",
+          body: JSON.stringify({
+            uid: user.uid,
+            org_id: organizationId,
+          }),
+        });
+
+        console.log(user.uid, organizationId)
+      } catch (error) {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      }
+    }
+  };
+
   const imageUrl = "https://se-images.campuslabs.com/clink/images/";
 
   return (
@@ -81,7 +104,7 @@ const OrganizationProfileScreen = () => {
         </View>
         <View style={styles.memberSection}>
           <Text style={styles.memberCount}>{"# Members"}</Text>
-          <TouchableOpacity style={styles.joinButton} onPress={() => {}}>
+          <TouchableOpacity style={styles.joinButton} onPress={(handleJoin)}>
             <Text style={styles.joinButtonText}>Join</Text>
           </TouchableOpacity>
         </View>

@@ -1,6 +1,7 @@
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import PrimaryKeyConstraint
+from sqlalchemy import and_
 import json
 import dotenv
 import os
@@ -216,6 +217,25 @@ def get_event_host(id):
             return json.dumps({'error': 'Organization not found'})
     else:
         return json.dumps({'error': 'Event host not found'})
+    
+@app.route('/api/event/attending/add/', methods=['POST'])
+def add_event_attendee():
+    data = request.get_data()
+    data = json.loads(data)
+    uid = data['uid']
+    event_id = data['event_id']
+    attendee = AttendingEvents(user_id = uid, event_id = event_id)
+    account = AttendingEvents.query.filter(
+        and_(AttendingEvents.user_id == uid,
+             AttendingEvents.event_id == event_id
+        )
+    ).first()
+    if account is None:
+        db.session.add(attendee)
+        db.session.commit()
+        return json.dumps({'success': True, 'uid': uid, 'event_id': event_id})
+    else:
+        return json.dumps({'relation already exists': True})
 
 @app.route('/api/event/attending/<netid>', methods=['GET'])
 def get_attending_events(netid):
@@ -303,6 +323,25 @@ def get_joined_organizations(netid):
     org_ids = JoinedOrganizations.query.filter_by(user_id=netid).with_entities(JoinedOrganizations.org_id).all()
     orgs = [org_id[0] for org_id in org_ids]
     return json.dumps({'user': netid, 'orgs': orgs})
+
+@app.route('/api/organization/joined/add/', methods=['POST'])
+def add_member_to_org():
+    data = request.get_data()
+    data = json.loads(data)
+    uid = data['uid']
+    org_id = data['org_id']
+    attendee = JoinedOrganizations(user_id = uid, org_id = org_id)
+    account = JoinedOrganizations.query.filter(
+        and_(JoinedOrganizations.user_id==uid,
+             JoinedOrganizations.org_id==org_id
+        )
+    ).first()
+    if account is None:
+        db.session.add(attendee)
+        db.session.commit()
+        return json.dumps({'success': True, 'uid': uid, 'org_id': org_id})
+    else:
+        return json.dumps({'relation already exists': True})
 
 @app.route('/api/organization/members/<org_id>', methods=['GET'])
 def get_organization_members(org_id):

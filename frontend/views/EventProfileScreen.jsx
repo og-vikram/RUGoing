@@ -3,6 +3,7 @@ import React, { useEffect, useLayoutEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "@rneui/themed";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { auth } from "../firebase.config";
 
 const EventProfileScreen = (props) => {
   const navigation = useNavigation();
@@ -31,6 +32,27 @@ const EventProfileScreen = (props) => {
    .catch((error) => console.log(error));
       
   }, []);
+
+  const handleAttend = async () => {
+    {
+      try {
+        const user = auth.currentUser;
+  
+        fetch(`https://absolute-willing-salmon.ngrok-free.app/api/event/attending/add/`, {
+          method: "POST",
+          body: JSON.stringify({
+            uid: user.uid,
+            event_id: eventId,
+          }),
+        });
+        console.log(user.uid, eventId)
+      } catch (error) {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      }
+    }
+  };
 
   return (
     <ScrollView>
@@ -68,8 +90,8 @@ const EventProfileScreen = (props) => {
         </View>
 
         <View style={styles.attendingContainer}>
-          <TouchableOpacity style={styles.attendingButton} onPress={() => {}}>
-            <Text style={styles.attendingButtonText}>Attending</Text>
+          <TouchableOpacity style={styles.attendingButton} onPress={(handleAttend)}>
+            <Text style={styles.attendingButtonText}>Attend</Text>
           </TouchableOpacity>
         </View>
       </View>
