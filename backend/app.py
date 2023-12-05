@@ -236,8 +236,26 @@ def add_event_attendee():
         return json.dumps({'success': True, 'uid': uid, 'event_id': event_id})
     else:
         return json.dumps({'relation already exists': True})
+    
+@app.route('/api/event/attending/remove/', methods=['POST'])
+def remove_event_attendee():
+    data = request.get_data()
+    data = json.loads(data)
+    uid = data['uid']
+    event_id = data['event_id']
+    attendee = AttendingEvents.query.filter(
+        and_(AttendingEvents.user_id == uid,
+             AttendingEvents.event_id == event_id
+        )
+    ).first()
+    if attendee is not None:
+        db.session.delete(attendee)
+        db.session.commit()
+        return json.dumps({'message': 'Attendee removed successfully'})
+    else:
+        return json.dumps({'message': 'Attendee does not exist.'})
 
-@app.route('/api/event/attending/<netid>', methods=['GET'])
+@app.route('/api/event/attending/<uid>', methods=['GET'])
 def get_attending_events(netid):
     event_ids = AttendingEvents.query.filter_by(user_id=netid).with_entities(AttendingEvents.event_id).all()
     events = [event_id[0] for event_id in event_ids]
@@ -318,7 +336,7 @@ def get_organization(id):
     else:
         return json.dumps({'error': 'Organization not found'})
     
-@app.route('/api/organization/joined/<netid>', methods=['GET'])
+@app.route('/api/organization/joined/<uid>', methods=['GET'])
 def get_joined_organizations(netid):
     org_ids = JoinedOrganizations.query.filter_by(user_id=netid).with_entities(JoinedOrganizations.org_id).all()
     orgs = [org_id[0] for org_id in org_ids]
@@ -342,6 +360,24 @@ def add_member_to_org():
         return json.dumps({'success': True, 'uid': uid, 'org_id': org_id})
     else:
         return json.dumps({'relation already exists': True})
+    
+@app.route('/api/organization/joined/remove/', methods=['POST'])
+def remove_member_from_org():
+    data = request.get_data()
+    data = json.loads(data)
+    uid = data['uid']
+    org_id = data['org_id']
+    member = JoinedOrganizations.query.filter(
+        and_(JoinedOrganizations.user_id==uid,
+             JoinedOrganizations.org_id==org_id
+        )
+    ).first()
+    if member is not None:
+        db.session.delete(member)
+        db.session.commit()
+        return json.dumps({'message': 'Member removed successfully'})
+    else:
+        return json.dumps({'message': 'Member does not exist.'})
 
 @app.route('/api/organization/members/<org_id>', methods=['GET'])
 def get_organization_members(org_id):

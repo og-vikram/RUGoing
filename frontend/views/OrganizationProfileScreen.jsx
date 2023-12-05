@@ -29,6 +29,7 @@ const OrganizationProfileScreen = () => {
   const newEventHosts = eventHosts + organizationId;
   const [organizationData, setOrganizationData] = useState({});
   const [eventHostData, setEventHostData] = useState([]);
+  const [joining, setJoining] = useState(false);
 
   useEffect(() => {
     fetch(newUrl)
@@ -63,20 +64,65 @@ const OrganizationProfileScreen = () => {
       });
   }, []);
 
+  useEffect(() => {
+    fetch(
+      "https://absolute-willing-salmon.ngrok-free.app/api/organization/joined/" +
+        auth.currentUser.uid
+    )
+      .then((response) => response.json())
+      .then((json) => {
+        if (json && json.orgs) {
+          orgs = json.orgs;
+          if (orgs.includes(organizationId)) setJoining(true);
+          else setJoining(false);
+        }
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
   const handleJoin = async () => {
     {
       try {
         const user = auth.currentUser;
 
-        fetch(`https://absolute-willing-salmon.ngrok-free.app/api/organization/joined/add/`, {
-          method: "POST",
-          body: JSON.stringify({
-            uid: user.uid,
-            org_id: organizationId,
-          }),
-        });
+        fetch(
+          `https://absolute-willing-salmon.ngrok-free.app/api/organization/joined/add/`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              uid: user.uid,
+              org_id: organizationId,
+            }),
+          }
+        );
 
-        console.log(user.uid, organizationId)
+        console.log(user.uid, organizationId);
+        setJoining(true);
+      } catch (error) {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      }
+    }
+  };
+
+  const handleRemove = async () => {
+    {
+      try {
+        const user = auth.currentUser;
+
+        fetch(
+          `https://absolute-willing-salmon.ngrok-free.app/api/organization/joined/remove/`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              uid: user.uid,
+              org_id: organizationId,
+            }),
+          }
+        );
+        console.log(user.uid, organizationId);
+        setJoining(false);
       } catch (error) {
         const errorCode = error.code;
         const errorMessage = error.message;
@@ -104,9 +150,20 @@ const OrganizationProfileScreen = () => {
         </View>
         <View style={styles.memberSection}>
           <Text style={styles.memberCount}>{"# Members"}</Text>
-          <TouchableOpacity style={styles.joinButton} onPress={(handleJoin)}>
-            <Text style={styles.joinButtonText}>Join</Text>
-          </TouchableOpacity>
+          <View>
+            {joining ? (
+              <TouchableOpacity
+                style={styles.unJoinButton}
+                onPress={handleRemove}
+              >
+                <Text style={styles.unJoinButtonText}>Leave</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.joinButton} onPress={handleJoin}>
+                <Text style={styles.joinButtonText}>Join</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
       </View>
 
@@ -271,6 +328,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     padding: 15,
     marginTop: "-5%",
+  },
+  unJoinButton: {
+    backgroundColor: "grey",
+    padding: 10,
+    width: 75,
+    alignItems: "center",
+    borderRadius: 15,
+    marginLeft: "auto",
+    marginTop: "-8%",
+  },
+  unJoinButtonText: {
+    color: "black",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 
