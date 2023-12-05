@@ -14,6 +14,8 @@ import { Button, Icon } from "react-native-elements";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SettingsScreen from "./SettingsScreen";
 import ProfileDetails from "./ProfileDetails";
+import EventProfileScreen from "./EventProfileScreen";
+import OrganizationProfileScreen from "./OrganizationProfileScreen";
 
 const ProfileScreen = ({ navigation }) => {
   const handleLogout = () => {
@@ -34,6 +36,20 @@ const ProfileScreen = ({ navigation }) => {
       <ProfileStack.Screen
         name="Settings"
         component={SettingsScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ProfileStack.Screen
+        name="Event Profile"
+        component={EventProfileScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ProfileStack.Screen
+        name="Org Profile"
+        component={OrganizationProfileScreen}
         options={{
           headerShown: false,
         }}
