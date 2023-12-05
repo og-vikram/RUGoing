@@ -16,6 +16,7 @@ import { Switch } from "react-native";
 import { getAuth } from "firebase/auth";
 import firebase from "firebase/app";
 import { Icon } from "react-native-elements";
+import MyModal from './MyModal';
 
 const CreateAccountScreen = ({ navigation }) => {
   const defaultEmailDomain = "@scarletmail.rutgers.edu";
@@ -138,6 +139,17 @@ const CreateAccountScreen = ({ navigation }) => {
     }
   };
 
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
+
   return (
     <View style={styles.container}>
       <View style={[styles.logoContainer, { top: logoTop }]}>
@@ -242,9 +254,18 @@ const CreateAccountScreen = ({ navigation }) => {
           </View>
         )}
       </View>
-      <TouchableOpacity style={styles.signupButton} onPress={handleSubmit}>
-        <Text style={styles.signupButtonText}>Sign Up</Text>
+      
+      <TouchableOpacity style={styles.signupButton} onPress={openModal}>
+        <Text style={styles.signupButtonText}>Next</Text>
       </TouchableOpacity>
+
+      <MyModal
+        isVisible={modalVisible}
+        closeModal={closeModal}
+        handleSubmit={handleSubmit}
+        onSignupClick={handleSubmit}
+      />
+      
       <TouchableOpacity
         style={styles.loginButton}
         onPress={() => navigation.navigate("LoginScreen")}
