@@ -113,17 +113,16 @@ const EventProfileScreen = (props) => {
         <View className="details-container">
           <View className="basiceventinfo" style={styles.basicInfo}>
             <Text style={styles.header}>{data.name}</Text>
-
+            <Text style = {styles.host}>Hosted by:</Text> 
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate("OrganizationProfileScreen", {
                   organizationId: data.host_org_id,
                 });
-              }}
-            >
-              <Text style={styles.italic}>@{host.org_name}</Text>
+              }}>
+              
+              <Text style={styles.host}>@{host.org_name}</Text>
             </TouchableOpacity>
-
             <Text>{}</Text>
           </View>
 
@@ -222,5 +221,9 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  host: {
+    paddingTop: 10,
+    fontStyle: "italic",
   },
 });
