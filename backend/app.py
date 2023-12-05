@@ -256,10 +256,10 @@ def remove_event_attendee():
         return json.dumps({'message': 'Attendee does not exist.'})
 
 @app.route('/api/event/attending/<uid>', methods=['GET'])
-def get_attending_events(netid):
-    event_ids = AttendingEvents.query.filter_by(user_id=netid).with_entities(AttendingEvents.event_id).all()
+def get_attending_events(uid):
+    event_ids = AttendingEvents.query.filter_by(user_id=uid).with_entities(AttendingEvents.event_id).all()
     events = [event_id[0] for event_id in event_ids]
-    return json.dumps({'user': netid, 'events': events})
+    return json.dumps({'user': uid, 'events': events})
 
 @app.route('/api/event/attending/<int:event_id>', methods=['GET'])
 def get_event_attends(event_id):
@@ -337,10 +337,10 @@ def get_organization(id):
         return json.dumps({'error': 'Organization not found'})
     
 @app.route('/api/organization/joined/<uid>', methods=['GET'])
-def get_joined_organizations(netid):
-    org_ids = JoinedOrganizations.query.filter_by(user_id=netid).with_entities(JoinedOrganizations.org_id).all()
+def get_joined_organizations(uid):
+    org_ids = JoinedOrganizations.query.filter_by(user_id=uid).with_entities(JoinedOrganizations.org_id).all()
     orgs = [org_id[0] for org_id in org_ids]
-    return json.dumps({'user': netid, 'orgs': orgs})
+    return json.dumps({'user': uid, 'orgs': orgs})
 
 @app.route('/api/organization/joined/add/', methods=['POST'])
 def add_member_to_org():
@@ -414,8 +414,6 @@ def get_categories_by_org():
     ).group_by(CategorizedOrganizations.org_id).all()
     categorized_orgs = [{'org_id': org_id, 'category_names': category_names.split(',')} for org_id, category_names in result]
     return json.dumps(categorized_orgs)
-
-
 
 @app.route('/api/organization/events/<id>')
 def get_all_events_from_org(id):
