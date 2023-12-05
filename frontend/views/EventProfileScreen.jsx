@@ -22,6 +22,7 @@ const EventProfileScreen = (props) => {
   const [host, setHost] = useState([]);
   const [loading, setLoading] = useState(true);
   const [attending, setAttending] = useState(false);
+  const [attendees, setAttendees] = useState([]);
 
   useLayoutEffect(() => {
     fetch(`https://absolute-willing-salmon.ngrok-free.app/api/event/${eventId}`)
@@ -35,6 +36,15 @@ const EventProfileScreen = (props) => {
     )
       .then((response) => response.json())
       .then((json) => setHost(json))
+      .catch((error) => console.log(error));
+  }, []);
+
+  useEffect(() => {
+    fetch(
+      `https://absolute-willing-salmon.ngrok-free.app/api/event/attending/${eventId}`
+    )
+      .then((response) => response.json())
+      .then((json) => setAttendees(json.users))
       .catch((error) => console.log(error));
   }, []);
 
@@ -104,6 +114,13 @@ const EventProfileScreen = (props) => {
     }
   };
 
+  const peopleCount = () => {
+    if (attendees.length == 1) {
+      return attendees.length + " person attending";
+    }
+    return attendees.length + " people attending";
+  };
+
   return (
     <ScrollView>
       <View className="container" style={styles.container}>
@@ -113,17 +130,17 @@ const EventProfileScreen = (props) => {
         <View className="details-container">
           <View className="basiceventinfo" style={styles.basicInfo}>
             <Text style={styles.header}>{data.name}</Text>
-            <Text style = {styles.host}>Hosted by:</Text> 
+            <Text style={styles.host}>Hosted by:</Text>
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate("OrganizationProfileScreen", {
                   organizationId: data.host_org_id,
                 });
-              }}>
-              
+              }}
+            >
               <Text style={styles.host}>@{host.org_name}</Text>
             </TouchableOpacity>
-            <Text>{}</Text>
+            <Text>{peopleCount()}</Text>
           </View>
 
           <View className="location" style={styles.location}>
