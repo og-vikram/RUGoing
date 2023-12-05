@@ -294,9 +294,9 @@ const SettingsScreen = () => {
 
 
   return (
-    <View>
+    <View style={{alignItems: "center"}}>
       <TouchableOpacity
-        style={[styles.customButtonContainer, {marginTop: "10%"}]}
+        style={[styles.customButtonContainer, {marginTop: "3%"}]}
 
         onPress={handleLogout}
       >
@@ -396,22 +396,11 @@ By downloading, installing, or using the App, you agree to be bound by the terms
 
         </View>
       </Modal>
-      <TouchableOpacity
-      style={styles.customButtonContainer}>
-        <View style={styles.editProfileButton}>
-          <Text style={styles.editProfileButtonText}>Manage Organizations</Text>
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity
-      style={styles.customButtonContainer}>
-        <View style={styles.editProfileButton}>
+      <TouchableOpacity style={styles.customButtonContainer}>
           <Text style={styles.editProfileButtonText}>Manage Friends</Text>
-        </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={openPreferencesModal} style={styles.customButtonContainer}>
-        <View style={styles.editProfileButton}>
-          <Text style={styles.editProfileButtonText}>Edit Preferences</Text>
-        </View>
+      <TouchableOpacity onPress={openPreferencesModal} style={styles.customButtonContainer}>        
+        <Text style={styles.editProfileButtonText}>Edit Preferences</Text>       
       </TouchableOpacity>
       <Modal
         animationType="slide"
@@ -819,9 +808,7 @@ By downloading, installing, or using the App, you agree to be bound by the terms
       </View>
       </Modal>
       <TouchableOpacity onPress={openAboutModal}   style={styles.customButtonContainer}>
-        <View style={styles.editProfileButton}>
-          <Text style={styles.editProfileButtonText}>About RUSWE</Text>
-        </View>
+        <Text style={styles.editProfileButtonText}>About RUSWE</Text>
       </TouchableOpacity>
       <Modal
   animationType="slide"
@@ -863,23 +850,16 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 10,
     alignItems: "center",
-    height: 50,
+    height: "10%",
     justifyContent: "center",
-    marginBottom: "10%",
+    marginBottom: "3%",
+    width: "95%",
   },
   customButtonText: {
     color: "white",
     fontWeight: "bold",
     fontSize: 16,
     alignItems: "center",
-  },
-  editProfileButton: {
-    backgroundColor: "#FF392E",
-    borderRadius: 15,
-    padding: 10,
-    alignItems: "center",
-    height: 50,
-    justifyContent: "center",
   },
   editProfileButtonText: {
     color: "white",
@@ -892,84 +872,84 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginTop: "3%",
     fontWeight: "bold",
-},
-bottombuttontext: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-},
-bottombuttontext1: {
-    color: "#FF392E",
-    fontSize: 16,
-    fontWeight: "bold",
-},
-bottombutton: {
-    backgroundColor: "#FF392E",
-    borderRadius: 15,
-    marginTop: "3%",
-    padding: "3%",
-    alignItems: "center",
+  },
+  bottombuttontext: {
+      color: "white",
+      fontSize: 16,
+      fontWeight: "bold",
+  },
+  bottombuttontext1: {
+      color: "#FF392E",
+      fontSize: 16,
+      fontWeight: "bold",
+  },
+  bottombutton: {
+      backgroundColor: "#FF392E",
+      borderRadius: 15,
+      marginTop: "3%",
+      padding: "3%",
+      alignItems: "center",
 
-},
-bottombutton1: {
-    backgroundColor: "#E6E6E6",
-    borderRadius: 15,
-    marginTop: "3%",
-    padding: "3%",
-    alignItems: "center",
-},
-scrollView:{
-    width: 1,
-    height:1,
-},
-modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-},
-modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 15,
-},
-buttonContainer: {
-    flexDirection: 'row',
-    marginBottom: 0,
-},
-buttonContainer2: {
-    flexDirection: 'row',
-    marginBottom: 10,
-},
-button: {
-    backgroundColor: '#E6E6E6',
-    padding: 10,
-    marginVertical: 5,
-    borderRadius: 15,
-    marginHorizontal: "1%",
-    borderColor: "#FF6961",
-    borderWidth: "1%",
+  },
+  bottombutton1: {
+      backgroundColor: "#E6E6E6",
+      borderRadius: 15,
+      marginTop: "3%",
+      padding: "3%",
+      alignItems: "center",
+  },
+  scrollView:{
+      width: 1,
+      height:1,
+  },
+  modalContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+      backgroundColor: 'white',
+      padding: 20,
+      borderRadius: 15,
+  },
+  buttonContainer: {
+      flexDirection: 'row',
+      marginBottom: 0,
+  },
+  buttonContainer2: {
+      flexDirection: 'row',
+      marginBottom: 10,
+  },
+  button: {
+      backgroundColor: '#E6E6E6',
+      padding: 10,
+      marginVertical: 5,
+      borderRadius: 15,
+      marginHorizontal: "1%",
+      borderColor: "#FF6961",
+      borderWidth: "1%",
 
-},
-redButton: {
-    backgroundColor: '#FF6961',
-},
-card1:{
-    backgroundColor: 'white',
-    borderColor: "#FF392E",
-    borderWidth: 1,
-    borderRadius: 10,
-    width: 330,
-    height: 120,
-},
-card2: {
-    backgroundColor: 'white',
-    borderColor: "#FF392E",
-    borderWidth: 1,
-    borderRadius: 10,
-    width: 330,
-    height: 120,
-},
+  },
+  redButton: {
+      backgroundColor: '#FF6961',
+  },
+  card1:{
+      backgroundColor: 'white',
+      borderColor: "#FF392E",
+      borderWidth: 1,
+      borderRadius: 10,
+      width: 330,
+      height: 120,
+  },
+  card2: {
+      backgroundColor: 'white',
+      borderColor: "#FF392E",
+      borderWidth: 1,
+      borderRadius: 10,
+      width: 330,
+      height: 120,
+  },
 });
 
 export default SettingsScreen;

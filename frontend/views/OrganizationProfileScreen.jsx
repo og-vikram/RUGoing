@@ -150,7 +150,7 @@ const OrganizationProfileScreen = () => {
         </View>
         <View style={styles.memberSection}>
           <Text style={styles.memberCount}>{"# Members"}</Text>
-          <View>
+          <View style={styles.buttonContainer}>
             {joining ? (
               <TouchableOpacity
                 style={styles.unJoinButton}
@@ -237,13 +237,20 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 200,
   },
+  buttonContainer: {
+    
+    flexDirection: 'row', 
+    justifyContent: 'flex-start', 
+    marginLeft: "-15%",
+    
+  },
   joinButton: {
     backgroundColor: "#FF392E",
     padding: 10,
     width: 75,
     alignItems: "center",
     borderRadius: 15,
-    marginLeft: "auto",
+    marginRight: "3%",
     marginTop: "4%",
   },
   joinButtonText: {

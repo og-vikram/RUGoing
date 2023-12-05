@@ -166,7 +166,7 @@ const ExploreMain = ({ navigation }) => {
           <SectionList
             style={styles.sectionList}
             renderSectionHeader={({ section: { title } }) => (
-              <Text style={{ fontWeight: "bold", padding: 2 }}>{title}</Text>
+              <Text style={{ fontWeight: "bold", padding: 2, color: "#FF392E", paddingLeft: 10, backgroundColor: "#E6E6E6",}}>{title}</Text>
             )}
             sections={[
               {
@@ -319,10 +319,11 @@ const styles = StyleSheet.create({
   item: {
     borderBottomWidth: 1,
     //borderBottomColor: 'gray',
-    borderColor: "gray",
+    borderColor: "red",
     borderTopColor: "gray",
     textAlign: "left",
     fontSize: 20,
     paddingVertical: 8,
+    paddingLeft: 10,
   },
 });
