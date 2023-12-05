@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "@rneui/themed";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -11,11 +11,25 @@ const EventProfileScreen = (props) => {
     ? route.params.eventId
     : route.params.selectedProps.eventId;
   const [data, setData] = useState([]);
-  useEffect(() => {
+  const [host, setHost] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+
+ 
+    
+  useLayoutEffect(() => {
+  
     fetch(`https://absolute-willing-salmon.ngrok-free.app/api/event/${eventId}`)
       .then((response) => response.json())
       .then((json) => setData(json.event))
       .catch((error) => console.log(error));
+  }, []);
+  useLayoutEffect(() => {
+   fetch(`https://absolute-willing-salmon.ngrok-free.app/api/event/host/${eventId}`)
+   .then((response) => response.json())
+   .then((json) => setHost(json))
+   .catch((error) => console.log(error));
+      
   }, []);
 
   return (
@@ -26,7 +40,18 @@ const EventProfileScreen = (props) => {
       <View className="details-container">
         <View className="basiceventinfo" style={styles.basicInfo}>
           <Text style={styles.header}>{data.name}</Text>
-          <Text>{data.host}</Text>
+          
+          <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("OrganizationProfileScreen", {
+                  organizationId: data.host_org_id,
+                });
+              }}>
+              <Text style={styles.italic}>@{host.org_name}</Text>
+
+
+            </TouchableOpacity>
+          
           <Text>{}</Text>
         </View>
 
@@ -96,4 +121,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
+  italic: {fontStyle: 'italic'},
 });

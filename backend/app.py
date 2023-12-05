@@ -370,6 +370,22 @@ def get_user(id):
     else:
         return json.dumps({'error': 'User not found'})
     
+@app.route('/api/users/<netid>')
+def get_user_by_netid(netid):
+    user = Users.query.filter_by(netid=id).first()
+    if(user):
+        user_info = {
+            'user_id': user.user_id,
+            'netid': user.netid,
+            'username': user.username,
+            'bio_descrip': user.bio_descrip,
+            'firstname': user.firstname,
+            'lastname': user.lastname,
+            'isOfficer': user.isOfficer,
+            }
+        return json.dumps({'user': user_info})
+    else:
+        return json.dumps({'error': 'User not found'})
 
 @app.route('/api/users/<id>/<newBio>')
 def update_bio(id, newBio):
