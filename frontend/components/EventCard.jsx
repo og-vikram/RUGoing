@@ -1,11 +1,31 @@
 import * as React from "react";
 import { Card, Text } from "@rneui/base";
-import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import Category from "./Category";
 import { useNavigation } from "@react-navigation/native";
+import { useEffect } from "react";
 
 export default (props) => {
   const navigation = useNavigation();
+  const categories = props.categories[0];
+
+  // useEffect(() => {
+  // console.log(categories);
+  // }, [categories]);
+
+  const checkForEmptyCategories = () => {
+    if (categories === undefined) {
+      return [];
+    } else {
+      return categories;
+    }
+  };
   return (
     <>
       <TouchableOpacity
@@ -37,7 +57,11 @@ export default (props) => {
               <Text style={styles.fonts} numberOfLines={2}>
                 {props.host}
               </Text>
-              <Category category={props.category} />
+              <ScrollView horizontal={true}>
+                {checkForEmptyCategories().map((category) => {
+                  return <Category key={category} category={category} />;
+                })}
+              </ScrollView>
             </View>
           </View>
         </Card>

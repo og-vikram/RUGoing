@@ -42,19 +42,9 @@ export default (props) => {
               {props.description}
             </Text>
             <ScrollView horizontal={true}>
-              {/* {
-                
-
-              } */}
-
-              {/* {categories.map((category) => {
-                <Category key={category} category={category} />;
-              })} */}
               {checkForEmptyCategories().map((category) => {
                 return <Category key={category} category={category} />;
               })}
-              {/* <Category key="Hello" category="Hello" />
-              <Category key="Hello" category="Hello" /> */}
             </ScrollView>
           </View>
         </View>

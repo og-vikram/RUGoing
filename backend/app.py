@@ -34,6 +34,16 @@ class Events(db.Model):
     is_online = db.Column(db.Boolean)
     description = db.Column(db.Text)
     rsvp = db.Column(db.String(150))
+    
+class AttendingEvents(db.Model):
+    __tablename__ = 'AttendingEvents'
+
+    event_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(50), primary_key=True)
+
+    __table_args__ = (
+        PrimaryKeyConstraint('event_id', 'user_id'),
+    )
 
 class EventPerks(db.Model):
     __tablename__ = 'EventPerks'
@@ -108,6 +118,17 @@ class OrganizationCategories(db.Model):
 
     category_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
+    
+class JoinedOrganizations(db.Model):
+    __tablename__ = 'JoinedOrganizations'
+    
+    user_id = db.Column(db.String(50), primary_key=True)
+    org_id = db.Column(db.String(200), primary_key=True)
+
+
+    __table_args__ = (
+        PrimaryKeyConstraint('user_id', 'org_id'),
+    )
 
 class CategorizedOrganizations(db.Model):
     __tablename__ = 'CategorizedOrganizations'
@@ -118,7 +139,6 @@ class CategorizedOrganizations(db.Model):
     __table_args__ = (
         PrimaryKeyConstraint('org_id', 'category_id'),
     )
-
 class Users(db.Model):
     __tablename__ = 'Users'
 
@@ -185,17 +205,30 @@ def get_event_host(id):
     host = EventHosts.query.filter_by(event_id=id).with_entities(EventHosts.org_id).first()
 
     if host:
-        organization = Organizations.query.filter_by(org_id=host).first()
+        organization = Organizations.query.filter_by(org_id=host[0]).first()
         if organization:
             org_name = organization.name
             return json.dumps({
-                'org_id': host,
+                'org_id': host[0],
                 'org_name': org_name
             })
         else:
             return json.dumps({'error': 'Organization not found'})
     else:
         return json.dumps({'error': 'Event host not found'})
+
+@app.route('/api/event/attending/<netid>', methods=['GET'])
+def get_attending_events(netid):
+    event_ids = AttendingEvents.query.filter_by(user_id=netid).with_entities(AttendingEvents.event_id).all()
+    events = [event_id[0] for event_id in event_ids]
+    return json.dumps({'user': netid, 'events': events})
+
+@app.route('/api/event/attending/<int:event_id>', methods=['GET'])
+def get_event_attends(event_id):
+    user_ids = AttendingEvents.query.filter_by(event_id=event_id).with_entities(AttendingEvents.user_id).all()
+    users = [user_id[0] for user_id in user_ids]
+    return json.dumps({'event': event_id, 'users': users})
+
     
 @app.route('/api/event/categories/all')
 def get_categories_by_event():
@@ -264,6 +297,18 @@ def get_organization(id):
         return json.dumps({'org': org_details})
     else:
         return json.dumps({'error': 'Organization not found'})
+    
+@app.route('/api/organization/joined/<netid>', methods=['GET'])
+def get_joined_organizations(netid):
+    org_ids = JoinedOrganizations.query.filter_by(user_id=netid).with_entities(JoinedOrganizations.org_id).all()
+    orgs = [org_id[0] for org_id in org_ids]
+    return json.dumps({'user': netid, 'orgs': orgs})
+
+@app.route('/api/organization/members/<org_id>', methods=['GET'])
+def get_organization_members(org_id):
+    user_ids = JoinedOrganizations.query.filter_by(org_id=org_id).with_entities(JoinedOrganizations.user_id).all()
+    users = [user_id[0] for user_id in user_ids]
+    return json.dumps({'org': org_id, 'members': users})
 
 @app.route('/api/organization/categories')
 def get_organization_categories():
