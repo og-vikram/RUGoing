@@ -495,11 +495,16 @@ def get_user_by_netid(netid):
     else:
         return json.dumps({'error': 'User not found'})
 
-@app.route('/api/users/<id>/<newBio>')
-def update_bio(id, newBio):
-    user = Users.query.filter_by(user_id=id).first()
+@app.route('/api/users/changeBio', methods=['POST'])
+def update_bio():
+    data = request.get_data()
+    data = json.loads(data)
+    uid = data['uid']
+    newBio = data['newBio']
+    user = Users.query.filter_by(user_id=uid).first()
     if user:
         user.bio_descrip = newBio
+        db.session.commit()
         return json.dumps({'success': True})
     else:
         return json.dumps({'error': 'User not found'})
