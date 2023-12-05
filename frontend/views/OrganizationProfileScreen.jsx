@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 15,
     marginLeft: "auto",
-    marginTop: "-8%",
+    marginTop: "4%",
   },
   joinButtonText: {
     color: "white",
