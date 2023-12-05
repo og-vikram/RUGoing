@@ -12,7 +12,6 @@ import OrganizationsScreen from "./OrganizationsScreen";
 import EventsScreen from "./EventsScreen";
 import EventProfileScreen from "./EventProfileScreen";
 import OrganizationProfileScreen from "./OrganizationProfileScreen";
-import Fuse from "fuse.js";
 
 const ExploreStack = createNativeStackNavigator();
 
@@ -20,48 +19,40 @@ const ExploreMain = ({ navigation }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [orgSearchResults, setOrgSearchResults] = useState([]);
   const [eventSearchResults, setEventSearchResults] = useState([]);
+  const [userSearchResults, setUserSearchResults] = useState([]);
   const [filteredItems, setFilteredItems] = useState(orgData);
-
-  const fuseOptions = {
-    keys: ["name"],
-    threshold: 0.25,
-    //use threshold to tune how sensitive search is (lower is more precise)
-  };
-
-  const url =
-    "https://absolute-willing-salmon.ngrok-free.app/api/organization/all";
   const [orgData, setOrgData] = useState([]);
   const [EventData, setEventData] = useState([]);
   const [userData, setUserData] = useState([]);
-  //lol ^
-
   const [loading, setLoading] = useState(true);
 
+  const url =
+    "https://absolute-willing-salmon.ngrok-free.app/api/organization/all";
+
   useEffect(() => {
-    fetch(url, {
-      // headers: new Headers({
-      //   "ngrok-skip-browser-warning": "true",
-      // }),
-    })
+    fetch(url)
       .then((response) => response.json())
       .then((json) => setOrgData(json.orgs))
       .catch((error) => console.log(error));
   }, []);
 
   useEffect(() => {
-    fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/all", {
-      // headers: new Headers({
-      //   "ngrok-skip-browser-warning": "true",
-      // }),
-    })
+    fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/all")
       .then((response) => response.json())
       .then((json) => setEventData(json.events))
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    fetch("https://absolute-willing-salmon.ngrok-free.app/api/users/fetchall")
+      .then((response) => response.json())
+      .then((json) => setUserData(json.users))
+      .catch((error) => console.log(error))
+      .finally(() => setLoading(false));
+  }, []);
+
   const performSearch = (query) => {
-    //const fuse = new Fuse(data, fuseOptions);
     const searchTerms = query.toLowerCase().split(" ");
     const filteredOrgs = orgData
       .filter((org) => {
@@ -93,20 +84,22 @@ const ExploreMain = ({ navigation }) => {
     }));
     setEventSearchResults(filteredEvents);
 
-    // console.log(filteredOrgs.slice(0,5))
-    //const result = fuse.search(query);
-    //setOrgSearchResults(
-    //  result.map(({ item }) => ({ name: item.name, id: item.id }))
-    //);
-    // console.log('orgs', orgSearchResults)
-
-    //const newfuse = new Fuse(data, fuseOptions);
-    //newresult = newfuse.search(query);
-    //console.log("newresult:" + newresult);
-    //  setEventSearchResults(
-    //  newresult.map(({ item }) => ({ name: item.name, fid: item.fid }))
-    //);
-    // console.log('events', eventSearchResults)
+    const filteredUsers = userData
+      .filter((user) => {
+        const name = user.firstname + " " + user.lastname;
+        for (const term of searchTerms) {
+          if (!name.toLowerCase().includes(term)) {
+            return false;
+          }
+        }
+        return true;
+      })
+      .map((user) => ({
+        name: user.firstname + " " + user.lastname,
+        uid: user.user_id,
+        netid: user.netid,
+      }));
+    setUserSearchResults(filteredUsers);
   };
 
   const handleSearchChange = (text) => {
@@ -117,7 +110,6 @@ const ExploreMain = ({ navigation }) => {
   const searchBarRef = useRef(null);
 
   const handleButtonClick = () => {
-    // Programmatically focus the SearchBar when the button is clicked
     searchBarRef.current && searchBarRef.current.focus();
   };
 
@@ -140,6 +132,18 @@ const ExploreMain = ({ navigation }) => {
       onPress={() => {
         console.log(item.id);
         navigation.navigate("EventProfileScreen", { eventId: item.id });
+      }}
+      style={styles.item}
+    >
+      <Text>{item.name}</Text>
+    </TouchableOpacity>
+  );
+
+  const SearchUserItem = ({ item }) => (
+    <TouchableOpacity
+      onPress={() => {
+        console.log(item.name, item.netid);
+        // navigation.navigate("ProfileScreen", { eventId: item.id });
       }}
       style={styles.item}
     >
@@ -174,6 +178,11 @@ const ExploreMain = ({ navigation }) => {
                 title: "Events",
                 data: eventSearchResults.splice(0, 5),
                 renderItem: ({ item }) => <SearchEventItem item={item} />,
+              },
+              {
+                title: "Users",
+                data: userSearchResults.splice(0, 5),
+                renderItem: ({ item }) => <SearchUserItem item={item} />,
               },
             ]}
           />

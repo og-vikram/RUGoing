@@ -446,16 +446,7 @@ def add_user():
     else:
         return json.dumps({'account already exists': True})
 
-##FINISH PLEASE PLEASE PLEASE
-@app.route('/api/users/joinorg/', methods=['POST'])
-def user_join_org():
-    data = request.get_data()
-    data = json.loads(data)
-    user = data['uid']
-    org = data['org_id']
-
-##update when we add user columns lol
-@app.route('/api/users/fetchall')
+@app.route('/api/users/all')
 def get_users():
     all_users = Users.query.all()
     user_list = []
@@ -470,12 +461,11 @@ def get_users():
             'isOfficer': user.isOfficer,
             }
         user_list.append(user_dict)
-    return json.dumps({'orgs': user_list})
+    return json.dumps({'users': user_list})
 
-
-@app.route('/api/users/<id>')
-def get_user(id):
-    user  = Users.query.filter_by(user_id=id).first()
+@app.route('/api/users/<uid>')
+def get_user(uid):
+    user  = Users.query.filter_by(user_id=uid).first()
     if user:
         user_info = {
             'user_id': user.user_id,
@@ -492,7 +482,7 @@ def get_user(id):
     
 @app.route('/api/users/netid/<netid>')
 def get_user_by_netid(netid):
-    user = Users.query.filter_by(netid=id).first()
+    user = Users.query.filter_by(netid=netid).first()
     if(user):
         user_info = {
             'user_id': user.user_id,
