@@ -42,7 +42,7 @@ class AttendingEvents(db.Model):
     user_id = db.Column(db.String(50), primary_key=True)
 
     __table_args__ = (
-        PrimaryKeyConstraint('event_id', 'theme_id'),
+        PrimaryKeyConstraint('event_id', 'user_id'),
     )
 
 class EventPerks(db.Model):
@@ -205,11 +205,11 @@ def get_event_host(id):
     host = EventHosts.query.filter_by(event_id=id).with_entities(EventHosts.org_id).first()
 
     if host:
-        organization = Organizations.query.filter_by(org_id=host).first()
+        organization = Organizations.query.filter_by(org_id=host[0]).first()
         if organization:
             org_name = organization.name
             return json.dumps({
-                'org_id': host,
+                'org_id': host[0],
                 'org_name': org_name
             })
         else:
@@ -227,7 +227,7 @@ def get_attending_events(netid):
 def get_event_attends(event_id):
     user_ids = AttendingEvents.query.filter_by(event_id=event_id).with_entities(AttendingEvents.user_id).all()
     users = [user_id[0] for user_id in user_ids]
-    return json.dumps({'event': event_id, 'useres': user_ids})
+    return json.dumps({'event': event_id, 'users': users})
 
     
 @app.route('/api/event/categories/all')
@@ -304,7 +304,7 @@ def get_joined_organizations(netid):
     orgs = [org_id[0] for org_id in org_ids]
     return json.dumps({'user': netid, 'orgs': orgs})
 
-@app.route('/api/organization/joined/<org_id>', methods=['GET'])
+@app.route('/api/organization/members/<org_id>', methods=['GET'])
 def get_organization_members(org_id):
     user_ids = JoinedOrganizations.query.filter_by(org_id=org_id).with_entities(JoinedOrganizations.user_id).all()
     users = [user_id[0] for user_id in user_ids]
