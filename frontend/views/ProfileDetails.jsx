@@ -4,7 +4,7 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  TextComponent,
+  TextInput,
 } from "react-native";
 import React, { useEffect, useLayoutEffect, useState, useMemo } from "react";
 import { auth } from "../firebase.config";
@@ -25,8 +25,9 @@ const ProfileDetails = ({ navigation }) => {
 
   const [loading, setLoading] = useState(true);
 
+  const[newUserBio, setNewUserBio] = useState("");
 
-//console.log(auth.currentUser.uid);
+
 
   useLayoutEffect(() => {
     fetch(
@@ -47,6 +48,10 @@ const ProfileDetails = ({ navigation }) => {
         .then((response) => response.json())
         .then((json) => setOrganizations(json))
         .catch((error) => console.log(error));
+        if(user.bio_descrip == null){
+          setNewUserBio(null);
+        }else{
+        setNewUserBio(user.bio_descrip);}
   
     
   }, []);
@@ -77,7 +82,7 @@ const ProfileDetails = ({ navigation }) => {
 useLayoutEffect( () => {
   const fetchOrgDetails = async () => {
     setOrgjsons([]);
-    console.log(organizations.orgs);
+    //console.log(organizations.orgs);
     for(const o of organizations.orgs){
       try{
           const response = await fetch(
@@ -97,6 +102,40 @@ useLayoutEffect( () => {
 }, [organizations]);
 
 
+const updateBio = async () => {
+  {
+    try {
+      const user = auth.currentUser;
+
+      fetch(
+        `https://absolute-willing-salmon.ngrok-free.app/api/users/changeBio`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            uid: user.uid,
+            newBio: newUserBio,
+          }),
+        }
+      );
+      console.log(user.uid, newUserBio);
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+    }
+  }
+};
+
+
+
+function EditOrDone(){
+  if(edit){
+    updateBio();
+  }
+  toggleEdit(!edit);
+}
+
+
 if(!loading)
   return (
     <View>
@@ -111,10 +150,11 @@ if(!loading)
         <TouchableOpacity
         style={styles.customButtonContainer2}
         onPress={() => {
+         EditOrDone();
          
         }}
       >
-        <Text style={styles.customButtonText}>Edit</Text>
+        <Text style={styles.customButtonText}>{edit == true ? "Done" : "Edit"}</Text>
       </TouchableOpacity>
       
         <Card.Divider />
@@ -125,16 +165,18 @@ if(!loading)
             flexDirection: "row",
           }}
         >
-          <Text
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            
-            <Text>{user.bio_descrip !== null ? user.bio_descrip : <Text style={{ fontStyle: 'italic' }}>Your Bio Here</Text>}</Text>
+         {edit &&  (
+<View>
+            <TextInput editable={true} autoFocus={true} onChangeText={((text) => setNewUserBio(text))} value={newUserBio} placeholder={(newUserBio == null) ? 'Your Bio Here' : newUserBio}
+           ></TextInput>
+           </View>
+            )}
+            {!edit && (
+            <View>
+            <Text>{newUserBio !== "" ? newUserBio : <Text style={{ fontStyle: 'italic' }}>Your Bio Here</Text>}</Text>
+            </View>
+)}
 
-            </Text>
         </View>
         <Card.Divider />
 

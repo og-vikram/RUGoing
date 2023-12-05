@@ -152,6 +152,14 @@ By downloading, installing, or using the App, you agree to be bound by the terms
           <Text style={styles.editProfileButtonText}>Manage Friends</Text>
         </View>
       </TouchableOpacity>
+
+      <TouchableOpacity
+      style={styles.customButtonContainer}>
+        <View style={styles.editProfileButton}>
+          <Text style={styles.editProfileButtonText}>Manage Preferences</Text>
+        </View>
+      </TouchableOpacity>
+      
       <TouchableOpacity onPress={openAboutModal}   style={styles.customButtonContainer}>
         <View style={styles.editProfileButton}>
           <Text style={styles.editProfileButtonText}>About RUSWE</Text>
