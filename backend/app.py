@@ -415,7 +415,7 @@ def get_user(id):
     else:
         return json.dumps({'error': 'User not found'})
     
-@app.route('/api/users/<netid>')
+@app.route('/api/users/netid/<netid>')
 def get_user_by_netid(netid):
     user = Users.query.filter_by(netid=id).first()
     if(user):
