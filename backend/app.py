@@ -150,6 +150,16 @@ class Users(db.Model):
     firstname = db.Column(db.String(50))
     lastname = db.Column(db.String(50))
     isOfficer = db.Column(db.Boolean)
+    
+class Follows(db.Model):
+    __tablename__ = 'Follows'
+
+    follower_id = db.Column(db.String(50), primary_key=True)
+    followee_id = db.Column(db.String(50), primary_key=True)
+    
+    __table_args__ = (
+        PrimaryKeyConstraint('follower_id', 'followee_id'),
+    )
 
 @app.route('/api/event/all')
 def get_events():
@@ -358,8 +368,21 @@ def get_organization(id):
     
 @app.route('/api/organization/joined/<uid>', methods=['GET'])
 def get_joined_organizations(uid):
-    org_ids = JoinedOrganizations.query.filter_by(user_id=uid).with_entities(JoinedOrganizations.org_id).all()
-    orgs = [org_id[0] for org_id in org_ids]
+    org_data = db.session.query(
+        JoinedOrganizations.org_id, Organizations.name
+    ).join(
+        Organizations, Organizations.org_id == JoinedOrganizations.org_id
+    ).filter(
+        JoinedOrganizations.user_id == uid
+    ).all()
+    orgs = []
+    for org in org_data:
+        org_id, name = org
+        org_dict = {
+            'id': org_id,
+            'name': name,
+        }
+        orgs.append(org_dict)
     return json.dumps({'user': uid, 'orgs': orgs})
 
 @app.route('/api/organization/joined/add/', methods=['POST'])
@@ -528,6 +551,81 @@ def update_bio():
         return json.dumps({'success': True})
     else:
         return json.dumps({'error': 'User not found'})
+    
+@app.route('/api/users/follows/<uid>')
+def follows(uid):
+    follows_data = db.session.query(
+        Follows.followee_id, Users.firstname, Users.lastname
+    ).join(
+        Users, Users.user_id == Follows.followee_id
+    ).filter(
+        Follows.follower_id == uid
+    ).all()
+    follows = []
+    for followee in follows_data:
+        followee_id, first_name, last_name = followee
+        followee_dict = {
+            'uid': followee_id,
+            'name': first_name + ' ' + last_name,
+        }
+        follows.append(followee_dict)
+    return json.dumps({'follower': uid, 'follows': follows})
+
+@app.route('/api/users/followers/<uid>')
+def followers(uid):
+    followers_data = db.session.query(
+        Follows.follower_id, Users.firstname, Users.lastname
+    ).join(
+        Users, Users.user_id == Follows.follower_id
+    ).filter(
+        Follows.followee_id == uid
+    ).all()
+    followers = []
+    for follower in followers_data:
+        follower_id, first_name, last_name = follower
+        follower_dict = {
+            'uid': follower_id,
+            'name': first_name + ' ' + last_name if first_name is not None else 'hello',
+        }
+        followers.append(follower_dict)
+    return json.dumps({'followee': uid, 'followers': followers})
+    
+@app.route('/api/users/follow/', methods=['POST'])
+def follow_user():
+    data = request.get_data()
+    data = json.loads(data)
+    follower = data['follower_uid']
+    follow = data['followee_uid']
+    follows = Follows(follower_id = follower, followee_id = follow)
+    relationship = Follows.query.filter(
+        and_(Follows.follower_id==follower,
+             Follows.followee_id==follow
+        )
+    ).first()
+    if relationship is None:
+        db.session.add(follows)
+        db.session.commit()
+        return json.dumps({'success': True, 'follower': follower, 'followee': follow})
+    else:
+        return json.dumps({'relation already exists': True})
+    
+@app.route('/api/users/unfollow/', methods=['POST'])
+def unfollow_user():
+    data = request.get_data()
+    data = json.loads(data)
+    follower_uid = data['follower_id']
+    followee_uid = data['followee_id']
+    relationship = Follows.query.filter(
+        and_(Follows.follower_id==follower_uid,
+             Follows.followee_id==followee_uid
+        )
+    ).first()
+    if relationship is not None:
+        db.session.delete(relationship)
+        db.session.commit()
+        return json.dumps({'message':'Unfollowed successfully.'})
+    else:
+        return json.dumps({'message': 'Never followed this user.'})
 
 if __name__ == '__main__':
     app.run(debug=True)

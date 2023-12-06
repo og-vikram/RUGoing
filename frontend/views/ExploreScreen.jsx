@@ -12,6 +12,7 @@ import OrganizationsScreen from "./OrganizationsScreen";
 import EventsScreen from "./EventsScreen";
 import EventProfileScreen from "./EventProfileScreen";
 import OrganizationProfileScreen from "./OrganizationProfileScreen";
+import FriendProfileScreen from "./FriendProfileScreen";
 
 const ExploreStack = createNativeStackNavigator();
 
@@ -45,7 +46,7 @@ const ExploreMain = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    fetch("https://absolute-willing-salmon.ngrok-free.app/api/users/fetchall")
+    fetch("https://absolute-willing-salmon.ngrok-free.app/api/users/all")
       .then((response) => response.json())
       .then((json) => setUserData(json.users))
       .catch((error) => console.log(error))
@@ -87,6 +88,7 @@ const ExploreMain = ({ navigation }) => {
     const filteredUsers = userData
       .filter((user) => {
         const name = user.firstname + " " + user.lastname;
+        console.log(name);
         for (const term of searchTerms) {
           if (!name.toLowerCase().includes(term)) {
             return false;
@@ -143,7 +145,7 @@ const ExploreMain = ({ navigation }) => {
     <TouchableOpacity
       onPress={() => {
         console.log(item.name, item.netid);
-        // navigation.navigate("ProfileScreen", { eventId: item.id });
+        navigation.navigate("FriendProfileScreen", { user_uid: item.uid });
       }}
       style={styles.item}
     >
@@ -166,7 +168,17 @@ const ExploreMain = ({ navigation }) => {
           <SectionList
             style={styles.sectionList}
             renderSectionHeader={({ section: { title } }) => (
-              <Text style={{ fontWeight: "bold", padding: 2, color: "#FF392E", paddingLeft: 10, backgroundColor: "#E6E6E6",}}>{title}</Text>
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  padding: 2,
+                  color: "#FF392E",
+                  paddingLeft: 10,
+                  backgroundColor: "#E6E6E6",
+                }}
+              >
+                {title}
+              </Text>
             )}
             sections={[
               {
@@ -251,6 +263,13 @@ const ExploreScreen = () => {
       <ExploreStack.Screen
         name="OrganizationProfileScreen"
         component={OrganizationProfileScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ExploreStack.Screen
+        name="FriendProfileScreen"
+        component={FriendProfileScreen}
         options={{
           headerShown: false,
         }}
