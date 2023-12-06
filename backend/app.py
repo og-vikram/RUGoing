@@ -297,6 +297,19 @@ def get_event_attendees(event_id):
 
     return json.dumps({'event': event_id, 'users': users, 'total_users_count': total_users_count})
 
+@app.route('/api/event/followees/<uid>')
+def events_attended_by_followees(uid):
+    result = db.session.query(
+        Events.event_id, Events.name.label('event_name')
+    ).join(
+        AttendingEvents, AttendingEvents.event_id == Events.event_id
+    ).join(
+        Follows, Follows.followee_id == AttendingEvents.user_id
+    ).filter(
+        Follows.follower_id == uid
+    ).distinct().all()
+    events_attended = [{'event_id': event[0], 'event_name': event[1]} for event in result]
+    return json.dumps({'uid': uid, 'events': events_attended})
     
 @app.route('/api/event/categories/all')
 def get_categories_by_event():

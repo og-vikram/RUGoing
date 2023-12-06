@@ -254,7 +254,7 @@ const ExploreScreen = () => {
         }}
       />
       <ExploreStack.Screen
-        name="Event Profile"
+        name="EventProfileScreen"
         component={EventProfileScreen}
         options={{
           headerShown: false,
