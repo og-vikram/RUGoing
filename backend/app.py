@@ -1,7 +1,8 @@
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import PrimaryKeyConstraint
+from sqlalchemy import PrimaryKeyConstraint, String
 from sqlalchemy import and_
+from sqlalchemy import func, cast
 import json
 import dotenv
 import os
@@ -134,12 +135,53 @@ class JoinedOrganizations(db.Model):
 class CategorizedOrganizations(db.Model):
     __tablename__ = 'CategorizedOrganizations'
 
-    org_id = db.Column(db.String(200), nullable=True)
-    category_id = db.Column(db.Integer, nullable=True)
+    org_id = db.Column(db.String(200), primary_key=True)
+    category_id = db.Column(db.Integer, primary_key=True)
 
     __table_args__ = (
         PrimaryKeyConstraint('org_id', 'category_id'),
     )
+
+class PreferredEventPerks(db.Model):
+    __tablename__ = 'PreferredEventPerks'
+
+    user_id = db.Column(db.String(50), primary_key=True)
+    perk_id = db.Column(db.String(25), primary_key=True)
+
+    __table_args__ = (
+        PrimaryKeyConstraint('user_id', 'perk_id'),
+    )
+
+class PreferredEventCategories(db.Model):
+    __tablename__ = 'PreferredEventCategories'
+
+    user_id = db.Column(db.String(50), primary_key=True)
+    category_id = db.Column(db.Integer, primary_key=True)
+
+    __table_args__ = (
+        PrimaryKeyConstraint('user_id', 'category_id'),
+    )
+
+class PreferredEventThemes(db.Model):
+    __tablename__ = 'PreferredEventThemes'
+
+    user_id = db.Column(db.String(50), primary_key=True)
+    theme_id = db.Column(db.String(25), primary_key=True)
+
+    __table_args__ = (
+        PrimaryKeyConstraint('user_id', 'theme_id'),
+    )
+
+class PreferredOrganizationCategories(db.Model):
+    __tablename__ = 'PreferredOrganizationCategories'
+
+    user_id = db.Column(db.String(50), primary_key=True)
+    category_id = db.Column(db.Integer, primary_key=True)
+
+    __table_args__ = (
+        PrimaryKeyConstraint('user_id', 'category_id'),
+    )
+
 class Users(db.Model):
     __tablename__ = 'Users'
 
@@ -150,6 +192,7 @@ class Users(db.Model):
     firstname = db.Column(db.String(50))
     lastname = db.Column(db.String(50))
     isOfficer = db.Column(db.Boolean)
+    organization = db.Column(db.String(200))
     
 class Follows(db.Model):
     __tablename__ = 'Follows'
@@ -214,7 +257,7 @@ def get_event(id):
         return json.dumps({'event': event_details})
     else:
         return json.dumps({'error': 'Event not found'})
-
+   
 @app.route('/api/event/host/<int:id>')
 def get_event_host(id):
     host = EventHosts.query.filter_by(event_id=id).with_entities(EventHosts.org_id).first()
@@ -292,12 +335,10 @@ def get_attending_events(uid):
 def get_event_attendees(event_id):
     user_ids = AttendingEvents.query.filter_by(event_id=event_id).with_entities(AttendingEvents.user_id).all()
     users = [user_id[0] for user_id in user_ids]
-    
     total_users_count = len(users)
-
     return json.dumps({'event': event_id, 'users': users, 'total_users_count': total_users_count})
 
-@app.route('/api/event/followees/<uid>')
+@app.route('/api/event/attending/followees/<uid>')
 def events_attended_by_followees(uid):
     result = db.session.query(
         Events.event_id, Events.name.label('event_name')
@@ -310,6 +351,38 @@ def events_attended_by_followees(uid):
     ).distinct().all()
     events_attended = [{'event_id': event[0], 'event_name': event[1]} for event in result]
     return json.dumps({'uid': uid, 'events': events_attended})
+
+@app.route('/api/event/categories')
+def get_event_categories():
+    all_categories = EventCategories.query.all()
+    cat_list = []
+    for cat in all_categories:
+        cat_dict = {
+            'id': cat.category_id,
+            'name': cat.name,
+        }
+        cat_list.append(cat_dict)
+    return json.dumps({'categories': cat_list})
+
+@app.route('/api/event/categorized/all')
+def get_events_by_categories():
+    result = db.session.query(
+        EventCategories.category_id,
+        EventCategories.name.label('category_name'),
+        cast(db.func.group_concat(
+            func.json_object(
+                'event_id',Events.event_id,
+                'event_name', Events.name
+            )
+        ), String).label('event_list')
+    ).join(
+        CategorizedEvents, EventCategories.category_id == CategorizedEvents.category_id
+    ).join(
+        Events, CategorizedEvents.event_id == Events.event_id
+    ).group_by(EventCategories.category_id, EventCategories.name).all()
+
+    categorized_events = [{'category_id': category_id, 'category_name': category_name, 'events':events} for category_id, category_name, events in result]
+    return json.dumps(categorized_events)
     
 @app.route('/api/event/categories/all')
 def get_categories_by_event():
@@ -323,8 +396,40 @@ def get_categories_by_event():
     categorized_events = [{'event_id': event_id, 'category_names': category_names.split(',')} for event_id, category_names in result]
     return json.dumps(categorized_events)
 
+@app.route('/api/event/themes')
+def get_event_themes():
+    all_themes = EventThemes.query.all()
+    theme_list = []
+    for theme in all_themes:
+        theme_dict = {
+            'id': theme.theme_id,
+            'name': theme.name,
+        }
+        theme_list.append(theme_dict)
+    return json.dumps({'themes': theme_list})
+
+@app.route('/api/event/themed/all')
+def get_events_by_themes():
+    result = db.session.query(
+        EventThemes.theme_id,
+        EventThemes.name.label('theme_name'),
+        cast(db.func.group_concat(
+            func.json_object(
+                'event_id',Events.event_id,
+                'event_name', Events.name
+            )
+        ), String).label('event_list')
+    ).join(
+        ThemedEvents, EventThemes.theme_id == ThemedEvents.theme_id
+    ).join(
+        Events, ThemedEvents.event_id == Events.event_id
+    ).group_by(EventThemes.theme_id, EventThemes.name).all()
+
+    themed_events = [{'theme_id': theme_id, 'theme_name': theme_name, 'events':events} for theme_id, theme_name, events in result]
+    return json.dumps(themed_events)
+
 @app.route('/api/event/themes/all')
-def get_themes_by_event():
+def get_themes_by_events():
     result = db.session.query(
         ThemedEvents.event_id,
         db.func.group_concat(EventThemes.name).label('theme_names')
@@ -334,6 +439,18 @@ def get_themes_by_event():
     ).group_by(ThemedEvents.event_id).all()
     themed_events = [{'event_id': event_id, 'theme_names': theme_names.split(',')} for event_id, theme_names in result]
     return json.dumps(themed_events)
+
+@app.route('/api/event/perks')
+def get_event_perks():
+    all_perks = EventPerks.query.all()
+    perk_list = []
+    for perk in all_perks:
+        perk_dict = {
+            'id': perk.perk_id,
+            'name': perk.name,
+        }
+        perk_list.append(perk_dict)
+    return json.dumps({'perks': perk_list})
 
 @app.route('/api/event/perks/all')
 def get_perks_by_event():
@@ -345,6 +462,26 @@ def get_perks_by_event():
         PerkedEvents.perk_id == EventPerks.perk_id
     ).group_by(PerkedEvents.event_id).all()
     perked_events = [{'event_id': event_id, 'perk_names': perk_names.split(',')} for event_id, perk_names in result]
+    return json.dumps(perked_events)
+
+@app.route('/api/event/perked/all')
+def get_events_by_perks():
+    result = db.session.query(
+        EventPerks.perk_id,
+        EventPerks.name.label('perk_name'),
+        cast(db.func.group_concat(
+            func.json_object(
+                'event_id',Events.event_id,
+                'event_name', Events.name
+            )
+        ), String).label('event_list')
+    ).join(
+        PerkedEvents, EventPerks.perk_id == PerkedEvents.perk_id
+    ).join(
+        Events, PerkedEvents.event_id == Events.event_id
+    ).group_by(EventPerks.perk_id, EventPerks.name).all()
+
+    perked_events = [{'perk_id': perk_id, 'perk_name': perk_name, 'events':events} for perk_id, perk_name, events in result]
     return json.dumps(perked_events)
 
 @app.route('/api/organization/all')
@@ -459,6 +596,26 @@ def get_org_ids_by_category(id):
     org_id_list = [org_id[0] for org_id in org_ids]
     return json.dumps({'org_ids': org_id_list})
 
+@app.route('/api/organization/categorized/all')
+def get_orgs_by_categories():
+    result = db.session.query(
+        OrganizationCategories.category_id,
+        OrganizationCategories.name.label('category_name'),
+        cast(db.func.group_concat(
+            func.json_object(
+                'org_id',Organizations.org_id,
+                'org_name', Organizations.name
+            )
+        ), String).label('org_list')
+    ).join(
+        CategorizedOrganizations, OrganizationCategories.category_id == CategorizedOrganizations.category_id
+    ).join(
+        Organizations, CategorizedOrganizations.org_id == Organizations.org_id
+    ).group_by(OrganizationCategories.category_id, OrganizationCategories.name).all()
+
+    categorized_orgs = [{'category_id': category_id, 'category_name': category_name, 'orgs':orgs} for category_id, category_name, orgs in result]
+    return json.dumps(categorized_orgs)
+
 @app.route('/api/organization/categories/all')
 def get_categories_by_org():
     result = db.session.query(
@@ -481,6 +638,20 @@ def get_all_events_from_org(id):
         return json.dumps({'events': event_list})
     except Exception as e:
         return json.dumps({'error': str(e)}), 500
+
+@app.route('/api/organization/joined/followees/<uid>')
+def orgs_joined_by_followees(uid):
+    result = db.session.query(
+        Organizations.org_id, Organizations.name.label('org_name')
+    ).join(
+        JoinedOrganizations, JoinedOrganizations.org_id == Organizations.org_id
+    ).join(
+        Follows, Follows.followee_id == JoinedOrganizations.user_id
+    ).filter(
+        Follows.follower_id == uid
+    ).distinct().all()
+    orgs_joined = [{'org_id': org[0], 'org_name': org[1]} for org in result]
+    return json.dumps({'uid': uid, 'orgs': orgs_joined})
 
 @app.route('/api/users/add/', methods=['POST'])
 def add_user():
@@ -529,7 +700,8 @@ def get_user(uid):
             'firstname': user.firstname,
             'lastname': user.lastname,
             'isOfficer': user.isOfficer,
-            }
+            'organization': user.organization,
+        }
         return json.dumps({'user': user_info})
     else:
         return json.dumps({'error': 'User not found'})
@@ -546,25 +718,26 @@ def get_user_by_netid(netid):
             'firstname': user.firstname,
             'lastname': user.lastname,
             'isOfficer': user.isOfficer,
-            }
+            'organization': user.organization,
+        }
         return json.dumps({'user': user_info})
     else:
         return json.dumps({'error': 'User not found'})
 
 @app.route('/api/users/changeBio', methods=['POST'])
 def update_bio():
-    data = request.get_data()
-    data = json.loads(data)
-    uid = data['uid']
-    newBio = data['newBio']
-    user = Users.query.filter_by(user_id=uid).first()
-    if user:
-        user.bio_descrip = newBio
-        db.session.commit()
-        return json.dumps({'success': True})
-    else:
-        return json.dumps({'error': 'User not found'})
-    
+   data = request.get_data()
+   data = json.loads(data)
+   uid = data['uid']
+   newBio = data['newBio']
+   user = Users.query.filter_by(user_id=uid).first()
+   if user:
+       user.bio_descrip = newBio
+       db.session.commit()
+       return json.dumps({'success': True})
+   else:
+       return json.dumps({'error': 'User not found'})
+
 @app.route('/api/users/follows/<uid>')
 def follows(uid):
     follows_data = db.session.query(
