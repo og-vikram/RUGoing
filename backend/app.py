@@ -193,7 +193,7 @@ class Users(db.Model):
     lastname = db.Column(db.String(50))
     isOfficer = db.Column(db.Boolean)
     organization = db.Column(db.String(200))
-    
+
 class Follows(db.Model):
     __tablename__ = 'Follows'
 
@@ -321,6 +321,7 @@ def get_attending_events(uid):
     ).filter(
         AttendingEvents.user_id == uid
     ).all()
+    print(event_data)
     events = []
     for event in event_data:
         event_id, name = event
@@ -335,7 +336,9 @@ def get_attending_events(uid):
 def get_event_attendees(event_id):
     user_ids = AttendingEvents.query.filter_by(event_id=event_id).with_entities(AttendingEvents.user_id).all()
     users = [user_id[0] for user_id in user_ids]
+    
     total_users_count = len(users)
+
     return json.dumps({'event': event_id, 'users': users, 'total_users_count': total_users_count})
 
 @app.route('/api/event/attending/followees/<uid>')
@@ -380,8 +383,12 @@ def get_events_by_categories():
     ).join(
         Events, CategorizedEvents.event_id == Events.event_id
     ).group_by(EventCategories.category_id, EventCategories.name).all()
-
-    categorized_events = [{'category_id': category_id, 'category_name': category_name, 'events':events} for category_id, category_name, events in result]
+    
+    categorized_events = []
+    for category_id, category_name, event_list_str in result:
+        events = json.loads(f"[{event_list_str.replace('},{', '},{')}]")
+        categorized_events.append({'category_id': category_id, 'category_name': category_name, 'events': events})
+    
     return json.dumps(categorized_events)
     
 @app.route('/api/event/categories/all')
@@ -425,7 +432,11 @@ def get_events_by_themes():
         Events, ThemedEvents.event_id == Events.event_id
     ).group_by(EventThemes.theme_id, EventThemes.name).all()
 
-    themed_events = [{'theme_id': theme_id, 'theme_name': theme_name, 'events':events} for theme_id, theme_name, events in result]
+    themed_events = []
+    for theme_id, theme_name, event_list_str in result:
+        events = json.loads(f"[{event_list_str.replace('},{', '},{')}]")
+        themed_events.append({'theme_id': theme_id, 'theme_name': theme_name, 'events': events})
+
     return json.dumps(themed_events)
 
 @app.route('/api/event/themes/all')
@@ -481,7 +492,11 @@ def get_events_by_perks():
         Events, PerkedEvents.event_id == Events.event_id
     ).group_by(EventPerks.perk_id, EventPerks.name).all()
 
-    perked_events = [{'perk_id': perk_id, 'perk_name': perk_name, 'events':events} for perk_id, perk_name, events in result]
+    perked_events = []
+    for perk_id, perk_name, event_list_str in result:
+        events = json.loads(f"[{event_list_str.replace('},{', '},{')}]")
+        perked_events.append({'perk_id': perk_id, 'perk_name': perk_name, 'events': events})
+
     return json.dumps(perked_events)
 
 @app.route('/api/organization/all')
@@ -601,19 +616,24 @@ def get_orgs_by_categories():
     result = db.session.query(
         OrganizationCategories.category_id,
         OrganizationCategories.name.label('category_name'),
-        cast(db.func.group_concat(
+        db.func.group_concat(
             func.json_object(
                 'org_id',Organizations.org_id,
-                'org_name', Organizations.name
+                'org_name', Organizations.name,
+                'org_desc', Organizations.about
             )
-        ), String).label('org_list')
+        ).label('org_list')
     ).join(
         CategorizedOrganizations, OrganizationCategories.category_id == CategorizedOrganizations.category_id
     ).join(
         Organizations, CategorizedOrganizations.org_id == Organizations.org_id
     ).group_by(OrganizationCategories.category_id, OrganizationCategories.name).all()
 
-    categorized_orgs = [{'category_id': category_id, 'category_name': category_name, 'orgs':orgs} for category_id, category_name, orgs in result]
+    categorized_orgs = []
+    for category_id, category_name, org_list_str in result:
+        orgs = json.loads(f"[{org_list_str.replace('},{', '},{')}]")
+        categorized_orgs.append({'category_id': category_id, 'category_name': category_name, 'orgs': orgs})
+    
     return json.dumps(categorized_orgs)
 
 @app.route('/api/organization/categories/all')
@@ -701,7 +721,7 @@ def get_user(uid):
             'lastname': user.lastname,
             'isOfficer': user.isOfficer,
             'organization': user.organization,
-        }
+            }
         return json.dumps({'user': user_info})
     else:
         return json.dumps({'error': 'User not found'})
@@ -719,7 +739,7 @@ def get_user_by_netid(netid):
             'lastname': user.lastname,
             'isOfficer': user.isOfficer,
             'organization': user.organization,
-        }
+            }
         return json.dumps({'user': user_info})
     else:
         return json.dumps({'error': 'User not found'})
@@ -812,6 +832,63 @@ def unfollow_user():
         return json.dumps({'message':'Unfollowed successfully.'})
     else:
         return json.dumps({'message': 'Never followed this user.'})
+
+@app.route('/api/event/perk/preference/add/', methods=['POST'])
+def add_event_perk_pref():
+    data = request.get_data()
+    data = json.loads(data)
+    uid = data['uid']
+    perk_id = data['perk_id']
+    preference = PreferredEventCategories(user_id = uid, org_id = org_id)
+    account = JoinedOrganizations.query.filter(
+        and_(JoinedOrganizations.user_id==uid,
+             JoinedOrganizations.org_id==org_id
+        )
+    ).first()
+    if account is None:
+        db.session.add(attendee)
+        db.session.commit()
+        return json.dumps({'success': True, 'uid': uid, 'org_id': org_id})
+    else:
+        return json.dumps({'relation already exists': True})
+
+@app.route('/api/officers/change/about', methods=['POST'])
+def update_org_about():
+    data = request.get_data()
+    data = json.loads(data)
+    uid = data['uid']
+    org_id = data['org_id']
+    new_about = data['newAbout']
+    user = Users.query.filter_by(user_id=uid).first()
+    if user and user.organization == org_id:
+        org = Organizations.query.filter_by(org_id=org_id)
+        if org:
+            org.about = new_about
+            db.session.commit()
+            return json.dumps({'success': True})
+        else:
+            return json.dumps({'error': 'Organization not found'})
+    else:
+        return json.dumps({'error': 'User not found or user is not officer of this organization'})
+
+@app.route('/api/officers/change/contact', methods=['POST'])
+def update_org_contact():
+    data = request.get_data()
+    data = json.loads(data)
+    uid = data['uid']
+    org_id = data['org_id']
+    new_contact = data['newContact']
+    user = Users.query.filter_by(user_id=uid).first()
+    if user and user.organization == org_id:
+        org = Organizations.query.filter_by(org_id=org_id)
+        if org:
+            org.contact = new_contact
+            db.session.commit()
+            return json.dumps({'success': True})
+        else:
+            return json.dumps({'error': 'Organization not found'})
+    else:
+        return json.dumps({'error': 'User not found or user is not officer of this organization'})
 
 if __name__ == '__main__':
     app.run(debug=True)
