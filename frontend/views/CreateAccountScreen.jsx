@@ -279,12 +279,12 @@ const CreateAccountScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   logoContainer: {
     position: "absolute",
-    top: 160, // Adjust to move the logo higher
+    top: 140, // Adjust to move the logo higher
     alignItems: "center",
   },
   logo: {
     width: 300, // Adjust to make the logo smaller
-    height: 120, // Adjust to make the logo smaller
+    height: 90, // Adjust to make the logo smaller
   },
   container: {
     flex: 1,
