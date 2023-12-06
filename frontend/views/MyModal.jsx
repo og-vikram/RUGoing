@@ -1,133 +1,258 @@
 // MyModal.js
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
 const MyModal = ({ isVisible, closeModal, modalText, handleSubmit, onSignupClick }) => {
+  const [button1Clicked, setButton1Clicked] = useState(false);
+  const [button2Clicked, setButton2Clicked] = useState(false);
+  const [button3Clicked, setButton3Clicked] = useState(false);
+  const [button4Clicked, setButton4Clicked] = useState(false);
+  const [button5Clicked, setButton5Clicked] = useState(false);
+  const [button6Clicked, setButton6Clicked] = useState(false);
+  const [button7Clicked, setButton7Clicked] = useState(false);
+  const [button8Clicked, setButton8Clicked] = useState(false);
+  const [button9Clicked, setButton9Clicked] = useState(false);
+  const [button10Clicked, setButton10Clicked] = useState(false);
+  const [button11Clicked, setButton11Clicked] = useState(false);
+  const [button12Clicked, setButton12Clicked] = useState(false);
+  const [button13Clicked, setButton13Clicked] = useState(false);
+  const [button14Clicked, setButton14Clicked] = useState(false);
+  const [button15Clicked, setButton15Clicked] = useState(false);
+  const [button16Clicked, setButton16Clicked] = useState(false);
+  const [button17Clicked, setButton17Clicked] = useState(false);
+  const [button18Clicked, setButton18Clicked] = useState(false);
+  const [button19Clicked, setButton19Clicked] = useState(false);
+  const [button20Clicked, setButton20Clicked] = useState(false);
+  const [button21Clicked, setButton21Clicked] = useState(false);
+  const [button22Clicked, setButton22Clicked] = useState(false);
+  const [button23Clicked, setButton23Clicked] = useState(false);
+  const [button24Clicked, setButton24Clicked] = useState(false);
+  const [button25Clicked, setButton25Clicked] = useState(false);
+  const [button26Clicked, setButton26Clicked] = useState(false);
+  const [button27Clicked, setButton27Clicked] = useState(false);
+  const [button28Clicked, setButton28Clicked] = useState(false);
+  const [button29Clicked, setButton29Clicked] = useState(false);
+  const [button30Clicked, setButton30Clicked] = useState(false);
+  const [button31Clicked, setButton31Clicked] = useState(false);
+  const [button32Clicked, setButton32Clicked] = useState(false);
+  const [button33Clicked, setButton33Clicked] = useState(false);
+  const [button34Clicked, setButton34Clicked] = useState(false);
+  const [button35Clicked, setButton35Clicked] = useState(false);
+  const [button36Clicked, setButton36Clicked] = useState(false);
+  const [button37Clicked, setButton37Clicked] = useState(false);
+  const [button38Clicked, setButton38Clicked] = useState(false);
+  const [button39Clicked, setButton39Clicked] = useState(false);
+  const [button40Clicked, setButton40Clicked] = useState(false);
+  const [button41Clicked, setButton41Clicked] = useState(false);
+  const [button42Clicked, setButton42Clicked] = useState(false);
+  const [button43Clicked, setButton43Clicked] = useState(false);
+  const [button44Clicked, setButton44Clicked] = useState(false);
+  const [button45Clicked, setButton45Clicked] = useState(false);
+  const [button46Clicked, setButton46Clicked] = useState(false);
+  const [button47Clicked, setButton47Clicked] = useState(false);
+  const [button48Clicked, setButton48Clicked] = useState(false);
+  const [button49Clicked, setButton49Clicked] = useState(false);
+  const [button50Clicked, setButton50Clicked] = useState(false);
+  const [button51Clicked, setButton51Clicked] = useState(false);
+  const [button52Clicked, setButton52Clicked] = useState(false);
+  const [button53Clicked, setButton53Clicked] = useState(false);
+  const [button54Clicked, setButton54Clicked] = useState(false);
+  const [button55Clicked, setButton55Clicked] = useState(false);
+  const [button56Clicked, setButton56Clicked] = useState(false);
+  const [button57Clicked, setButton57Clicked] = useState(false);
+  const [button58Clicked, setButton58Clicked] = useState(false);
+  const [button59Clicked, setButton59Clicked] = useState(false);
+  const [button60Clicked, setButton60Clicked] = useState(false);
 
+
+  const handleButton1Click = () => {
+    setButton1Clicked((prev) => !prev);
+  };
+
+  const handleButton2Click = () => {
+    setButton2Clicked((prev) => !prev);
+  };
+
+  const handleButton3Click = () => {
+    setButton3Clicked((prev) => !prev);
+  };
+
+  const handleButton4Click = () => {
+    setButton4Clicked((prev) => !prev);
+  };
+
+  const handleButton5Click = () => {
+    setButton5Clicked((prev) => !prev);
+  };
+  const handleButton6Click = () => {
+    setButton6Clicked((prev) => !prev);
+  };
+  const handleButton7Click = () => {
+    setButton7Clicked((prev) => !prev);
+  };
+  const handleButton8Click = () => {
+    setButton8Clicked((prev) => !prev);
+  };
+  const handleButton9Click = () => {
+    setButton9Clicked((prev) => !prev);
+  };
+  const handleButton10Click = () => {
+    setButton10Clicked((prev) => !prev);
+  };
+  const handleButton11Click = () => {
+    setButton11Clicked((prev) => !prev);
+  };
+  const handleButton12Click = () => {
+    setButton12Clicked((prev) => !prev);
+  };
+  const handleButton13Click = () => {
+    setButton13Clicked((prev) => !prev);
+  };
+  const handleButton14Click = () => {
+    setButton14Clicked((prev) => !prev);
+  };
+  const handleButton15Click = () => {
+    setButton15Clicked((prev) => !prev);
+  };
+  const handleButton16Click = () => {
+    setButton16Clicked((prev) => !prev);
+  };
+  const handleButton17Click = () => {
+    setButton17Clicked((prev) => !prev);
+  };
+  const handleButton18Click = () => {
+    setButton18Clicked((prev) => !prev);
+  };
+  const handleButton19Click = () => {
+    setButton19Clicked((prev) => !prev);
+  };
+  const handleButton20Click = () => {
+    setButton20Clicked((prev) => !prev);
+  };
+  const handleButton21Click = () => {
+    setButton21Clicked((prev) => !prev);
+  };
+  const handleButton22Click = () => {
+    setButton22Clicked((prev) => !prev);
+  };
+  const handleButton23Click = () => {
+    setButton23Clicked((prev) => !prev);
+  };
+  const handleButton24Click = () => {
+    setButton24Clicked((prev) => !prev);
+  };
+  const handleButton25Click = () => {
+    setButton25Clicked((prev) => !prev);
+  };
+  const handleButton26Click = () => {
+    setButton26Clicked((prev) => !prev);
+  };
+  const handleButton27Click = () => {
+    setButton27Clicked((prev) => !prev);
+  };
+  const handleButton28Click = () => {
+    setButton28Clicked((prev) => !prev);
+  };
+  const handleButton29Click = () => {
+    setButton29Clicked((prev) => !prev);
+  };
+  const handleButton30Click = () => {
+    setButton30Clicked((prev) => !prev);
+  };
+  const handleButton31Click = () => {
+    setButton31Clicked((prev) => !prev);
+  };
+  const handleButton32Click = () => {
+    setButton32Clicked((prev) => !prev);
+  };
+  const handleButton33Click = () => {
+    setButton33Clicked((prev) => !prev);
+  };
+  const handleButton34Click = () => {
+    setButton34Clicked((prev) => !prev);
+  };
+  const handleButton35Click = () => {
+    setButton35Clicked((prev) => !prev);
+  };
+  const handleButton36Click = () => {
+    setButton36Clicked((prev) => !prev);
+  };
+  const handleButton37Click = () => {
+    setButton37Clicked((prev) => !prev);
+  };
+  const handleButton38Click = () => {
+    setButton38Clicked((prev) => !prev);
+  };
+  const handleButton39Click = () => {
+    setButton39Clicked((prev) => !prev);
+  };
+  const handleButton40Click = () => {
+    setButton40Clicked((prev) => !prev);
+  };
+  const handleButton41Click = () => {
+    setButton41Clicked((prev) => !prev);
+  };
+  const handleButton42Click = () => {
+    setButton42Clicked((prev) => !prev);
+  };
+  const handleButton43Click = () => {
+    setButton43Clicked((prev) => !prev);
+  };
+  const handleButton44Click = () => {
+    setButton44Clicked((prev) => !prev);
+  };
+  const handleButton45Click = () => {
+    setButton45Clicked((prev) => !prev);
+  };
+  const handleButton46Click = () => {
+    setButton46Clicked((prev) => !prev);
+  };
+  const handleButton47Click = () => {
+    setButton47Clicked((prev) => !prev);
+  };
+  const handleButton48Click = () => {
+    setButton48Clicked((prev) => !prev);
+  };
+  const handleButton49Click = () => {
+    setButton49Clicked((prev) => !prev);
+  };
+  const handleButton50Click = () => {
+    setButton50Clicked((prev) => !prev);
+  };
+  const handleButton51Click = () => {
+    setButton51Clicked((prev) => !prev);
+  };
+  const handleButton52Click = () => {
+    setButton52Clicked((prev) => !prev);
+  };
+  const handleButton53Click = () => {
+    setButton53Clicked((prev) => !prev);
+  };
+  const handleButton54Click = () => {
+    setButton54Clicked((prev) => !prev);
+  };
+  const handleButton55Click = () => {
+    setButton55Clicked((prev) => !prev);
+  };
+  const handleButton56Click = () => {
+    setButton56Clicked((prev) => !prev);
+  };
+  const handleButton57Click = () => {
+    setButton57Clicked((prev) => !prev);
+  };
+  const handleButton58Click = () => {
+    setButton58Clicked((prev) => !prev);
+  };
+  const handleButton59Click = () => {
+    setButton59Clicked((prev) => !prev);
+  };
+  const handleButton60Click = () => {
+    setButton60Clicked((prev) => !prev);
+  };
   const signup = () => {
-
-    setSelectedButtons3(selectedButtons3);
-    console.log('Selected buttons:', selectedButtons3);
-
-    setSelectedButtons2(selectedButtons2);
-    console.log('Selected buttons:', selectedButtons2);
-
-    setSelectedButtons1(selectedButtons1);
-    console.log('Selected buttons:', selectedButtons1);
-
-    setSelectedButtons(selectedButtons);
-    console.log('Selected buttons:', selectedButtons);
-
     closeModal();
     onSignupClick();
   }
-
-  //categories stuff 
-  const [categories2List, setCategories2List] = useState([]);
-
-  const[selectedButtons1, setSelectedButtons1] = useState([]);
-
-    useEffect(() => {
-    fetch(
-      "https://absolute-willing-salmon.ngrok-free.app/api/event/categories"
-    )
-      .then((response) => response.json())
-      .then((json) => {
-        setCategories2List(json.categories);
-        console.log('categories: ', categories2List)
-      })
-      .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
-  }, []);
-
-  const handleButton1Click = (id) => {
-    const isSelected = selectedButtons1.includes(id);
-    if(isSelected) {
-      setSelectedButtons1(selectedButtons1.filter((buttonId) => buttonId !== id));
-    }else{
-      setSelectedButtons1([...selectedButtons1, id]);
-    }
-  };
-
-    //perks stuff 
-    const [perksList, setPerksList] = useState([]);
-
-    const[selectedButtons2, setSelectedButtons2] = useState([]);
-
-    useEffect(() => {
-        fetch(
-        "https://absolute-willing-salmon.ngrok-free.app/api/event/perks"
-        )
-        .then((response) => response.json())
-        .then((json) => {
-            setPerksList(json.perks);
-        })
-        .then(() => console.log('perks: ', perksList))
-        .catch((error) => console.log(error))
-        .finally(() => setLoading(false));
-    }, []);
-
-    const handleButton2Click = (id) => {
-        const isSelected = selectedButtons2.includes(id);
-        if(isSelected) {
-          setSelectedButtons2(selectedButtons2.filter((buttonId) => buttonId !== id));
-        }else{
-          setSelectedButtons2([...selectedButtons2, id]);
-        }
-      };
-
-    //themes stuff 
-  const [themesList, setThemesList] = useState([]);
-
-  const[selectedButtons3, setSelectedButtons3] = useState([]);
-
-  useEffect(() => {
-    fetch(
-      "https://absolute-willing-salmon.ngrok-free.app/api/event/themes"
-    )
-      .then((response) => response.json())
-      .then((json) => {
-        setThemesList(json.themes);
-      })
-      .then(() => console.log('themes: ', themesList))
-      .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
-  }, []);
-  const handleButton3Click = (id) => {
-    const isSelected = selectedButtons3.includes(id);
-    if(isSelected) {
-      setSelectedButtons3(selectedButtons3.filter((buttonId) => buttonId !== id));
-    }else{
-      setSelectedButtons3([...selectedButtons3, id]);
-    }
-  };
-
-  //org stuff
-  const [categoriesList, setCategoriesList] = useState([]);
-
-  const[selectedButtons, setSelectedButtons] = useState([]);
-
-  useEffect(() => {
-    fetch(
-      "https://absolute-willing-salmon.ngrok-free.app/api/organization/categories"
-    )
-      .then((response) => response.json())
-      .then((json) => {
-        setCategoriesList(json.categories);
-        console.log('categories: ', categoriesList)
-      })
-      .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
-  }, []);
-  const handleButtonClick = (id) => {
-    const isSelected = selectedButtons.includes(id);
-    if(isSelected) {
-      setSelectedButtons(selectedButtons.filter((buttonId) => buttonId !== id));
-    }else{
-      setSelectedButtons([...selectedButtons, id]);
-    }
-  };
-
 
   return (
     <Modal
@@ -141,40 +266,152 @@ const MyModal = ({ isVisible, closeModal, modalText, handleSubmit, onSignupClick
             <View>
                 <Text style={styles.questionText}> What event perks are you interest in?</Text>
                 <View style={styles.card1}>
-                <ScrollView>
-                  {perksList.map((item) => (
-                    <TouchableOpacity
-                      key={item.id}
-                      onPress={()=>handleButton2Click(item.id)}
-                      style={[
-                        styles.button, {
-                          backgroundColor: selectedButtons2.includes(item.id) ? '#FF6961' : '#E6E6E6',
-                        },
-                      ]}
-                    >
-                      <Text style={styles.button2Text}>{item.name}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
+                    <ScrollView>
+                        <TouchableOpacity
+                            onPress={handleButton1Click}
+                            style={[styles.button, button1Clicked && styles.redButton]}
+                        >
+                            <Text>Free Food</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleButton2Click}
+                            style={[styles.button, button2Clicked && styles.redButton]}
+                        >
+                            <Text>Free Stuff</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleButton3Click}
+                            style={[styles.button, button3Clicked && styles.redButton]}
+                        >
+                            <Text>Credit</Text>
+                        </TouchableOpacity>
+                    </ScrollView>
                 </View>
             </View>
             <View>
                 <Text style={styles.questionText}>What event categories are you interested in?</Text>
                 <View style={styles.card2}>
-                <ScrollView>
-                      {categories2List.map((item) => (
+                    <ScrollView>
                         <TouchableOpacity
-                          key={item.id}
-                          onPress={()=>handleButton1Click(item.id)}
-                          style={[
-                            styles.button, {
-                              backgroundColor: selectedButtons1.includes(item.id) ? '#FF6961' : '#E6E6E6',
-                            },
-                          ]}
+                            onPress={handleButton4Click}
+                            style={[styles.button, button4Clicked && styles.redButton]}
                         >
-                          <Text style={styles.button2Text}>{item.name}</Text>
+                            <Text>Political/Social Action Public Forum</Text>
                         </TouchableOpacity>
-                      ))}
+                        <TouchableOpacity
+                            onPress={handleButton5Click}
+                            style={[styles.button, button5Clicked && styles.redButton]}
+                        >
+                            <Text>Community (Residence Life)</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleButton6Click}
+                            style={[styles.button, button6Clicked && styles.redButton]}
+                        >
+                            <Text>Banquet/Food or Culinary</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleButton7Click}
+                            style={[styles.button, button7Clicked && styles.redButton]}
+                        >
+                            <Text>Career Fair/Panel</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleButton8Click}
+                            style={[styles.button, button8Clicked && styles.redButton]}
+                        >
+                            <Text>Community Service Event on Campus</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleButton9Click}
+                            style={[styles.button, button9Clicked && styles.redButton]}
+                        >
+                            <Text>Concert/Musical Performance</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleButton10Click}
+                            style={[styles.button, button10Clicked && styles.redButton]}
+                        >
+                            <Text>Cultural Performance</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleButton11Click}
+                            style={[styles.button, button11Clicked && styles.redButton]}
+                        >
+                            <Text>Educational Conference/Seminar/Workshop/Panel</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleButton12Click}
+                            style={[styles.button, button12Clicked && styles.redButton]}
+                        >
+                            <Text>Educational Lecture</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleButton13Click}
+                            style={[styles.button, button13Clicked && styles.redButton]}
+                        >
+                            <Text>Entertainment</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleButton14Click}
+                            style={[styles.button, button14Clicked && styles.redButton]}
+                        >
+                            <Text>Film</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleButton15Click}
+                            style={[styles.button, button15Clicked && styles.redButton]}
+                        >
+                            <Text>General Organization Meeting</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleButton16Click}
+                            style={[styles.button, button16Clicked && styles.redButton]}
+                        >
+                            <Text>Performance</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleButton17Click}
+                            style={[styles.button, button17Clicked && styles.redButton]}
+                        >
+                            <Text>Religious/Religious Cultural/Spiritual Event</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleButton18Click}
+                            style={[styles.button, button18Clicked && styles.redButton]}
+                        >
+                            <Text>Seasonal/Holiday</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleButton19Click}
+                            style={[styles.button, button19Clicked && styles.redButton]}
+                        >
+                            <Text>Special Interest</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleButton20Click}
+                            style={[styles.button, button20Clicked && styles.redButton]}
+                        >
+                            <Text>Sporst/Recreation/Intramural</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleButton21Click}
+                            style={[styles.button, button21Clicked && styles.redButton]}
+                        >
+                            <Text>Trip to Competition</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleButton22Click}
+                            style={[styles.button, button22Clicked && styles.redButton]}
+                        >
+                            <Text>Wellness Event</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleButton23Click}
+                            style={[styles.button, button23Clicked && styles.redButton]}
+                        >
+                            <Text>Graduate Student Organization Event</Text>
+                        </TouchableOpacity>
                     </ScrollView>
                     
            
@@ -182,42 +419,237 @@ const MyModal = ({ isVisible, closeModal, modalText, handleSubmit, onSignupClick
                 <View>
                     <Text style={styles.questionText}> What event themes are you interest in?</Text>
                     <View style={styles.card2}>
-                    <ScrollView>
-                  {themesList.map((item) => (
-                    <TouchableOpacity
-                      key={item.id}
-                      onPress={()=>handleButton3Click(item.id)}
-                      style={[
-                        styles.button, {
-                          backgroundColor: selectedButtons3.includes(item.id) ? '#FF6961' : '#E6E6E6',
-                        },
-                      ]}
-                    >
-                      <Text style={styles.button2Text}>{item.name}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-                        
+                        <ScrollView>
+                            <TouchableOpacity
+                                onPress={handleButton24Click}
+                                style={[styles.button, button24Clicked && styles.redButton]}
+                            >
+                                <Text>Arts & Music</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton25Click}
+                                style={[styles.button, button25Clicked && styles.redButton]}
+                            >
+                                <Text>Athletics</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton26Click}
+                                style={[styles.button, button26Clicked && styles.redButton]}
+                            >
+                                <Text>Service</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton27Click}
+                                style={[styles.button, button27Clicked && styles.redButton]}
+                            >
+                                <Text>Cultural</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton28Click}
+                                style={[styles.button, button28Clicked && styles.redButton]}
+                            >
+                                <Text>Fundraising</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton29Click}
+                                style={[styles.button, button29Clicked && styles.redButton]}
+                            >
+                                <Text>Group Business</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton30Click}
+                                style={[styles.button, button30Clicked && styles.redButton]}
+                            >
+                                <Text>Social</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton31Click}
+                                style={[styles.button, button31Clicked && styles.redButton]}
+                            >
+                                <Text>Spirituality</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton32Click}
+                                style={[styles.button, button32Clicked && styles.redButton]}
+                            >
+                                <Text>Learning</Text>
+                            </TouchableOpacity>
+                        </ScrollView>
                     </View>
                 </View>
                 <View style={styles.questionText}>
                     <Text style={styles.questionText}> What organization categories are you interest in?</Text>
                     <View style={styles.card2}>
-                    <ScrollView>
-                      {categoriesList.map((item) => (
-                        <TouchableOpacity
-                          key={item.id}
-                          onPress={()=>handleButtonClick(item.id)}
-                          style={[
-                            styles.button, {
-                              backgroundColor: selectedButtons.includes(item.id) ? '#FF6961' : '#E6E6E6',
-                            },
-                          ]}
-                        >
-                          <Text style={styles.buttonText}>{item.name}</Text>
-                        </TouchableOpacity>
-                      ))}
-                    </ScrollView>   
+                        <ScrollView>
+                            <TouchableOpacity
+                                onPress={handleButton33Click}
+                                style={[styles.button, button33Clicked && styles.redButton]}
+                            >
+                                <Text>Performing Arts Student Organizations</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton34Click}
+                                style={[styles.button, button34Clicked && styles.redButton]}
+                            >
+                                <Text>Cultural Student Organizations</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton35Click}
+                                style={[styles.button, button35Clicked && styles.redButton]}
+                            >
+                                <Text>Community Service student Organizations</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton36Click}
+                                style={[styles.button, button36Clicked && styles.redButton]}
+                            >
+                                <Text>Academic Student Organizations</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton37Click}
+                                style={[styles.button, button37Clicked && styles.redButton]}
+                            >
+                                <Text>Honorary Student Organizations</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton38Click}
+                                style={[styles.button, button38Clicked && styles.redButton]}
+                            >
+                                <Text>Leisure Student Organizations</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton39Click}
+                                style={[styles.button, button39Clicked && styles.redButton]}
+                            >
+                                <Text>Media Student Organizations</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton40Click}
+                                style={[styles.button, button40Clicked && styles.redButton]}
+                            >
+                                <Text>Business Student Organizations</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton41Click}
+                                style={[styles.button, button41Clicked && styles.redButton]}
+                            >
+                                <Text>Mason Gross Student Organizations</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton42Click}
+                                style={[styles.button, button42Clicked && styles.redButton]}
+                            >
+                                <Text>Engineering Student Organizations</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton43Click}
+                                style={[styles.button, button43Clicked && styles.redButton]}
+                            >
+                                <Text>Environmental & Biological Sciences (SEBS)</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton44Click}
+                                style={[styles.button, button44Clicked && styles.redButton]}
+                            >
+                                <Text>Faith-based Student Organizations</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton45Click}
+                                style={[styles.button, button45Clicked && styles.redButton]}
+                            >
+                                <Text>Social Action/Political Student Organizations</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton46Click}
+                                style={[styles.button, button46Clicked && styles.redButton]}
+                            >
+                                <Text>Interfraternity Council</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton47Click}
+                                style={[styles.button, button47Clicked && styles.redButton]}
+                            >
+                                <Text>Multicultural Greek Council</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton48Click}
+                                style={[styles.button, button48Clicked && styles.redButton]}
+                            >
+                                <Text>Recreation Sports Clubs</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton49Click}
+                                style={[styles.button, button49Clicked && styles.redButton]}
+                            >
+                                <Text>Panhellenic Coundil</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton50Click}
+                                style={[styles.button, button50Clicked && styles.redButton]}
+                            >
+                                <Text>Professional Fraternities and Sororities</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton51Click}
+                                style={[styles.button, button51Clicked && styles.redButton]}
+                            >
+                                <Text>Department at Rutgers University</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton52Click}
+                                style={[styles.button, button52Clicked && styles.redButton]}
+                            >
+                                <Text>Philanthropic Student Organizations</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton53Click}
+                                style={[styles.button, button53Clicked && styles.redButton]}
+                            >
+                                <Text>Geek Student Organizations</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton54Click}
+                                style={[styles.button, button54Clicked && styles.redButton]}
+                            >
+                                <Text>Pre-Professional Student Organizations</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton55Click}
+                                style={[styles.button, button55Clicked && styles.redButton]}
+                            >
+                                <Text>LGBTQ Students Community</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton56Click}
+                                style={[styles.button, button56Clicked && styles.redButton]}
+                            >
+                                <Text>getINVOLVED Help</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton57Click}
+                                style={[styles.button, button57Clicked && styles.redButton]}
+                            >
+                                <Text>Graduate Student Organizations</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton58Click}
+                                style={[styles.button, button58Clicked && styles.redButton]}
+                            >
+                                <Text>Academic Graduate Student Organizations</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton59Click}
+                                style={[styles.button, button59Clicked && styles.redButton]}
+                            >
+                                <Text>Academic</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleButton60Click}
+                                style={[styles.button, button60Clicked && styles.redButton]}
+                            >
+                                <Text>Cultural</Text>
+                            </TouchableOpacity>
+                        </ScrollView>
                     </View>
                 </View>
                 <TouchableOpacity style={styles.bottombutton} onPress={signup}>
