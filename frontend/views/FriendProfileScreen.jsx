@@ -107,21 +107,21 @@ const FriendProfileScreen = ({ navigation }) => {
         <Text>{userData.bio_descrip}</Text>
         <View>
           {following ? (
-            <View style={styles.attendingContainer}>
+            <View style={styles.followingContainer}>
               <TouchableOpacity
-                style={styles.unAttendButton}
+                style={styles.unFollowButton}
                 onPress={handleUnfollow}
               >
-                <Text style={styles.unAttendButtonText}>Following</Text>
+                <Text style={styles.unFollowButtonText}>Following</Text>
               </TouchableOpacity>
             </View>
           ) : (
-            <View style={styles.attendingContainer}>
+            <View style={styles.followingContainer}>
               <TouchableOpacity
-                style={styles.attendingButton}
+                style={styles.followingButton}
                 onPress={handleFollow}
               >
-                <Text style={styles.attendingButtonText}>Follow</Text>
+                <Text style={styles.unFollowButtonText}>Follow</Text>
               </TouchableOpacity>
             </View>
           )}

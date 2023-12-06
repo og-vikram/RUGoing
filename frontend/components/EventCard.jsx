@@ -41,7 +41,7 @@ export default (props) => {
     <>
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate("Event Profile", {
+          navigation.navigate("EventProfileScreen", {
             selectedProps: props,
           });
         }}

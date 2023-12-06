@@ -57,7 +57,7 @@ const EventProfileScreen = (props) => {
       .then((json) => {
         if (json && json.events) {
           events = json.events;
-          if (events.includes(eventId)) setAttending(true);
+          if (events.some((event) => event.id === eventId)) setAttending(true);
           else setAttending(false);
         }
       })

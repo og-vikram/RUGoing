@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useState } from "react";
 import EventCard from "../components/EventCard";
 
-const EventsScreen = () => {
+const EventsScreen = ({ navigation }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loading2, setLoading2] = useState(true);
@@ -96,7 +96,7 @@ const EventsScreen = () => {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("Event Profile", {
+              navigation.navigate("EventProfileScreen", {
                 eventId: item.id,
               });
             }}

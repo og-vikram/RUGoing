@@ -73,7 +73,7 @@ const OrganizationProfileScreen = () => {
       .then((json) => {
         if (json && json.orgs) {
           orgs = json.orgs;
-          if (orgs.includes(organizationId)) setJoining(true);
+          if (orgs.some((org) => org.id === organizationId)) setJoining(true);
           else setJoining(false);
         }
       })
@@ -238,11 +238,9 @@ const styles = StyleSheet.create({
     height: 200,
   },
   buttonContainer: {
-    
-    flexDirection: 'row', 
-    justifyContent: 'flex-start', 
+    flexDirection: "row",
+    justifyContent: "flex-start",
     marginLeft: "-15%",
-    
   },
   joinButton: {
     backgroundColor: "#FF392E",
