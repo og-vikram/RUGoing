@@ -13,7 +13,12 @@ import EventCard from "../components/EventCard";
 const EventsScreen = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [loading2, setLoading2] = useState(true);
+  const [categories, setCategories] = useState([]);
+  const [themeLoading, setThemeLoading] = useState(true);
+  const [perkLoading, setPerkLoading] = useState(true);
+  const [perks, setPerks] = useState([]);
+  const [themes, setThemes] = useState([]);
   const url = "https://absolute-willing-salmon.ngrok-free.app/api/event/all";
   useEffect(() => {
     fetch(url, {
@@ -27,7 +32,63 @@ const EventsScreen = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  if (!loading) {
+  useEffect(() => {
+    fetch(
+      "https://absolute-willing-salmon.ngrok-free.app/api/event/categories/all"
+    )
+      .then((response) => response.json())
+      .then((json) => setCategories(json))
+      .catch((error) => console.log(error))
+      .finally(() => setLoading2(false));
+  }, []);
+
+  useEffect(() => {
+    fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/themes/all")
+      .then((response) => response.json())
+      .then((json) => setThemes(json))
+      .catch((error) => console.log(error))
+      .finally(() => setThemeLoading(false));
+  }, []);
+
+  useEffect(() => {
+    fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/perks/all")
+      .then((response) => response.json())
+      .then((json) => setPerks(json))
+      .catch((error) => console.log(error))
+      .finally(() => setPerkLoading(false));
+  }, []);
+
+  const returnCategories = (event_id) => {
+    let item_categories = [];
+    for (let i = 0; i < categories.length; i++) {
+      if (categories[i].event_id == event_id) {
+        item_categories.push(categories[i].category_names);
+      }
+    }
+    return item_categories;
+  };
+
+  const returnThemes = (event_id) => {
+    let item_themes = [];
+    for (let i = 0; i < themes.length; i++) {
+      if (themes[i].event_id == event_id) {
+        item_themes.push(themes[i].theme_names);
+      }
+    }
+    return item_themes;
+  };
+
+  const returnPerks = (event_id) => {
+    let item_perks = [];
+    for (let i = 0; i < perks.length; i++) {
+      if (perks[i].event_id == event_id) {
+        item_perks.push(perks[i].perk_names);
+      }
+    }
+    return item_perks;
+  };
+
+  if (!loading && !loading2 && !themeLoading && !perkLoading) {
     return (
       <FlatList
         style={styles.flatList}
@@ -43,7 +104,9 @@ const EventsScreen = () => {
             <EventCard
               title={item.name}
               description={item.description}
-              category="test_category"
+              categories={returnCategories(item.id)}
+              themes={returnThemes(item.id)}
+              perks={returnPerks(item.id)}
               image_id={
                 "https://se-images.campuslabs.com/clink/images/" + item.image_id
               }
@@ -53,12 +116,6 @@ const EventsScreen = () => {
         )}
         key={(item) => item.id}
       />
-      // <EventCard
-      //   host="somedude"
-      //   title="Come join us for coffee!"
-      //   category="hello"
-      //   eventid="1"
-      // />
     );
   }
 

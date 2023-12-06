@@ -12,7 +12,7 @@ import OrganizationsScreen from "./OrganizationsScreen";
 import EventsScreen from "./EventsScreen";
 import EventProfileScreen from "./EventProfileScreen";
 import OrganizationProfileScreen from "./OrganizationProfileScreen";
-import FriendProfileScreen from "./FriendProfileScreen";
+import Fuse from "fuse.js";
 
 const ExploreStack = createNativeStackNavigator();
 
@@ -54,15 +54,9 @@ const ExploreMain = ({ navigation }) => {
       // }),
     })
       .then((response) => response.json())
-      .then((json) => setEventData(json.events))
-      .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
-  }, []);
-
-  useEffect(() => {
-    fetch("https://absolute-willing-salmon.ngrok-free.app/api/users/all")
-      .then((response) => response.json())
-      .then((json) => setUserData(json.users))
+      .then((json) =>
+        setEventData(json.map(({ event_id, name }) => ({ event_id, name })))
+      )
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
   }, []);
@@ -75,37 +69,13 @@ const ExploreMain = ({ navigation }) => {
     );
     // console.log('orgs', orgSearchResults)
 
-    const filteredEvents = EventData.filter((event) => {
-      const eventName = event.name.toLowerCase();
-      for (const term of searchTerms) {
-        if (!eventName.includes(term)) {
-          return false;
-        }
-      }
-      return true;
-    }).map((event) => ({
-      name: event.name,
-      id: event.id,
-    }));
-    setEventSearchResults(filteredEvents);
-
-    const filteredUsers = userData
-      .filter((user) => {
-        const name = user.firstname + " " + user.lastname;
-        console.log(name);
-        for (const term of searchTerms) {
-          if (!name.toLowerCase().includes(term)) {
-            return false;
-          }
-        }
-        return true;
-      })
-      .map((user) => ({
-        name: user.firstname + " " + user.lastname,
-        uid: user.user_id,
-        netid: user.netid,
-      }));
-    setUserSearchResults(filteredUsers);
+    const newfuse = new Fuse(EventData, fuseOptions);
+    newresult = newfuse.search(query);
+    console.log("newresult:" + newresult);
+    setEventSearchResults(
+      newresult.map(({ item }) => ({ name: item.name, fid: item.fid }))
+    );
+    // console.log('events', eventSearchResults)
   };
 
   const handleSearchChange = (text) => {
@@ -135,22 +105,7 @@ const ExploreMain = ({ navigation }) => {
 
   const SearchEventItem = ({ item }) => (
     <TouchableOpacity
-      onPress={() => {
-        console.log(item.id);
-        navigation.navigate("EventProfileScreen", { eventId: item.id });
-      }}
-      style={styles.item}
-    >
-      <Text>{item.name}</Text>
-    </TouchableOpacity>
-  );
-
-  const SearchUserItem = ({ item }) => (
-    <TouchableOpacity
-      onPress={() => {
-        console.log(item.name, item.netid);
-        navigation.navigate("FriendProfileScreen", { user_uid: item.uid });
-      }}
+      onPress={() => navigation.navigate("event", { eventId: item.event_id })}
       style={styles.item}
     >
       <Text>{item.name}</Text>
@@ -170,17 +125,7 @@ const ExploreMain = ({ navigation }) => {
         {searchTerm !== "" && (
           <SectionList
             renderSectionHeader={({ section: { title } }) => (
-              <Text
-                style={{
-                  fontWeight: "bold",
-                  padding: 2,
-                  color: "#FF392E",
-                  paddingLeft: 10,
-                  backgroundColor: "#E6E6E6",
-                }}
-              >
-                {title}
-              </Text>
+              <Text style={{ fontWeight: "bold", padding: 2 }}>{title}</Text>
             )}
             style={styles.sectionList}
             sections={[
@@ -261,13 +206,6 @@ const ExploreScreen = () => {
       <ExploreStack.Screen
         name="OrganizationProfileScreen"
         component={OrganizationProfileScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <ExploreStack.Screen
-        name="FriendProfileScreen"
-        component={FriendProfileScreen}
         options={{
           headerShown: false,
         }}
