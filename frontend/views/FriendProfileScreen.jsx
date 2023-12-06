@@ -101,20 +101,24 @@ const FriendProfileScreen = ({ navigation }) => {
   
 
   return (
+    <ScrollView>
     <View>
-      <ScrollView>
-      <Card>
+      <Card
+      containerStyle={{
+        borderRadius: 8,
+        height: 900,
+      }}>
         <Card.Title>{userData.firstname + " " + userData.lastname}</Card.Title>
         <Card.Divider />
         <Text style = {styles.italic}>{userData.bio_descrip}</Text>
         <View>
           {following ? (
-            <View style={styles.attendingContainer}>
+            <View style={styles.followingContainer}>
               <TouchableOpacity
-                style={styles.unAttendButton}
+                style={styles.followingButton}
                 onPress={handleUnfollow}
               >
-                <Text style={styles.unAttendButtonText}>Following</Text>
+                <Text style={styles.followingButtonText}>Following</Text>
               </TouchableOpacity>
             </View>
           ) : (
@@ -129,11 +133,9 @@ const FriendProfileScreen = ({ navigation }) => {
           )}
         </View>
 
-        <Card.Divider />
-
         <View>
       <View style={styles.eventsCard}>
-        <Text style={styles.eventHeader}> Recommended Events </Text>
+        <Text style={styles.eventHeader}> {userData.firstname + " is attending..."}</Text>
 
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <View
@@ -141,7 +143,7 @@ const FriendProfileScreen = ({ navigation }) => {
               flexDirection: "row",
               flex: 1,
               alignItems: "center",
-              marginTop: "-3%",
+              marginTop: "-20%",
             }}
           >
             {/* Content inside the horizontal ScrollView */}
@@ -184,7 +186,7 @@ const FriendProfileScreen = ({ navigation }) => {
       </View>
 
       <View style={styles.orgsCard}>
-        <Text style={styles.orgHeader}> Recommended Organizations </Text>
+        <Text style={styles.orgHeader}> {userData.firstname + " is apart of..."} </Text>
 
         <ScrollView
           horizontal={true}
@@ -196,7 +198,7 @@ const FriendProfileScreen = ({ navigation }) => {
               flexDirection: "row",
               flex: 1,
               alignItems: "center",
-              marginTop: "-3%",
+              marginTop: "-20%",
             }}
           >
             {/* Content inside the horizontal ScrollView */}
@@ -242,8 +244,8 @@ const FriendProfileScreen = ({ navigation }) => {
 
 
       </Card>
-      </ScrollView>
     </View>
+    </ScrollView>
   );
 };
 
@@ -267,10 +269,14 @@ const styles = StyleSheet.create({
   followingButtonText: {
     color: "white",
     fontSize: 16,
+    alignItems: "center",
     fontWeight: "bold",
   },
   followingContainer: {
     alignItems: "center",
+  },
+  attendingButton: {
+
   },
   basicInfo: {
     backgroundColor: "white",
@@ -312,44 +318,46 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 15,
     alignSelf: "center",
-    height: "48%",
-    width: "95%",
+    height: "46%",
+    width: "90%",
     justifyContent: "center",
-    marginTop: "2.5%",
+    marginTop: "2.0%",
+    marginBottom: "-15%",
   },
   orgsCard: {
     backgroundColor: "#FF392E",
     borderRadius: 15,
     alignSelf: "center",
-    height: "48%",
-    width: "95%",
+    height: "46%",
+    width: "90%",
     justifyContent: "center",
-    marginTop: "2.5%",
+    marginTop: "2.0%",
+    marginBottom: "-15%",
   },
   eventHeader: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
     color: "#FF392E",
     textAlign: "center",
     marginTop: "3%",
   },
   orgHeader: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
     color: "white",
     textAlign: "center",
     marginTop: "3%",
   },
   eventsMiniCards: {
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 150,
     backgroundColor: "#FF392E",
     margin: 10,
     borderRadius: 15,
   },
   orgsMiniCards: {
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 150,
     backgroundColor: "white",
     margin: 10,
     borderRadius: 15,
