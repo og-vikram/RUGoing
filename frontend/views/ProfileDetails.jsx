@@ -17,45 +17,48 @@ const ProfileDetails = ({ navigation }) => {
 
   const [edit, toggleEdit] = useState(false);
   const [user, getUser] = useState({});
-  const [events, setEvents] = useState({});
-  const [organizations, setOrganizations] = useState({});
+  const [events, setEvents] = useState([]);
+  const [organizations, setOrganizations] = useState([]);
 
-  const [eventjsons, setEventjsons] = useState([]);
-  const [orgjsons, setOrgjsons] = useState([]);
 
   const [loading, setLoading] = useState(true);
 
   const[newUserBio, setNewUserBio] = useState("");
-
+  const[actualUserBio, setActualUserBio] = useState("");
 
 
   useLayoutEffect(() => {
+
+ 
+
     fetch(
       `https://absolute-willing-salmon.ngrok-free.app/api/users/${auth.currentUser.uid}`)
       .then((response) => response.json())
       .then((json) => getUser(json.user))
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error))
+      .then(
 
       fetch(
         `https://absolute-willing-salmon.ngrok-free.app/api/event/attending/${auth.currentUser.uid}`
       )
         .then((response) => response.json())
-        .then((json) => setEvents(json))
-        .catch((error) => console.log(error));
+        .then((json) => setEvents(json.events))
+        .catch((error) => console.log(error)))
+        .then(
 
       fetch(
         `https://absolute-willing-salmon.ngrok-free.app/api/organization/joined/${auth.currentUser.uid}`)
         .then((response) => response.json())
-        .then((json) => setOrganizations(json))
-        .catch((error) => console.log(error));
+        .then((json) => setOrganizations(json.orgs))
+        .catch((error) => console.log(error)))
         if(user.bio_descrip == null){
-          setNewUserBio(null);
+          setActualUserBio(null);
         }else{
-        setNewUserBio(user.bio_descrip);}
-  
-    
-  }, []);
-
+        setActualUserBio(user.bio_descrip);}
+        
+        setLoading(false);
+  }, [newUserBio]);
+/*
   useLayoutEffect(  () => {
     const fetchEventDetails = async () => {
       setEventjsons([]);
@@ -100,7 +103,7 @@ useLayoutEffect( () => {
   setLoading(false);
 
 }, [organizations]);
-
+*/
 
 const updateBio = async () => {
   {
@@ -136,7 +139,10 @@ function EditOrDone(){
 }
 
 
-if(!loading)
+if(!loading){
+  console.log(user.bio_descrip);
+  console.log(newUserBio);
+  console.log(actualUserBio);
   return (
     <View>
       <Card
@@ -167,7 +173,7 @@ if(!loading)
         >
          {edit &&  (
 <View>
-            <TextInput editable={true} autoFocus={true} onChangeText={((text) => setNewUserBio(text))} value={newUserBio} placeholder={(newUserBio == null) ? 'Your Bio Here' : newUserBio}
+            <TextInput editable={true} autoFocus={true} onChangeText={((text) => setNewUserBio(text))} value={newUserBio} placeholder={(newUserBio == null) ? 'Your Bio Here' : actualUserBio}
            ></TextInput>
            </View>
             )}
@@ -191,17 +197,15 @@ if(!loading)
                 alignItems: "center",
               }}
             >
-              {/* Content inside the horizontal ScrollView */}           
-              {eventjsons.map((eventDetail) => (
+              {/* Content inside the horizontal ScrollView */}  
+                
+              {events.map((eventDetail) => (
 <TouchableOpacity
 onPress={() => {
   navigation.navigate("Event Profile", {
     eventId: eventDetail.id,
   });
 }}>
-
-
-
           <View key={eventDetail.id} style={styles.eventsMiniCards}>
                 <Text
                   style={{
@@ -210,12 +214,13 @@ onPress={() => {
                     color: "#FF392E",
                   }}
                 >
+                  Event #3
                   {eventDetail.name}
                 </Text>
               </View>
-              </TouchableOpacity>       
-        ))}      
-                </View>
+                </TouchableOpacity>       
+                ))}      
+                        </View>
           </ScrollView>
         </View>
 
@@ -237,14 +242,14 @@ onPress={() => {
             >
               {/* Content inside the horizontal ScrollView */}
 
-              {orgjsons.map((orgDetails) => (
+              {organizations.map((organization) => (
 <TouchableOpacity
 onPress={() => {
   navigation.navigate("Org Profile", {
-    organizationId: orgDetails.org_id,
+    organizationId: organization.org_id,
   });
 }}>
-<View key={orgDetails.id} style={styles.eventsMiniCards}>
+<View key={organization.id} style={styles.eventsMiniCards}>
 
                 <Text
                   style={{
@@ -253,7 +258,7 @@ onPress={() => {
                     color: "#FF392E",
                   }}
                 >
-                 {orgDetails.name}
+                 {organization.name}
                 </Text>
               </View>
               </TouchableOpacity>       
@@ -277,7 +282,7 @@ onPress={() => {
         <Text style={styles.customButtonText}>Settings</Text>
       </TouchableOpacity>
     </View>
-  );
+  );}
 };
 
 const styles = StyleSheet.create({
