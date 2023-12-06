@@ -50,77 +50,30 @@ const ProfileDetails = ({ navigation }) => {
         `https://absolute-willing-salmon.ngrok-free.app/api/organization/joined/${auth.currentUser.uid}`)
         .then((response) => response.json())
         .then((json) => setOrganizations(json.orgs))
-        .catch((error) => console.log(error)))
-        if(user.bio_descrip == null){
-          setActualUserBio(null);
-        }else{
-        setActualUserBio(user.bio_descrip);}
-        
+        .catch((error) => console.log(error)));
+        setActualUserBio(user.bio_descrip);
+        updateCurrBio();
+       // setNewUserBio(user.bio_descrip);
         setLoading(false);
-  }, [newUserBio]);
-/*
-  useLayoutEffect(  () => {
-    const fetchEventDetails = async () => {
-      setEventjsons([]);
-    for(const e of events.events){
-      try{
-          const response = await fetch(
-      `https://absolute-willing-salmon.ngrok-free.app/api/event/${e}`
-    );
-      const eventData = await response.json();
-      setEventjsons((prevDetails) => [...prevDetails, eventData.event]);
-    } catch (error) {
-      console.error(`Error fetching data for event ${e}:`, error);
-    }
+  }, [actualUserBio]);
 
-  }
-    }
-
-    fetchEventDetails();
-
-
-  }, [events]);
- 
-
-useLayoutEffect( () => {
-  const fetchOrgDetails = async () => {
-    setOrgjsons([]);
-    //console.log(organizations.orgs);
-    for(const o of organizations.orgs){
-      try{
-          const response = await fetch(
-      `https://absolute-willing-salmon.ngrok-free.app/api/organization/${o}`
-    );
-      const orgData = await response.json();
-      setOrgjsons((prevDetails) => [...prevDetails, orgData.org]);
-    } catch (error) {
-      console.error(`Error fetching data for org ${o}:`, error);
-    }
-
-  }
-  }
-  fetchOrgDetails();
-  setLoading(false);
-
-}, [organizations]);
-*/
 
 const updateBio = async () => {
   {
     try {
-      const user = auth.currentUser;
 
       fetch(
         `https://absolute-willing-salmon.ngrok-free.app/api/users/changeBio`,
         {
           method: "POST",
           body: JSON.stringify({
-            uid: user.uid,
+            uid: auth.currentUser.uid,
             newBio: newUserBio,
           }),
         }
       );
-    //  console.log(user.uid, newUserBio);
+      setActualUserBio(newUserBio);
+      setNewUserBio(newUserBio);
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
@@ -138,9 +91,16 @@ function EditOrDone(){
   toggleEdit(!edit);
 }
 
+const updateCurrBio = async () => {
+  if(newUserBio == null || newUserBio == ""){
+    setNewUserBio(user.bio_descrip);
+  }
+}
+
 
 if(!loading){
-  //console.log(user);
+  console.log("db bio :   ", user.bio_descrip);
+  console.log("curr bio :   ", newUserBio);
 
   return (
     <View>
@@ -170,15 +130,16 @@ if(!loading){
             flexDirection: "row",
           }}
         >
+          
          {edit &&  (
 <View>
-            <TextInput editable={true} autoFocus={true} onChangeText={((text) => setNewUserBio(text))} value={newUserBio} placeholder={(newUserBio == null) ? 'Your Bio Here' : actualUserBio}
+            <TextInput editable={true} autoFocus={true} onChangeText={((text) => setNewUserBio(text))} value={newUserBio == null ? user.bio_descrip : newUserBio} placeholder={'Your Bio Here'}
            ></TextInput>
            </View>
             )}
             {!edit && (
             <View>
-            <Text>{newUserBio !== "" ? newUserBio : <Text style={{ fontStyle: 'italic' }}>Your Bio Here</Text>}</Text>
+            <Text>{user.bio_descrip}</Text>
             </View>
 )}
 
