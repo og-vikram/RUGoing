@@ -120,7 +120,7 @@ const updateBio = async () => {
           }),
         }
       );
-      console.log(user.uid, newUserBio);
+    //  console.log(user.uid, newUserBio);
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
@@ -140,9 +140,8 @@ function EditOrDone(){
 
 
 if(!loading){
-  console.log(user.bio_descrip);
-  console.log(newUserBio);
-  console.log(actualUserBio);
+  //console.log(user);
+
   return (
     <View>
       <Card
@@ -214,7 +213,6 @@ onPress={() => {
                     color: "#FF392E",
                   }}
                 >
-                  Event #3
                   {eventDetail.name}
                 </Text>
               </View>
