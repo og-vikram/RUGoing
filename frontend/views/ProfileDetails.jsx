@@ -97,6 +97,12 @@ const updateCurrBio = async () => {
   }
 }
 
+const formatMultilineInput = input => {
+  return input.split('\n').map((line, index) => (
+    <Text key={index}>{line}</Text>
+  ));
+};
+
 
 if(!loading){
   console.log("db bio :   ", user.bio_descrip);
@@ -107,12 +113,13 @@ if(!loading){
       <Card
         containerStyle={{
           borderRadius: 10,
-          height: "80%",
+          height: "97%",
         }}
       >
-        
-        <Card.Title style={styles.headerContainer}>{user.firstname + " " + user.lastname}</Card.Title>
-        <TouchableOpacity
+        <View style={styles.topContainer}>
+          <Card.Title style={styles.headerContainer}>{user.firstname + " " + user.lastname}</Card.Title>
+          <View style={styles.topContainer2}>
+          <TouchableOpacity
         style={styles.customButtonContainer2}
         onPress={() => {
          EditOrDone();
@@ -121,30 +128,39 @@ if(!loading){
       >
         <Text style={styles.customButtonText}>{edit == true ? "Done" : "Edit"}</Text>
       </TouchableOpacity>
-      
-        <Card.Divider />
+          <TouchableOpacity onPress={() => {
+          navigation.navigate("Settings");
+        }}>
+              <Icon name="gear" type="font-awesome" size={30} color="#FF392E"/>
+            </TouchableOpacity>
+          </View>
+      </View>
+        
+        
+        <Card.Divider/>
         
         <View
           style={{
             flex: 1,
             flexDirection: "row",
+            height: 300,
           }}
         >
           
          {edit &&  (
-<View>
-            <TextInput editable={true} autoFocus={true} onChangeText={((text) => setNewUserBio(text))} value={newUserBio == null ? user.bio_descrip : newUserBio} placeholder={'Your Bio Here'}
+<View style={styles.userInputText}>
+            <TextInput  multiline style={styles.userInput} editable={true} autoFocus={true} onChangeText={((text) => setNewUserBio(text))} value={newUserBio == null ? user.bio_descrip : newUserBio} placeholder={'Your Bio Here'}
            ></TextInput>
            </View>
             )}
             {!edit && (
-            <View>
-            <Text>{user.bio_descrip}</Text>
+            <View style={styles.displayUserInput}>
+            <Text>{formatMultilineInput(user.bio_descrip)}</Text>
             </View>
 )}
-
+      
         </View>
-        <Card.Divider />
+        <Card.Divider style={{marginVertical: 50}}/>
 
         <View style={styles.eventsCard}>
           <Text style={styles.eventHeader}> My Events </Text>
@@ -172,6 +188,8 @@ onPress={() => {
                     alignSelf: "center",
                     textAlignVertical: "center",
                     color: "#FF392E",
+                    fontSize: 12,
+                    fontWeight:"bold",
                   }}
                 >
                   {eventDetail.name}
@@ -215,6 +233,8 @@ onPress={() => {
                     alignSelf: "center",
                     textAlignVertical: "center",
                     color: "#FF392E",
+                    fontSize: 12,
+                    fontWeight:"bold",
                   }}
                 >
                  {organization.name}
@@ -232,24 +252,23 @@ onPress={() => {
       >
         <Text style={styles.customButtonText}>Logout</Text>
       </TouchableOpacity> */}
-      <TouchableOpacity
-        style={styles.customButtonContainer}
-        onPress={() => {
-          navigation.navigate("Settings");
-        }}
-      >
-        <Text style={styles.customButtonText}>Settings</Text>
-      </TouchableOpacity>
     </View>
   );}
 };
 
 const styles = StyleSheet.create({
+
   card: {
     margin: 10,
     padding: 10,
     borderRadius: 10,
     backgroundColor: "#FF392E",
+  },
+  userInput:{
+    color:"red",
+  },
+  userInputText:{
+
   },
   customButtonContainer: {
     backgroundColor: "#FF392E",
@@ -264,6 +283,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    fontSize: 16,
   },
   customButtonContainer2: {
     backgroundColor: "#FF392E",
@@ -275,6 +295,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: 60,
    // flexDirection: "row"
+   marginRight: 8,
   },
   customButtonText: {
     color: "white",
@@ -291,7 +312,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF392E",
     borderRadius: 15,
     alignSelf: "center",
-    height: "35%",
+    height: "33%",
     width: "95%",
     justifyContent: "center",
     marginTop: "2.5%",
@@ -325,6 +346,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     margin: 10,
     borderRadius: 15,
+    justifyContent: "center"
+
   },
   orgsMiniCards: {
     width: 100,
@@ -332,6 +355,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF392E",
     margin: 10,
     borderRadius: 15,
+  },
+  topContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+  },
+  topContainer2: {
+    flexDirection: "row",
+    alignItems:"center",
+    justifyContent:"space-between",
   },
 });
 
