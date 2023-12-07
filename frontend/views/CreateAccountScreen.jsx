@@ -16,7 +16,7 @@ import { Switch } from "react-native";
 import { getAuth } from "firebase/auth";
 import firebase from "firebase/app";
 import { Icon } from "react-native-elements";
-import MyModal from './MyModal';
+import MyModal from "./MyModal";
 
 const CreateAccountScreen = ({ navigation }) => {
   const defaultEmailDomain = "@scarletmail.rutgers.edu";
@@ -76,7 +76,7 @@ const CreateAccountScreen = ({ navigation }) => {
     return passwordRegex.test(password);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (perks, themes, cats_events, cats_orgs) => {
     if (!isValidEmail()) {
       setInvalidEmail(true);
       return;
@@ -119,16 +119,68 @@ const CreateAccountScreen = ({ navigation }) => {
         );
         const user = userCredential.user;
 
-        fetch(`https://absolute-willing-salmon.ngrok-free.app/api/users/add/`, {
-          method: "POST",
-          body: JSON.stringify({
-            uid: userCredential.user.uid,
-            netid: userCredential.user.email.split("@")[0],
-            firstName: firstName,
-            lastName: lastName,
-            isOfficer: isOfficer,
-          }),
-        });
+        await fetch(
+          `https://absolute-willing-salmon.ngrok-free.app/api/users/add/`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              uid: userCredential.user.uid,
+              netid: userCredential.user.email.split("@")[0],
+              firstName: firstName,
+              lastName: lastName,
+              isOfficer: isOfficer,
+            }),
+          }
+        );
+
+        await fetch(
+          `https://absolute-willing-salmon.ngrok-free.app/api/event/perk/preference/add/`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              uid: userCredential.user.uid,
+              perk_ids: perks,
+            }),
+          }
+        );
+
+        await fetch(
+          `https://absolute-willing-salmon.ngrok-free.app/api/event/theme/preference/add/`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              uid: userCredential.user.uid,
+              theme_ids: themes,
+            }),
+          }
+        );
+
+        await fetch(
+          `https://absolute-willing-salmon.ngrok-free.app/api/event/category/preference/add/`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              uid: userCredential.user.uid,
+              category_ids: cats_events,
+            }),
+          }
+        );
+
+        await fetch(
+          `https://absolute-willing-salmon.ngrok-free.app/api/organization/category/preference/add/`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              uid: userCredential.user.uid,
+              category_ids: cats_orgs,
+            }),
+          }
+        );
+
+        console.log("perk preferences: ", perks);
+        console.log("themes preferences", themes);
+        console.log("cat events preferences: ", cats_events);
+        console.log("cat orgs: ", cats_orgs);
 
         navigation.navigate("LoginScreen");
       } catch (error) {
@@ -148,7 +200,6 @@ const CreateAccountScreen = ({ navigation }) => {
   const closeModal = () => {
     setModalVisible(false);
   };
-
 
   return (
     <View style={styles.container}>
@@ -254,7 +305,7 @@ const CreateAccountScreen = ({ navigation }) => {
           </View>
         )}
       </View>
-      
+
       <TouchableOpacity style={styles.signupButton} onPress={openModal}>
         <Text style={styles.signupButtonText}>Next</Text>
       </TouchableOpacity>
@@ -265,7 +316,7 @@ const CreateAccountScreen = ({ navigation }) => {
         handleSubmit={handleSubmit}
         onSignupClick={handleSubmit}
       />
-      
+
       <TouchableOpacity
         style={styles.loginButton}
         onPress={() => navigation.navigate("LoginScreen")}

@@ -30,7 +30,12 @@ const MyModal = ({
     console.log("Selected buttons:", selectedButtons);
 
     closeModal();
-    onSignupClick();
+    onSignupClick(
+      selectedButtons2,
+      selectedButtons3,
+      selectedButtons1,
+      selectedButtons
+    );
   };
 
   //categories stuff
