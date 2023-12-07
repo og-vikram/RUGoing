@@ -106,7 +106,7 @@ const FriendProfileScreen = ({ navigation }) => {
       <Card
       containerStyle={{
         borderRadius: 8,
-        height: 900,
+        height: "190%",
       }}>
         <Card.Title>{userData.firstname + " " + userData.lastname}</Card.Title>
         <Card.Divider />
@@ -122,12 +122,12 @@ const FriendProfileScreen = ({ navigation }) => {
               </TouchableOpacity>
             </View>
           ) : (
-            <View style={styles.attendingContainer}>
+            <View style={styles.notFollowingContainer}>
               <TouchableOpacity
-                style={styles.attendingButton}
+                style={styles.notFollowingButton}
                 onPress={handleFollow}
               >
-                <Text style={styles.attendingButtonText}>Follow</Text>
+                <Text style={styles.notFollowingButtonText}>Follow</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -207,7 +207,7 @@ const FriendProfileScreen = ({ navigation }) => {
                 style={{
                   alignSelf: "center",
                   textAlignVertical: "center",
-                  color: "#FF392E",
+                  color: "white",
                 }}
               >
                 Org 1
@@ -218,7 +218,7 @@ const FriendProfileScreen = ({ navigation }) => {
                 style={{
                   alignSelf: "center",
                   textAlignVertical: "center",
-                  color: "#FF392E",
+                  color: "white",
                 }}
               >
                 Org 2
@@ -229,7 +229,7 @@ const FriendProfileScreen = ({ navigation }) => {
                 style={{
                   alignSelf: "center",
                   textAlignVertical: "center",
-                  color: "#FF392E",
+                  color: "white",
                 }}
               >
                 Org 3
@@ -275,8 +275,22 @@ const styles = StyleSheet.create({
   followingContainer: {
     alignItems: "center",
   },
-  attendingButton: {
-
+  notFollowingButton: {
+    backgroundColor: "#FF392E",
+    padding: 15,
+    marginTop: "1%",
+    width: "93%",
+    alignItems: "center",
+    borderRadius: 15,
+  },
+  notFollowingButtonText: {
+    color: "white",
+    fontSize: 16,
+    alignItems: "center",
+    fontWeight: "bold",
+  },
+  notFollowingContainer: {
+    alignItems: "center",
   },
   basicInfo: {
     backgroundColor: "white",
@@ -310,10 +324,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  host: {
-    paddingTop: 10,
-    fontStyle: "italic",
-  },
   eventsCard: {
     backgroundColor: "white",
     borderRadius: 15,
@@ -325,7 +335,7 @@ const styles = StyleSheet.create({
     marginBottom: "-15%",
   },
   orgsCard: {
-    backgroundColor: "#FF392E",
+    backgroundColor: "white",
     borderRadius: 15,
     alignSelf: "center",
     height: "46%",
@@ -339,12 +349,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#FF392E",
     textAlign: "center",
-    marginTop: "3%",
+    marginTop: "8%",
   },
   orgHeader: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "white",
+    color: "#FF392E",
     textAlign: "center",
     marginTop: "3%",
   },
@@ -358,7 +368,7 @@ const styles = StyleSheet.create({
   orgsMiniCards: {
     width: 150,
     height: 150,
-    backgroundColor: "white",
+    backgroundColor: "#FF392E",
     margin: 10,
     borderRadius: 15,
   },
