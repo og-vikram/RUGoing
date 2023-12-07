@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { auth } from "../firebase.config";
 import { reloadAsync } from "expo-updates";
 import { Button, Icon } from "react-native-elements";
@@ -19,6 +19,8 @@ const FriendProfileScreen = ({ navigation }) => {
   const route = useRoute();
   const [userData, setUserData] = useState({});
   const [following, setFollowing] = useState(false);
+  const [events, setEvents] = useState([]);
+  const [organizations, setOrganizations] = useState([]);
 
   useEffect(() => {
     fetch(
@@ -47,6 +49,23 @@ const FriendProfileScreen = ({ navigation }) => {
         }
       })
       .catch((error) => console.log(error));
+  }, []);
+
+  useLayoutEffect(() => {
+
+    fetch(
+        `https://absolute-willing-salmon.ngrok-free.app/api/event/attending/${route.params.user_uid}`)
+      .then((response) => response.json())
+      .then((json) => setEvents(json.events))
+      .catch((error) => console.log(error))
+      .then(
+    )
+
+    fetch(
+        `https://absolute-willing-salmon.ngrok-free.app/api/organization/joined/${route.params.user_uid}`)
+      .then((response) => response.json())
+      .then((json) => setOrganizations(json.orgs))
+      .catch((error) => console.log(error))
   }, []);
 
   const handleFollow = async () => {
@@ -106,7 +125,7 @@ const FriendProfileScreen = ({ navigation }) => {
       <Card
       containerStyle={{
         borderRadius: 8,
-        height: "190%",
+        height: 1000,
       }}>
         <Card.Title>{userData.firstname + " " + userData.lastname}</Card.Title>
         <Card.Divider />
@@ -133,8 +152,9 @@ const FriendProfileScreen = ({ navigation }) => {
           )}
         </View>
 
-        <View>
-      <View style={styles.eventsCard}>
+      <View>
+      
+      {/* <View style={styles.eventsCard}>
         <Text style={styles.eventHeader}> {userData.firstname + " is attending..."}</Text>
 
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
@@ -146,7 +166,7 @@ const FriendProfileScreen = ({ navigation }) => {
               marginTop: "-20%",
             }}
           >
-            {/* Content inside the horizontal ScrollView */}
+            
             <View style={styles.eventsMiniCards}>
               <Text
                 style={{
@@ -180,12 +200,53 @@ const FriendProfileScreen = ({ navigation }) => {
                 Event #3
               </Text>
             </View>
-            {/* Add more items as needed */}
+            
           </View>
         </ScrollView>
-      </View>
+      </View> */}
 
-      <View style={styles.orgsCard}>
+<View style={styles.eventsCard}>
+          <Text style={styles.eventHeader}> {userData.firstname + " is attending..."} </Text>
+
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            <View
+              style={{
+                flexDirection: "row",
+                flex: 1,
+                alignItems: "center",
+              }}
+            >
+              {/* Content inside the horizontal ScrollView */}  
+                
+              {events.map((eventDetail) => (
+      <TouchableOpacity
+            onPress={() => {
+            navigation.navigate("Event Profile", {
+            eventId: eventDetail.id,
+        });
+}}>
+          <View key={eventDetail.id} style={styles.eventsMiniCards}>
+                <Text
+                  style={{
+                    alignSelf: "center",
+                    textAlignVertical: "center",
+                    color: "white",
+                    fontSize: 14,
+                    fontWeight:"bold",
+                  }}
+                >
+                  {eventDetail.name}
+                </Text>
+              </View>
+                </TouchableOpacity>       
+                ))}      
+                        </View>
+          </ScrollView>
+        </View>
+
+
+
+     {/* <View style={styles.orgsCard}>
         <Text style={styles.orgHeader}> {userData.firstname + " is apart of..."} </Text>
 
         <ScrollView
@@ -201,7 +262,7 @@ const FriendProfileScreen = ({ navigation }) => {
               marginTop: "-20%",
             }}
           >
-            {/* Content inside the horizontal ScrollView */}
+            
             <View style={styles.orgsMiniCards}>
               <Text
                 style={{
@@ -235,11 +296,63 @@ const FriendProfileScreen = ({ navigation }) => {
                 Org 3
               </Text>
             </View>
-            {/* Add more items as needed */}
+            
           </View>
         </ScrollView>
       </View>
-    </View>
+              */}
+    <View style={styles.eventsCard}>
+          <Text style={styles.eventHeader}> {userData.firstname + " is apart of..."} </Text>
+
+          <ScrollView
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            style={styles.eventsInfo}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                flex: 1,
+                alignItems: "center",
+                marginTop: "-3%",
+              }}
+            >
+              {/* Content inside the horizontal ScrollView */}
+
+              {organizations.map((organization) => (
+<TouchableOpacity
+onPress={() => {
+  navigation.navigate("Org Profile", {
+    organizationId: organization.org_id,
+  });
+}}>
+<View key={organization.id} style={styles.eventsMiniCards}>
+
+                <Text
+                  style={{
+                    alignSelf: "center",
+                    textAlignVertical: "center",
+                    color: "white",
+                    fontSize: 14,
+                    fontWeight:"bold",
+                  }}
+                >
+                 {organization.name}
+                </Text>
+              </View>
+              </TouchableOpacity>       
+        ))}  
+            </View>
+          </ScrollView>
+        </View>
+      </View>
+      {/* <TouchableOpacity
+        style={styles.customButtonContainer}
+        onPress={handleLogout}
+      >
+        <Text style={styles.customButtonText}>Logout</Text>
+      </TouchableOpacity> */}
+
 
 
 
