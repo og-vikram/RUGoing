@@ -222,9 +222,10 @@ if(!loading){
             <View style={styles.modalContainer}>
               <View style={styles.modalContent}>
 
-
-              {/* Anish cook over here */}
-              {followerList.map((item) => (
+                <Text style={styles.questionText}> Followers: </Text>
+                <View style={styles.card1}>
+                    {/* Anish cook over here */}
+                    {followerList.map((item) => (
                       <TouchableOpacity
                         key={item.uid}
                         onPress={() => {
@@ -233,13 +234,12 @@ if(!loading){
                           });
                           closeFollowersModal();
                         }}
-                        
+                        style={styles.modalList}
                       >
-                        <Text>{item.name}</Text>
+                        <Text style={styles.modalText}>{item.name}</Text>
                       </TouchableOpacity>
                     ))}
-
-
+                </View>
 
                 <TouchableOpacity style={styles.bottombutton1} onPress={closeFollowersModal}>
                   <Text style={styles.bottombuttontext1}>Close</Text>
@@ -263,11 +263,12 @@ if(!loading){
 
             <View style={styles.modalContainer}>
               <View style={styles.modalContent}>
+                <Text style={styles.questionText}> Followers: </Text>
+                  <View style={styles.card2}>
 
-
-              {/* Anish cook over here */}
-              {followingList.map((item) => (
-                <View>
+                    {/* Anish cook over here */}
+                    {followingList.map((item) => (
+                    <View>
                       <TouchableOpacity
                         key={item.uid}
                         onPress={() => {
@@ -276,20 +277,24 @@ if(!loading){
                           });
                           closeFollowersModal();
                         }}
+                        style={styles.modalList1}
                         
                       >
-                        <Text>{item.name}</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                      style={styles.customButtonContainer}
-                      onPress={() => handleRemoveFriend(item.uid)
-                        
-                      }>
-                        <Text>Remove Friend</Text>
+                        <Text style={styles.modalText}>{item.name}</Text>
+                        <View style={{alignItems:"center", flex: 1, flexDirection: "row", justifyContent: "flex-end"}}>
+                        <TouchableOpacity
+                          style={styles.customButtonContainer5}
+                          onPress={() => handleRemoveFriend(item.uid)
+                        }>
+                          <Text style={{color: "white", fontWeight: "bold"}}>Remove</Text>
 
+                        </TouchableOpacity>
+                      </View>
                       </TouchableOpacity>
+                      
                      </View>
                     ))}
+                  </View>
 
 
 
@@ -430,6 +435,22 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "#FF392E",
   },
+  card1:{
+      backgroundColor: 'white',
+      borderColor: "#FF392E",
+      borderWidth: 1,
+      borderRadius: 10,
+      width: 330,
+      height: 120,
+  },
+  card2:{
+    backgroundColor: 'white',
+    borderColor: "#FF392E",
+    borderWidth: 1,
+    borderRadius: 10,
+    width: 330,
+    height: 320,
+},
   userInput:{
     color:"red",
   },
@@ -438,12 +459,24 @@ const styles = StyleSheet.create({
   },
   customButtonContainer: {
     backgroundColor: "#FF392E",
-    marginTop: 10,
+    marginTop: 0,
     borderRadius: 15,
     padding: 10,
     alignItems: "center",
     height: 50,
+    width: 150,
     justifyContent: "center",
+  },
+  customButtonContainer5: {
+    backgroundColor: "#FF392E",
+    marginTop: 0,
+    borderRadius: 15,
+    padding: 0,
+    alignItems: "center",
+    height: 30,
+    width: 80,
+    justifyContent: "center",
+    marginRight: 10,
   },
   button: {
     backgroundColor: "#FF392E",
@@ -457,6 +490,25 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     fontSize: 16,
+  },
+  modalList: {
+    borderRadius: 15,
+    backgroundColor: "#E6E6E6",
+    marginTop: "1%",
+    padding: "4%",
+  },
+  modalList1:{
+    borderRadius: 15,
+    backgroundColor: "#E6E6E6",
+    marginTop: "2%",
+    padding: "4%",
+    flexDirection: "row",
+    alignItems:"center",
+  },
+  modalText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#FF392E",
   },
   customButtonContainer2: {
     backgroundColor: "#FF392E",
@@ -545,22 +597,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  
   },
   modalContent: {
       backgroundColor: 'white',
       padding: 20,
       borderRadius: 15,
+      justifyContent: "center",
+      width: "95%",
   },
   bottombutton1: {
-    backgroundColor: "#E6E6E6",
+    backgroundColor: "#FF392E",
     borderRadius: 15,
     marginTop: "3%",
     padding: "3%",
     alignItems: "center",
   },
   bottombuttontext1: {
-    color: "#FF392E",
+    color: "white",
     fontSize: 16,
+    fontWeight: "bold",
+  },
+  questionText: {
+    color: "black",
+    fontSize: 13,
+    marginTop: "3%",
     fontWeight: "bold",
   },
 });

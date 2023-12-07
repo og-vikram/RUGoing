@@ -278,9 +278,6 @@ const SettingsScreen = () => {
       </View>
       </Modal>
 
-      <TouchableOpacity style={styles.customButtonContainer}>
-          <Text style={styles.editProfileButtonText}>Manage Friends</Text>
-      </TouchableOpacity>
       <TouchableOpacity onPress={openAboutModal}   style={styles.customButtonContainer}>
         <Text style={styles.editProfileButtonText}>About RUSWE</Text>
       </TouchableOpacity>
@@ -424,7 +421,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 10,
     alignItems: "center",
-    height: "10%",
+    height: "12%",
     justifyContent: "center",
     marginBottom: "3%",
     width: "95%",
