@@ -83,7 +83,32 @@ const updateBio = async () => {
   }
 };
 
+const [followerList, setFollowerList] = useState([]);
+const [followingList, setFollowingList] = useState([]);
 
+useEffect(() => {
+    fetch('https://absolute-willing-salmon.ngrok-free.app/api/users/followers/' + auth.currentUser.uid)
+    .then((response) => response.json())
+        .then((json) => setFollowerList(json.followers))
+        .catch((error) => console.log(error));
+
+}, []);
+
+
+useEffect(() => {
+  fetch('https://absolute-willing-salmon.ngrok-free.app/api/users/follows/' + auth.currentUser.uid)
+  .then((response) => response.json())
+      .then((json) => setFollowingList(json.follows))
+      .catch((error) => console.log(error));
+
+}, []);
+
+const refreshFollowing = async () => {
+  fetch('https://absolute-willing-salmon.ngrok-free.app/api/users/follows/' + auth.currentUser.uid)
+  .then((response) => response.json())
+      .then((json) => setFollowingList(json.follows))
+      .catch((error) => console.log(error));
+}
 
 function EditOrDone(){
   if(edit){
@@ -120,7 +145,34 @@ const closeFollowingModal = () => {
 
 
 
+const handleRemoveFriend = async (id) => {
+  {
+    try {
+
+      fetch('https://absolute-willing-salmon.ngrok-free.app/api/users/unfollow/',
+
+        {
+          method: "POST",
+          body: JSON.stringify({
+            follower_id: auth.currentUser.uid,
+            followee_id: id,
+          }),
+        }
+      );
+      refreshFollowing();
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+    }
+  }
+}
+  
+
+
+
 if(!loading){
+  //console.log(followerList);
   console.log("db bio :   ", user.bio_descrip);
   console.log("curr bio :   ", newUserBio);
 
@@ -172,7 +224,20 @@ if(!loading){
 
 
               {/* Anish cook over here */}
-              <Text> Hi </Text>
+              {followerList.map((item) => (
+                      <TouchableOpacity
+                        key={item.uid}
+                        onPress={() => {
+                          navigation.navigate("Friend Profile", {
+                            user_uid: item.uid,
+                          });
+                          closeFollowersModal();
+                        }}
+                        
+                      >
+                        <Text>{item.name}</Text>
+                      </TouchableOpacity>
+                    ))}
 
 
 
@@ -201,7 +266,30 @@ if(!loading){
 
 
               {/* Anish cook over here */}
-              <Text> Hi </Text>
+              {followingList.map((item) => (
+                <View>
+                      <TouchableOpacity
+                        key={item.uid}
+                        onPress={() => {
+                          navigation.navigate("Friend Profile", {
+                            user_uid: item.uid,
+                          });
+                          closeFollowersModal();
+                        }}
+                        
+                      >
+                        <Text>{item.name}</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                      style={styles.customButtonContainer}
+                      onPress={() => handleRemoveFriend(item.uid)
+                        
+                      }>
+                        <Text>Remove Friend</Text>
+
+                      </TouchableOpacity>
+                     </View>
+                    ))}
 
 
 

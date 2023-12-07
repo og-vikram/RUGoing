@@ -16,6 +16,7 @@ import SettingsScreen from "./SettingsScreen";
 import ProfileDetails from "./ProfileDetails";
 import EventProfileScreen from "./EventProfileScreen";
 import OrganizationProfileScreen from "./OrganizationProfileScreen";
+import FriendProfileScreen from "./FriendProfileScreen";
 
 const ProfileScreen = ({ navigation }) => {
   const handleLogout = () => {
@@ -50,6 +51,13 @@ const ProfileScreen = ({ navigation }) => {
       <ProfileStack.Screen
         name="Org Profile"
         component={OrganizationProfileScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ProfileStack.Screen
+        name="Friend Profile"
+        component={FriendProfileScreen}
         options={{
           headerShown: false,
         }}
