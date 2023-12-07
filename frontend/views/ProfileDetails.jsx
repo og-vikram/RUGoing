@@ -97,11 +97,6 @@ const updateCurrBio = async () => {
   }
 }
 
-const formatMultilineInput = input => {
-  return input.split('\n').map((line, index) => (
-    <Text key={index}>{line}</Text>
-  ));
-};
 
 
 if(!loading){
@@ -155,7 +150,7 @@ if(!loading){
             )}
             {!edit && (
             <View style={styles.displayUserInput}>
-            <Text>{formatMultilineInput(user.bio_descrip)}</Text>
+            <Text>{user.bio_descrip}</Text>
             </View>
 )}
       
