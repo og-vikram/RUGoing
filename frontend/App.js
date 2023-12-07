@@ -23,7 +23,7 @@ import {
   faMagnifyingGlass,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { Alert, SafeAreaView, Text } from "react-native";
+import { Alert, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
 import { Button } from "@rneui/themed";
 import { reloadAsync } from "expo-updates";
 
@@ -45,17 +45,65 @@ export default function App() {
   if (user && !user.emailVerified) {
     return (
       <SafeAreaView>
-        <Text>Verify your email</Text>
-        <Button
-          onPress={() => {
-            sendEmailVerification(auth.currentUser);
-            Alert.alert("Email sent", "Check your email for verification");
-          }}
-        >
-          Verify
-        </Button>
-        <Button onPress={() => reloadAsync()}>I've verified!</Button>
-        <Button onPress={() => signOut(auth)}>Sign out</Button>
+        <View>
+          <Text style={{textAlign: "center", marginTop: "3%", color: "#FF392E", fontWeight: "bold", fontSize: 26,}}>Please verify your email</Text>
+        </View>
+        <View style={{backgroundColor: "#E6E6E6", height: "100%",}}>
+          <TouchableOpacity 
+            style={{
+              backgroundColor: "red",
+              borderRadius: 15,
+              marginTop: "3%",
+              padding: "3%",
+              alignItems: "center",}} 
+              onPress={() => {
+                sendEmailVerification(auth.currentUser);
+                Alert.alert("Email sent", "Check your email for verification");
+              }}
+          >
+            <Text 
+              style={{
+                color: "white",
+                fontSize: 16,
+                fontWeight: "bold",}}
+            >Verify</Text>
+
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={{
+              backgroundColor: "red",
+              borderRadius: 15,
+              marginTop: "3%",
+              padding: "3%",
+              alignItems: "center",}} 
+            onPress={() => reloadAsync()}
+          >
+            <Text 
+              style={{
+                color: "white",
+                fontSize: 16,
+                fontWeight: "bold",}}
+            > I've verified!</Text>
+
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={{
+              backgroundColor: "red",
+              borderRadius: 15,
+              marginTop: "3%",
+              padding: "3%",
+              alignItems: "center",}} 
+            onPress={() => signOut(auth)}
+          >
+            <Text 
+              style={{
+                color: "white",
+                fontSize: 16,
+                fontWeight: "bold",}}
+            >Sign Out</Text>
+
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     );
   } else if (user && user.emailVerified) {
