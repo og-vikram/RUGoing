@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  TextInput,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -30,6 +31,10 @@ const OrganizationProfileScreen = () => {
   const [organizationData, setOrganizationData] = useState({});
   const [eventHostData, setEventHostData] = useState([]);
   const [joining, setJoining] = useState(false);
+  const [officer, setOfficer] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [newAbout, setNewAbout] = useState("");
+  const [newContact, setNewContact] = useState("");
 
   useEffect(() => {
     fetch(newUrl)
@@ -79,6 +84,22 @@ const OrganizationProfileScreen = () => {
       })
       .catch((error) => console.log(error));
   }, []);
+
+  useEffect(() => {
+    fetch(
+      `https://absolute-willing-salmon.ngrok-free.app/api/users/${auth.currentUser.uid}`
+    )
+      .then((response) => response.json())
+      .then((json) => {
+        if (json) {
+          user = json.user;
+          if (user.isOfficer && user.organization == organizationId) {
+            setOfficer(true);
+          }
+        }
+      })
+      .catch((error) => console.log(error));
+  });
 
   const handleJoin = async () => {
     {
@@ -131,6 +152,84 @@ const OrganizationProfileScreen = () => {
     }
   };
 
+  const returnOfficerOrJoin = () => {
+    if (officer && !editing) {
+      return (
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.joinButton} onPress={handleEdit}>
+            <Text style={styles.joinButtonText}>Edit</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    } else if (officer && editing) {
+      return (
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.joinButton} onPress={handleEdit}>
+            <Text style={styles.joinButtonText}>Done</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    } else if (joining && !officer) {
+      return (
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.unJoinButton} onPress={handleRemove}>
+            <Text style={styles.unJoinButtonText}>Leave</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.joinButton} onPress={handleJoin}>
+            <Text style={styles.joinButtonText}>Join</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+  };
+
+  const updateAbout = () => {
+    if (newAbout == "") {
+      return;
+    }
+    fetch(
+      `https://absolute-willing-salmon.ngrok-free.app/api/officers/change/about/`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          uid: auth.currentUser.uid,
+          org_id: organizationId,
+          newAbout: newAbout,
+        }),
+      }
+    );
+  };
+
+  const updateContact = () => {
+    if (newContact == "") {
+      return;
+    }
+    fetch(
+      `https://absolute-willing-salmon.ngrok-free.app/api/officers/change/contact/`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          uid: auth.currentUser.uid,
+          org_id: organizationId,
+          newContact: newContact,
+        }),
+      }
+    );
+  };
+
+  const handleEdit = () => {
+    if (editing) {
+      updateAbout();
+      updateContact();
+    }
+    setEditing(!editing);
+  };
+
   const imageUrl = "https://se-images.campuslabs.com/clink/images/";
 
   return (
@@ -150,25 +249,26 @@ const OrganizationProfileScreen = () => {
         </View>
         <View style={styles.memberSection}>
           <Text style={styles.memberCount}>{"# Members"}</Text>
-          <View style={styles.buttonContainer}>
-            {joining ? (
-              <TouchableOpacity
-                style={styles.unJoinButton}
-                onPress={handleRemove}
-              >
-                <Text style={styles.unJoinButtonText}>Leave</Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity style={styles.joinButton} onPress={handleJoin}>
-                <Text style={styles.joinButtonText}>Join</Text>
-              </TouchableOpacity>
-            )}
-          </View>
+          <View style={styles.buttonContainer}>{returnOfficerOrJoin()}</View>
         </View>
       </View>
 
       <View style={styles.orgInfo}>
-        <Text style={styles.about}>{organizationData.about}</Text>
+        {editing ? (
+          <TextInput
+            style={styles.about}
+            value={newAbout ? newAbout : organizationData.about}
+            multiline
+            editable
+            onChangeText={(text) => {
+              setNewAbout(text);
+            }}
+          ></TextInput>
+        ) : (
+          <Text style={styles.about}>
+            {newAbout ? newAbout : organizationData.about}
+          </Text>
+        )}
       </View>
 
       <Text style={styles.frq}>{organizationData.frq}</Text>
@@ -195,7 +295,21 @@ const OrganizationProfileScreen = () => {
 
       <View style={styles.contactContainer}>
         <Text style={styles.contactHeader}>{"Contact Information:"}</Text>
-        <Text style={styles.contactInfo}>{organizationData.contact}</Text>
+        {editing ? (
+          <TextInput
+            style={styles.contactInfo}
+            value={newContact ? newContact : organizationData.contact}
+            multiline
+            editable
+            onChangeText={(text) => {
+              setNewContact(text);
+            }}
+          ></TextInput>
+        ) : (
+          <Text style={styles.contactInfo}>
+            {newContact ? newContact : organizationData.contact}
+          </Text>
+        )}
       </View>
     </ScrollView>
   );
