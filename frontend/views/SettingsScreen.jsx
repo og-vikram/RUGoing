@@ -165,111 +165,7 @@ const SettingsScreen = () => {
 
   return (
     <View style={{alignItems: "center"}}>
-      <TouchableOpacity
-        style={[styles.customButtonContainer, {marginTop: "3%"}]}
-
-        onPress={handleLogout}
-      >
-        <Text style={styles.customButtonText}>Logout</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-      onPress={openTermsModal}   style={styles.customButtonContainer}
-      >
-          <Text style={styles.editProfileButtonText}>Terms of Use</Text>
-      </TouchableOpacity>
-
-          <Modal
-        animationType="slide"
-        transparent={true}
-        visible={termsModalVisible}
-        onRequestClose={closeTermsModal}
-        backdropOpacity={.3}
-      >
-
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-
-            <Text style = {{fontSize: 8}}><Text style= {{fontWeight: "bold", fontSize: 14}} >Terms and Conditions of Use </Text>
-            {"\n"}
-
-This document outlines the terms and conditions (the "Agreement") for the use of RUGoing (the "App") provided by RUSWE, hereafter referred to as the "Company."
-{"\n"}
-
-By downloading, installing, or using the App, you agree to be bound by the terms and conditions outlined in this Agreement. If you do not agree with any part of these terms, please refrain from using the App.
-
-{"\n"}
-<Text style= {{fontWeight: "bold", fontSize: 10}} >
-1. Account Registration and Security
-</Text>
-{"\n"}
-
-1.1. To use certain features of the App, you must create an account by providing accurate and complete information.
-{"\n"}
-1.2. You are responsible for maintaining the confidentiality of your account credentials.
-{"\n"}
-1.3. The Company reserves the right to suspend or terminate your account if any information provided is found to be inaccurate or violates these terms.
-{"\n"}
-<Text style= {{fontWeight: "bold", fontSize: 10}} >
-
-2. User Conduct
-</Text>
-{"\n"}
-2.1. You are solely responsible for your interactions with other users and organizations within the App.
-{"\n"}
-2.2. The Company reserves the right to remove any content that violates these terms or is deemed inappropriate.
-{"\n"}
-<Text style= {{fontWeight: "bold", fontSize: 10}} >
-
-3. Account Verification and Passwords
-</Text>
-{"\n"}
-
-3.1. Passwords must be kept confidential, and users are responsible for any activity that occurs under their account.
-{"\n"}
-<Text style= {{fontWeight: "bold", fontSize: 10}} >
-
-4. Admin Accounts
-</Text>
-{"\n"}
-4.1. Admin accounts are subject to verification against GetInvolved officers.
-{"\n"}
-<Text style= {{fontWeight: "bold", fontSize: 10}} >
-
-5. Organization and Event Information
-</Text>
-{"\n"}
-5.1. The App displays information about organizations and events sourced from GetInvolved, including images, names, mission statements, and contact information.
-{"\n"}
-<Text style= {{fontWeight: "bold", fontSize: 10}} >
-
-6. Termination of Account
-</Text>
-{"\n"}
-6.1. The Company reserves the right to terminate or suspend user accounts at its discretion.
-{"\n"}
-<Text style= {{fontWeight: "bold", fontSize: 10}} >
-
-7. Changes to Terms and Conditions
-</Text>
-{"\n"}
-7.1. The Company reserves the right to modify or update these terms at any time. Users will be notified of significant changes.
-{"\n"}
-</Text>
-
-            <TouchableOpacity style={styles.bottombutton1} onPress={closeTermsModal}>
-              <Text style={styles.bottombuttontext1}>Close</Text>
-              
-            </TouchableOpacity>
-
-          </View>
-
-        </View>
-      </Modal>
-      <TouchableOpacity style={styles.customButtonContainer}>
-          <Text style={styles.editProfileButtonText}>Manage Friends</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={openPreferencesModal} style={styles.customButtonContainer}>        
+      <TouchableOpacity onPress={openPreferencesModal} style={[styles.customButtonContainer, {marginTop: "3%"}]}>        
         <Text style={styles.editProfileButtonText}>Edit Preferences</Text>       
       </TouchableOpacity>
       <Modal
@@ -381,6 +277,10 @@ By downloading, installing, or using the App, you agree to be bound by the terms
         </View>
       </View>
       </Modal>
+
+      <TouchableOpacity style={styles.customButtonContainer}>
+          <Text style={styles.editProfileButtonText}>Manage Friends</Text>
+      </TouchableOpacity>
       <TouchableOpacity onPress={openAboutModal}   style={styles.customButtonContainer}>
         <Text style={styles.editProfileButtonText}>About RUSWE</Text>
       </TouchableOpacity>
@@ -412,7 +312,107 @@ By downloading, installing, or using the App, you agree to be bound by the terms
       </TouchableOpacity>
     </View>
   </View>
-</Modal>
+      </Modal>
+      <TouchableOpacity
+      onPress={openTermsModal}   style={styles.customButtonContainer}
+      >
+          <Text style={styles.editProfileButtonText}>Terms of Use</Text>
+      </TouchableOpacity>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={termsModalVisible}
+        onRequestClose={closeTermsModal}
+        backdropOpacity={.3}
+      >
+
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+
+            <Text style = {{fontSize: 8}}><Text style= {{fontWeight: "bold", fontSize: 14}} >Terms and Conditions of Use </Text>
+            {"\n"}
+
+This document outlines the terms and conditions (the "Agreement") for the use of RUGoing (the "App") provided by RUSWE, hereafter referred to as the "Company."
+{"\n"}
+
+By downloading, installing, or using the App, you agree to be bound by the terms and conditions outlined in this Agreement. If you do not agree with any part of these terms, please refrain from using the App.
+
+{"\n"}
+<Text style= {{fontWeight: "bold", fontSize: 10}} >
+1. Account Registration and Security
+</Text>
+{"\n"}
+
+1.1. To use certain features of the App, you must create an account by providing accurate and complete information.
+{"\n"}
+1.2. You are responsible for maintaining the confidentiality of your account credentials.
+{"\n"}
+1.3. The Company reserves the right to suspend or terminate your account if any information provided is found to be inaccurate or violates these terms.
+{"\n"}
+<Text style= {{fontWeight: "bold", fontSize: 10}} >
+
+2. User Conduct
+</Text>
+{"\n"}
+2.1. You are solely responsible for your interactions with other users and organizations within the App.
+{"\n"}
+2.2. The Company reserves the right to remove any content that violates these terms or is deemed inappropriate.
+{"\n"}
+<Text style= {{fontWeight: "bold", fontSize: 10}} >
+
+3. Account Verification and Passwords
+</Text>
+{"\n"}
+
+3.1. Passwords must be kept confidential, and users are responsible for any activity that occurs under their account.
+{"\n"}
+<Text style= {{fontWeight: "bold", fontSize: 10}} >
+
+4. Admin Accounts
+</Text>
+{"\n"}
+4.1. Admin accounts are subject to verification against GetInvolved officers.
+{"\n"}
+<Text style= {{fontWeight: "bold", fontSize: 10}} >
+
+5. Organization and Event Information
+</Text>
+{"\n"}
+5.1. The App displays information about organizations and events sourced from GetInvolved, including images, names, mission statements, and contact information.
+{"\n"}
+<Text style= {{fontWeight: "bold", fontSize: 10}} >
+
+6. Termination of Account
+</Text>
+{"\n"}
+6.1. The Company reserves the right to terminate or suspend user accounts at its discretion.
+{"\n"}
+<Text style= {{fontWeight: "bold", fontSize: 10}} >
+
+7. Changes to Terms and Conditions
+</Text>
+{"\n"}
+7.1. The Company reserves the right to modify or update these terms at any time. Users will be notified of significant changes.
+{"\n"}
+</Text>
+
+            <TouchableOpacity style={styles.bottombutton1} onPress={closeTermsModal}>
+              <Text style={styles.bottombuttontext1}>Close</Text>
+              
+            </TouchableOpacity>
+
+          </View>
+
+        </View>
+      </Modal>
+      <TouchableOpacity
+        style={[styles.customButtonContainer]}
+
+        onPress={handleLogout}
+      >
+        <Text style={styles.customButtonText}>Logout</Text>
+      </TouchableOpacity>
 
 
     </View>
