@@ -125,233 +125,121 @@ const FriendProfileScreen = ({ navigation }) => {
       <Card
       containerStyle={{
         borderRadius: 8,
-        height: 1000,
+        height: 640,
       }}>
         <Card.Title>{userData.firstname + " " + userData.lastname}</Card.Title>
         <Card.Divider />
-        <Text style = {styles.italic}>{userData.bio_descrip}</Text>
-        <View>
-          {following ? (
-            <View style={styles.followingContainer}>
-              <TouchableOpacity
-                style={styles.followingButton}
-                onPress={handleUnfollow}
-              >
-                <Text style={styles.followingButtonText}>Following</Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <View style={styles.notFollowingContainer}>
-              <TouchableOpacity
-                style={styles.notFollowingButton}
-                onPress={handleFollow}
-              >
-                <Text style={styles.notFollowingButtonText}>Follow</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </View>
+        <Text style = {{fontWeight: "bold", fontSize: 18, color: "#FF392E"}}> Bio: </Text>
+        <Text style = {styles.italic}> {userData.bio_descrip}</Text>
+        
 
       <View>
-      
-      {/* <View style={styles.eventsCard}>
-        <Text style={styles.eventHeader}> {userData.firstname + " is attending..."}</Text>
-
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          <View
-            style={{
-              flexDirection: "row",
-              flex: 1,
-              alignItems: "center",
-              marginTop: "-20%",
-            }}
-          >
-            
-            <View style={styles.eventsMiniCards}>
-              <Text
+          <Text style={styles.eventHeader}>{userData.firstname + " is attending..."} </Text>
+          <View>
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+              <View
                 style={{
-                  alignSelf: "center",
-                  textAlignVertical: "center",
-                  color: "white",
+                  flexDirection: "row",
+                  flex: 1,
+                  alignItems: "center",
                 }}
               >
-                Event #1
-              </Text>
-            </View>
-            <View style={styles.eventsMiniCards}>
-              <Text
-                style={{
-                  alignSelf: "center",
-                  textAlignVertical: "center",
-                  color: "white",
-                }}
-              >
-                Event #2
-              </Text>
-            </View>
-            <View style={styles.eventsMiniCards}>
-              <Text
-                style={{
-                  alignSelf: "center",
-                  textAlignVertical: "center",
-                  color: "white",
-                }}
-              >
-                Event #3
-              </Text>
-            </View>
-            
-          </View>
-        </ScrollView>
-      </View> */}
-
-<View style={styles.eventsCard}>
-          <Text style={styles.eventHeader}> {userData.firstname + " is attending..."} </Text>
-
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <View
-              style={{
-                flexDirection: "row",
-                flex: 1,
-                alignItems: "center",
-              }}
-            >
-              {/* Content inside the horizontal ScrollView */}  
-                
-              {events.map((eventDetail) => (
-      <TouchableOpacity
-            onPress={() => {
-            navigation.navigate("Event Profile", {
-            eventId: eventDetail.id,
-        });
-}}>
-          <View key={eventDetail.id} style={styles.eventsMiniCards}>
-                <Text
-                  style={{
-                    alignSelf: "center",
-                    textAlignVertical: "center",
-                    color: "white",
-                    fontSize: 14,
-                    fontWeight:"bold",
-                  }}
-                >
-                  {eventDetail.name}
-                </Text>
-              </View>
-                </TouchableOpacity>       
+                {/* Content inside the horizontal ScrollView */}  
+                  
+                {events.map((eventDetail) => (
+                  <TouchableOpacity
+                        onPress={() => {
+                        navigation.navigate("Event Profile", {
+                        eventId: eventDetail.id,
+                    });
+                  }}>
+                    <View key={eventDetail.id} style={styles.eventsMiniCards}>
+                      <Text
+                        style={{
+                          alignSelf: "center",
+                          textAlignVertical: "center",
+                          color: "white",
+                          fontSize: 14,
+                          fontWeight:"bold",
+                        }}
+                      >
+                        {eventDetail.name}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>       
                 ))}      
-                        </View>
-          </ScrollView>
-        </View>
-
-
-
-     {/* <View style={styles.orgsCard}>
-        <Text style={styles.orgHeader}> {userData.firstname + " is apart of..."} </Text>
-
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          style={styles.orgsInfo}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              flex: 1,
-              alignItems: "center",
-              marginTop: "-20%",
-            }}
-          >
-            
-            <View style={styles.orgsMiniCards}>
-              <Text
-                style={{
-                  alignSelf: "center",
-                  textAlignVertical: "center",
-                  color: "white",
-                }}
-              >
-                Org 1
-              </Text>
-            </View>
-            <View style={styles.orgsMiniCards}>
-              <Text
-                style={{
-                  alignSelf: "center",
-                  textAlignVertical: "center",
-                  color: "white",
-                }}
-              >
-                Org 2
-              </Text>
-            </View>
-            <View style={styles.orgsMiniCards}>
-              <Text
-                style={{
-                  alignSelf: "center",
-                  textAlignVertical: "center",
-                  color: "white",
-                }}
-              >
-                Org 3
-              </Text>
-            </View>
-            
-          </View>
-        </ScrollView>
-      </View>
-              */}
-    <View style={styles.eventsCard}>
-          <Text style={styles.eventHeader}> {userData.firstname + " is apart of..."} </Text>
-
-          <ScrollView
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            style={styles.eventsInfo}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                flex: 1,
-                alignItems: "center",
-                marginTop: "-3%",
-              }}
-            >
-              {/* Content inside the horizontal ScrollView */}
-
-              {organizations.map((organization) => (
-<TouchableOpacity
-onPress={() => {
-  navigation.navigate("Org Profile", {
-    organizationId: organization.org_id,
-  });
-}}>
-<View key={organization.id} style={styles.eventsMiniCards}>
-
-                <Text
-                  style={{
-                    alignSelf: "center",
-                    textAlignVertical: "center",
-                    color: "white",
-                    fontSize: 14,
-                    fontWeight:"bold",
-                  }}
-                >
-                 {organization.name}
-                </Text>
               </View>
-              </TouchableOpacity>       
-        ))}  
-            </View>
-          </ScrollView>
-        </View>
+            </ScrollView>
+          </View>
+
+        
+          <Text style={styles.eventHeader1}> {userData.firstname + " is apart of..."} </Text>
+          <View>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  flex: 1,
+                  alignItems: "center",
+                  marginTop: 0,
+                }}
+              >
+                {/* Content inside the horizontal ScrollView */}  
+                  
+                {organizations.map((organization) => (
+                  <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("Org Profile", {
+                      organizationId: organization.org_id,
+                    });
+                  }}>
+                    <View key={organization.id} style={styles.eventsMiniCards}>
+
+                      <Text
+                        style={{
+                          alignSelf: "center",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          textAlignVertical: "center",
+                          color: "white",
+                          fontSize: 14,
+                          fontWeight:"bold",
+                        }}
+                      >
+                      {organization.name}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>       
+                ))}       
+              </View>
+            </ScrollView>
+
+
+          </View>
+        
+        
+        {following ? (
+          <View style={styles.followingContainer}>
+            <TouchableOpacity
+              style={styles.followingButton}
+              onPress={handleUnfollow}
+            >
+              <Text style={styles.followingButtonText}>Following</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.notFollowingContainer}>
+            <TouchableOpacity
+              style={styles.notfollowingButton}
+              onPress={handleFollow}
+            >
+              <Text style={styles.notfollowingButtonText}>Follow</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        
       </View>
-      {/* <TouchableOpacity
-        style={styles.customButtonContainer}
-        onPress={handleLogout}
-      >
-        <Text style={styles.customButtonText}>Logout</Text>
-      </TouchableOpacity> */}
+      
 
 
 
@@ -374,7 +262,7 @@ const styles = StyleSheet.create({
   followingButton: {
     backgroundColor: "#FF392E",
     padding: 15,
-    marginTop: "1%",
+    marginTop: "20%",
     width: "93%",
     alignItems: "center",
     borderRadius: 15,
@@ -385,23 +273,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontWeight: "bold",
   },
-  followingContainer: {
-    alignItems: "center",
-  },
-  notFollowingButton: {
-    backgroundColor: "#FF392E",
+  notfollowingButton: {
+    backgroundColor: "#E6E6E6",
     padding: 15,
-    marginTop: "1%",
+    marginTop: "20%",
     width: "93%",
     alignItems: "center",
     borderRadius: 15,
+    borderColor: "#FF392E",
+    borderWidth: 2,
   },
-  notFollowingButtonText: {
-    color: "white",
+  notfollowingButtonText: {
+    color: "#FF392E",
     fontSize: 16,
     alignItems: "center",
     fontWeight: "bold",
   },
+  followingContainer: {
+    alignItems: "center",
+  },
+
   notFollowingContainer: {
     alignItems: "center",
   },
@@ -423,30 +314,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
-  italic: { fontStyle: "italic" },
-  unFollowButton: {
-    backgroundColor: "grey",
-    padding: 15,
-    marginTop: "1%",
-    width: "93%",
-    alignItems: "center",
-    borderRadius: 15,
+  italic: { 
+    fontStyle: "italic" 
   },
-  unFollowButtonText: {
-    color: "black",
-    fontSize: 16,
-    fontWeight: "bold",
+
+  eventsInfo: {
+    marginTop: "0%",
+    paddingTop: 10,
+    height: "100%",
   },
-  eventsCard: {
-    backgroundColor: "white",
-    borderRadius: 15,
-    alignSelf: "center",
-    height: "46%",
-    width: "90%",
-    justifyContent: "center",
-    marginTop: "2.0%",
-    marginBottom: "-15%",
-  },
+
   orgsCard: {
     backgroundColor: "white",
     borderRadius: 15,
@@ -461,8 +338,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#FF392E",
-    textAlign: "center",
-    marginTop: "8%",
+    marginTop: "5%",
+    marginLeft: "1%"
+  },
+  eventHeader1: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#FF392E",
+    marginTop: "5%",
+    marginLeft: "0%",
   },
   orgHeader: {
     fontSize: 18,
@@ -472,11 +356,12 @@ const styles = StyleSheet.create({
     marginTop: "3%",
   },
   eventsMiniCards: {
-    width: 150,
-    height: 150,
+    width: 125,
+    height: 125,
     backgroundColor: "#FF392E",
     margin: 10,
     borderRadius: 15,
+    justifyContent: "center",
   },
   orgsMiniCards: {
     width: 150,
