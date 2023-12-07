@@ -14,7 +14,7 @@ import {
 } from "firebase/auth";
 import { auth } from "./firebase.config";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import HomeScreen from "./views/HomeScreen";
+import HomeScreen, { HomeScreenStack } from "./views/HomeScreen";
 import ExploreScreen from "./views/ExploreScreen";
 import ProfileScreen from "./views/ProfileScreen";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -23,7 +23,13 @@ import {
   faMagnifyingGlass,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { Alert, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Button } from "@rneui/themed";
 import { reloadAsync } from "expo-updates";
 
@@ -46,62 +52,82 @@ export default function App() {
     return (
       <SafeAreaView>
         <View>
-          <Text style={{textAlign: "center", marginTop: "3%", color: "#FF392E", fontWeight: "bold", fontSize: 26,}}>Please verify your email</Text>
+          <Text
+            style={{
+              textAlign: "center",
+              marginTop: "3%",
+              color: "#FF392E",
+              fontWeight: "bold",
+              fontSize: 26,
+            }}
+          >
+            Please verify your email
+          </Text>
         </View>
-        <View style={{backgroundColor: "#E6E6E6", height: "100%",}}>
-          <TouchableOpacity 
+        <View style={{ backgroundColor: "#E6E6E6", height: "100%" }}>
+          <TouchableOpacity
             style={{
               backgroundColor: "red",
               borderRadius: 15,
               marginTop: "3%",
               padding: "3%",
-              alignItems: "center",}} 
-              onPress={() => {
-                sendEmailVerification(auth.currentUser);
-                Alert.alert("Email sent", "Check your email for verification");
-              }}
+              alignItems: "center",
+            }}
+            onPress={() => {
+              sendEmailVerification(auth.currentUser);
+              Alert.alert("Email sent", "Check your email for verification");
+            }}
           >
-            <Text 
+            <Text
               style={{
                 color: "white",
                 fontSize: 16,
-                fontWeight: "bold",}}
-            >Verify</Text>
-
+                fontWeight: "bold",
+              }}
+            >
+              Verify
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={{
               backgroundColor: "red",
               borderRadius: 15,
               marginTop: "3%",
               padding: "3%",
-              alignItems: "center",}} 
+              alignItems: "center",
+            }}
             onPress={() => reloadAsync()}
           >
-            <Text 
+            <Text
               style={{
                 color: "white",
                 fontSize: 16,
-                fontWeight: "bold",}}
-            > I've verified!</Text>
-
+                fontWeight: "bold",
+              }}
+            >
+              {" "}
+              I've verified!
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={{
               backgroundColor: "red",
               borderRadius: 15,
               marginTop: "3%",
               padding: "3%",
-              alignItems: "center",}} 
+              alignItems: "center",
+            }}
             onPress={() => signOut(auth)}
           >
-            <Text 
+            <Text
               style={{
                 color: "white",
                 fontSize: 16,
-                fontWeight: "bold",}}
-            >Sign Out</Text>
-
+                fontWeight: "bold",
+              }}
+            >
+              Sign Out
+            </Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -120,7 +146,7 @@ export default function App() {
         >
           <Tab.Screen
             name="Home"
-            component={HomeScreen}
+            component={HomeScreenStack}
             options={{
               tabBarIcon: ({ color, size, focused }) => {
                 return (

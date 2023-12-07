@@ -10,6 +10,7 @@ import { auth } from "../firebase.config";
 import { useNavigation } from "@react-navigation/native";
 import EventProfileScreen from "./EventProfileScreen";
 import OrganizationProfileScreen from "./OrganizationProfileScreen";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const HomeScreen = ({ navigation }) => {
   const [recommendedPerkedEvents, setRecommendedPerkedEvents] = useState([]);
@@ -23,6 +24,7 @@ const HomeScreen = ({ navigation }) => {
   const [friendsOrgs, setFriendsOrgs] = useState([]);
   const uid = auth.currentUser.uid;
 
+  const Stack = createNativeStackNavigator();
   useEffect(() => {
     fetch(
       `https://absolute-willing-salmon.ngrok-free.app/api/events/perk/preference/${uid}`
@@ -101,6 +103,7 @@ const HomeScreen = ({ navigation }) => {
                     eventId: event.id,
                   });
                 }}
+                key={event.id}
               >
                 <View key={event.id} style={styles.eventsMiniCards}>
                   <Text>{event.name}</Text>
@@ -133,6 +136,7 @@ const HomeScreen = ({ navigation }) => {
                     eventId: event.id,
                   });
                 }}
+                key={event.id}
               >
                 <View key={event.id} style={styles.eventsMiniCards}>
                   <Text>{event.name}</Text>
@@ -165,6 +169,7 @@ const HomeScreen = ({ navigation }) => {
                     eventId: event.id,
                   });
                 }}
+                key={event.id}
               >
                 <View key={event.id} style={styles.eventsMiniCards}>
                   <Text>{event.name}</Text>
@@ -201,6 +206,7 @@ const HomeScreen = ({ navigation }) => {
                     organizationId: org.id,
                   });
                 }}
+                key={org.id}
               >
                 <View key={org.id} style={styles.orgsMiniCards}>
                   <Text>{org.name}</Text>
@@ -237,6 +243,7 @@ const HomeScreen = ({ navigation }) => {
                     eventId: event.event_id,
                   });
                 }}
+                key={event.event_id}
               >
                 <View key={event.event_id} style={styles.eventsMiniCards}>
                   <Text>{event.event_name}</Text>
@@ -273,6 +280,7 @@ const HomeScreen = ({ navigation }) => {
                     organizationId: org.org_id,
                   });
                 }}
+                key={org.org_id}
               >
                 <View key={org.org_id} style={styles.orgsMiniCards}>
                   <Text>{org.org_name}</Text>
@@ -336,3 +344,32 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
 });
+
+export const HomeScreenStack = () => {
+  const Stack = createNativeStackNavigator();
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="EventProfileScreen"
+        component={EventProfileScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="OrganizationProfileScreen"
+        component={OrganizationProfileScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
