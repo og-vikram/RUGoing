@@ -5,13 +5,85 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { auth } from "../firebase.config";
+import { useNavigation } from "@react-navigation/native";
+import EventProfileScreen from "./EventProfileScreen";
+import OrganizationProfileScreen from "./OrganizationProfileScreen";
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
+  const [recommendedPerkedEvents, setRecommendedPerkedEvents] = useState([]);
+  const [recommendedThemedEvents, setRecommendedThemedEvents] = useState([]);
+  const [recommendedCategorizedEvents, setRecommendedCategorizedEvents] =
+    useState([]);
+  const [recommendedCategorizedOrgs, setRecommendedCategorizedOrgs] = useState(
+    []
+  );
+  const [friendsEvents, setFriendsEvents] = useState([]);
+  const [friendsOrgs, setFriendsOrgs] = useState([]);
+  const uid = auth.currentUser.uid;
+
+  useEffect(() => {
+    fetch(
+      `https://absolute-willing-salmon.ngrok-free.app/api/events/perk/preference/${uid}`
+    )
+      .then((response) => response.json())
+      .then((json) => setRecommendedPerkedEvents(json.events))
+      .catch((error) => console.log(error));
+  }, []);
+
+  useEffect(() => {
+    fetch(
+      `https://absolute-willing-salmon.ngrok-free.app/api/events/theme/preference/${uid}`
+    )
+      .then((response) => response.json())
+      .then((json) => setRecommendedThemedEvents(json.events))
+      .catch((error) => console.log(error));
+  }, []);
+
+  useEffect(() => {
+    fetch(
+      `https://absolute-willing-salmon.ngrok-free.app/api/events/category/preference/${uid}`
+    )
+      .then((response) => response.json())
+      .then((json) => setRecommendedCategorizedEvents(json.events))
+      .catch((error) => console.log(error));
+  }, []);
+
+  useEffect(() => {
+    fetch(
+      `https://absolute-willing-salmon.ngrok-free.app/api/organization/category/preference/${uid}`
+    )
+      .then((response) => response.json())
+      .then((json) => setRecommendedCategorizedOrgs(json.orgs))
+      .catch((error) => console.log(error));
+  }, []);
+
+  useEffect(() => {
+    fetch(
+      `https://absolute-willing-salmon.ngrok-free.app/api/event/attending/followees/${uid}`
+    )
+      .then((response) => response.json())
+      .then((json) => setFriendsEvents(json.events))
+      .catch((error) => console.log(error));
+  }, []);
+
+  useEffect(() => {
+    fetch(
+      `https://absolute-willing-salmon.ngrok-free.app/api/organization/joined/followees/${uid}`
+    )
+      .then((response) => response.json())
+      .then((json) => setFriendsOrgs(json.orgs))
+      .catch((error) => console.log(error));
+  }, []);
+
   return (
-    <View>
+    <ScrollView>
       <View style={styles.eventsCard}>
-        <Text style={styles.eventHeader}> Recommended Events </Text>
+        <Text style={styles.eventHeader}>
+          {" "}
+          Events with Perks You May Like...{" "}
+        </Text>
 
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <View
@@ -19,50 +91,95 @@ const HomeScreen = () => {
               flexDirection: "row",
               flex: 1,
               alignItems: "center",
-              marginTop: "-3%",
+              marginTop: "%",
             }}
           >
-            {/* Content inside the horizontal ScrollView */}
-            <View style={styles.eventsMiniCards}>
-              <Text
-                style={{
-                  alignSelf: "center",
-                  textAlignVertical: "center",
-                  color: "#FF392E",
+            {recommendedPerkedEvents.map((event) => (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("EventProfileScreen", {
+                    eventId: event.id,
+                  });
                 }}
               >
-                Event #1
-              </Text>
-            </View>
-            <View style={styles.eventsMiniCards}>
-              <Text
-                style={{
-                  alignSelf: "center",
-                  textAlignVertical: "center",
-                  color: "#FF392E",
+                <View key={event.id} style={styles.eventsMiniCards}>
+                  <Text>{event.name}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
+
+      <View style={styles.eventsCard}>
+        <Text style={styles.eventHeader}>
+          {" "}
+          Events with Themes You May Like...{" "}
+        </Text>
+
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          <View
+            style={{
+              flexDirection: "row",
+              flex: 1,
+              alignItems: "center",
+              marginTop: "%",
+            }}
+          >
+            {recommendedThemedEvents.map((event) => (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("EventProfileScreen", {
+                    eventId: event.id,
+                  });
                 }}
               >
-                Event #2
-              </Text>
-            </View>
-            <View style={styles.eventsMiniCards}>
-              <Text
-                style={{
-                  alignSelf: "center",
-                  textAlignVertical: "center",
-                  color: "#FF392E",
+                <View key={event.id} style={styles.eventsMiniCards}>
+                  <Text>{event.name}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
+
+      <View style={styles.eventsCard}>
+        <Text style={styles.eventHeader}>
+          {" "}
+          Events with Categories You May Like...{" "}
+        </Text>
+
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          <View
+            style={{
+              flexDirection: "row",
+              flex: 1,
+              alignItems: "center",
+              marginTop: "%",
+            }}
+          >
+            {recommendedCategorizedEvents.map((event) => (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("OrganizationProfileScreen", {
+                    eventId: event.id,
+                  });
                 }}
               >
-                Event #3
-              </Text>
-            </View>
-            {/* Add more items as needed */}
+                <View key={event.id} style={styles.eventsMiniCards}>
+                  <Text>{event.name}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
           </View>
         </ScrollView>
       </View>
 
       <View style={styles.orgsCard}>
-        <Text style={styles.orgHeader}> Recommended Organizations </Text>
+        <Text style={styles.orgHeader}>
+          {" "}
+          Organizations with Categories You May Like ...{" "}
+        </Text>
 
         <ScrollView
           horizontal={true}
@@ -77,45 +194,95 @@ const HomeScreen = () => {
               marginTop: "-3%",
             }}
           >
-            {/* Content inside the horizontal ScrollView */}
-            <View style={styles.orgsMiniCards}>
-              <Text
-                style={{
-                  alignSelf: "center",
-                  textAlignVertical: "center",
-                  color: "white",
+            {recommendedCategorizedOrgs.map((org) => (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("OrganizationProfileScreen", {
+                    organizationId: org.id,
+                  });
                 }}
               >
-                Org 1
-              </Text>
-            </View>
-            <View style={styles.orgsMiniCards}>
-              <Text
-                style={{
-                  alignSelf: "center",
-                  textAlignVertical: "center",
-                  color: "white",
-                }}
-              >
-                Org 2
-              </Text>
-            </View>
-            <View style={styles.orgsMiniCards}>
-              <Text
-                style={{
-                  alignSelf: "center",
-                  textAlignVertical: "center",
-                  color: "white",
-                }}
-              >
-                Org 3
-              </Text>
-            </View>
-            {/* Add more items as needed */}
+                <View key={org.id} style={styles.orgsMiniCards}>
+                  <Text>{org.name}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
           </View>
         </ScrollView>
       </View>
-    </View>
+
+      <View style={styles.eventsCard}>
+        <Text style={styles.eventHeader}>
+          {" "}
+          Events Your Friends Are Attending ...{" "}
+        </Text>
+
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={styles.orgsInfo}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              flex: 1,
+              alignItems: "center",
+              marginTop: "-3%",
+            }}
+          >
+            {friendsEvents.map((event) => (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("EventProfileScreen", {
+                    eventId: event.event_id,
+                  });
+                }}
+              >
+                <View key={event.event_id} style={styles.eventsMiniCards}>
+                  <Text>{event.event_name}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
+
+      <View style={styles.orgsCard}>
+        <Text style={styles.orgHeader}>
+          {" "}
+          Organizations Your Friends Joined ...{" "}
+        </Text>
+
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={styles.orgsInfo}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              flex: 1,
+              alignItems: "center",
+              marginTop: "-3%",
+            }}
+          >
+            {friendsOrgs.map((org) => (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("OrganizationProfileScreen", {
+                    organizationId: org.org_id,
+                  });
+                }}
+              >
+                <View key={org.org_id} style={styles.orgsMiniCards}>
+                  <Text>{org.org_name}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
+    </ScrollView>
   );
 };
 

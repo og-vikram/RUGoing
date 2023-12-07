@@ -52,20 +52,20 @@ const FriendProfileScreen = ({ navigation }) => {
   }, []);
 
   useLayoutEffect(() => {
-
     fetch(
-        `https://absolute-willing-salmon.ngrok-free.app/api/event/attending/${route.params.user_uid}`)
+      `https://absolute-willing-salmon.ngrok-free.app/api/event/attending/${route.params.user_uid}`
+    )
       .then((response) => response.json())
       .then((json) => setEvents(json.events))
       .catch((error) => console.log(error))
-      .then(
-    )
+      .then();
 
     fetch(
-        `https://absolute-willing-salmon.ngrok-free.app/api/organization/joined/${route.params.user_uid}`)
+      `https://absolute-willing-salmon.ngrok-free.app/api/organization/joined/${route.params.user_uid}`
+    )
       .then((response) => response.json())
       .then((json) => setOrganizations(json.orgs))
-      .catch((error) => console.log(error))
+      .catch((error) => console.log(error));
   }, []);
 
   const handleFollow = async () => {
@@ -117,135 +117,144 @@ const FriendProfileScreen = ({ navigation }) => {
       }
     }
   };
-  
 
   return (
     <ScrollView>
-    <View>
-      <Card
-      containerStyle={{
-        borderRadius: 8,
-        height: 640,
-      }}>
-        <Card.Title>{userData.firstname + " " + userData.lastname}</Card.Title>
-        <Card.Divider />
-        <Text style = {{fontWeight: "bold", fontSize: 18, color: "#FF392E"}}> Bio: </Text>
-        <Text style = {styles.italic}> {userData.bio_descrip}</Text>
-        
-
       <View>
-          <Text style={styles.eventHeader}>{userData.firstname + " is attending..."} </Text>
+        <Card
+          containerStyle={{
+            borderRadius: 8,
+            height: 640,
+          }}
+        >
+          <Card.Title>
+            {userData.firstname + " " + userData.lastname}
+          </Card.Title>
+          <Card.Divider />
+          <Text style={{ fontWeight: "bold", fontSize: 18, color: "#FF392E" }}>
+            {" "}
+            Bio:{" "}
+          </Text>
+          <Text style={styles.italic}> {userData.bio_descrip}</Text>
+
           <View>
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  flex: 1,
-                  alignItems: "center",
-                }}
+            <Text style={styles.eventHeader}>
+              {userData.firstname + " is attending..."}{" "}
+            </Text>
+            <View>
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
               >
-                {/* Content inside the horizontal ScrollView */}  
-                  
-                {events.map((eventDetail) => (
-                  <TouchableOpacity
-                        onPress={() => {
-                        navigation.navigate("Event Profile", {
-                        eventId: eventDetail.id,
-                    });
-                  }}>
-                    <View key={eventDetail.id} style={styles.eventsMiniCards}>
-                      <Text
-                        style={{
-                          alignSelf: "center",
-                          textAlignVertical: "center",
-                          color: "white",
-                          fontSize: 14,
-                          fontWeight:"bold",
-                        }}
-                      >
-                        {eventDetail.name}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>       
-                ))}      
-              </View>
-            </ScrollView>
-          </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    flex: 1,
+                    alignItems: "center",
+                  }}
+                >
+                  {/* Content inside the horizontal ScrollView */}
 
-        
-          <Text style={styles.eventHeader1}> {userData.firstname + " is apart of..."} </Text>
-          <View>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  flex: 1,
-                  alignItems: "center",
-                  marginTop: 0,
-                }}
+                  {events.map((eventDetail) => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate("EventProfileScreen", {
+                          eventId: eventDetail.id,
+                        });
+                      }}
+                    >
+                      <View key={eventDetail.id} style={styles.eventsMiniCards}>
+                        <Text
+                          style={{
+                            alignSelf: "center",
+                            textAlignVertical: "center",
+                            color: "white",
+                            fontSize: 14,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {eventDetail.name}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </ScrollView>
+            </View>
+
+            <Text style={styles.eventHeader1}>
+              {" "}
+              {userData.firstname + " is apart of..."}{" "}
+            </Text>
+            <View>
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
               >
-                {/* Content inside the horizontal ScrollView */}  
-                  
-                {organizations.map((organization) => (
-                  <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("Org Profile", {
-                      organizationId: organization.org_id,
-                    });
-                  }}>
-                    <View key={organization.id} style={styles.eventsMiniCards}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    flex: 1,
+                    alignItems: "center",
+                    marginTop: 0,
+                  }}
+                >
+                  {/* Content inside the horizontal ScrollView */}
 
-                      <Text
-                        style={{
-                          alignSelf: "center",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          textAlignVertical: "center",
-                          color: "white",
-                          fontSize: 14,
-                          fontWeight:"bold",
-                        }}
+                  {organizations.map((organization) => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate("OrganizationProfileScreen", {
+                          organizationId: organization.id,
+                        });
+                      }}
+                    >
+                      <View
+                        key={organization.id}
+                        style={styles.eventsMiniCards}
                       >
-                      {organization.name}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>       
-                ))}       
+                        <Text
+                          style={{
+                            alignSelf: "center",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            textAlignVertical: "center",
+                            color: "white",
+                            fontSize: 14,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {organization.name}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </ScrollView>
+            </View>
+
+            {following ? (
+              <View style={styles.followingContainer}>
+                <TouchableOpacity
+                  style={styles.followingButton}
+                  onPress={handleUnfollow}
+                >
+                  <Text style={styles.followingButtonText}>Following</Text>
+                </TouchableOpacity>
               </View>
-            </ScrollView>
-
-
+            ) : (
+              <View style={styles.notFollowingContainer}>
+                <TouchableOpacity
+                  style={styles.notfollowingButton}
+                  onPress={handleFollow}
+                >
+                  <Text style={styles.notfollowingButtonText}>Follow</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
-        
-        
-        {following ? (
-          <View style={styles.followingContainer}>
-            <TouchableOpacity
-              style={styles.followingButton}
-              onPress={handleUnfollow}
-            >
-              <Text style={styles.followingButtonText}>Following</Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <View style={styles.notFollowingContainer}>
-            <TouchableOpacity
-              style={styles.notfollowingButton}
-              onPress={handleFollow}
-            >
-              <Text style={styles.notfollowingButtonText}>Follow</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-        
+        </Card>
       </View>
-      
-
-
-
-
-      </Card>
-    </View>
     </ScrollView>
   );
 };
@@ -314,8 +323,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
-  italic: { 
-    fontStyle: "italic" 
+  italic: {
+    fontStyle: "italic",
   },
 
   eventsInfo: {
@@ -339,7 +348,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#FF392E",
     marginTop: "5%",
-    marginLeft: "1%"
+    marginLeft: "1%",
   },
   eventHeader1: {
     fontSize: 18,
