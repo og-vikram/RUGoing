@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
+  Modal,
 } from "react-native";
 import React, { useEffect, useLayoutEffect, useState, useMemo } from "react";
 import { auth } from "../firebase.config";
@@ -97,6 +98,26 @@ const updateCurrBio = async () => {
   }
 }
 
+//followers modal stuff
+const [followersModalVisible, setFollowersModalVisible] = useState(false);
+const openFollowersModal = () => {
+  setFollowersModalVisible(true);
+};
+
+const closeFollowersModal = () => {
+  setFollowersModalVisible(false);
+};
+
+//following modal stuff
+const [followingModalVisible, setFollowingModalVisible] = useState(false);
+const openFollowingModal = () => {
+  setFollowingModalVisible(true);
+};
+
+const closeFollowingModal = () => {
+  setFollowingModalVisible(false);
+};
+
 
 
 if(!loading){
@@ -132,8 +153,70 @@ if(!loading){
       </View>
         
         
-        <Card.Divider/>
-        
+      <Card.Divider/>
+        <View style={{justifyContent:"center", flexDirection:"row"}}>
+          <TouchableOpacity style={styles.button} onPress={openFollowersModal}>
+            <Text style={{textAlign: "center", fontSize: 14, fontWeight: "bold", color: "white"}}> Followers </Text>
+          </TouchableOpacity>
+
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={followersModalVisible}
+            onRequestClose={closeFollowersModal}
+            backdropOpacity={.3}
+          >
+
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+
+
+              {/* Anish cook over here */}
+              <Text> Hi </Text>
+
+
+
+                <TouchableOpacity style={styles.bottombutton1} onPress={closeFollowersModal}>
+                  <Text style={styles.bottombuttontext1}>Close</Text>
+                </TouchableOpacity>
+
+              </View>
+
+            </View>
+          </Modal>
+
+          <TouchableOpacity style={styles.button} onPress={openFollowingModal}>
+            <Text style={{textAlign: "center", fontSize: 14, fontWeight: "bold", color: "white"}}> Following </Text>
+          </TouchableOpacity>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={followingModalVisible}
+            onRequestClose={closeFollowingModal}
+            backdropOpacity={.3}
+          >
+
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+
+
+              {/* Anish cook over here */}
+              <Text> Hi </Text>
+
+
+
+                <TouchableOpacity style={styles.bottombutton1} onPress={closeFollowingModal}>
+                  <Text style={styles.bottombuttontext1}>Close</Text>
+                </TouchableOpacity>
+
+              </View>
+
+            </View>
+          </Modal>
+
+        </View>
+
+        <Card.Divider style={{marginTop: "3%"}}/>
         <View
           style={{
             flex: 1,
@@ -274,6 +357,13 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: "center",
   },
+  button: {
+    backgroundColor: "#FF392E",
+    borderRadius: 15,
+    marginHorizontal: "5%",
+    padding: 8,
+    flex: 1,
+  },
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -361,6 +451,29 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems:"center",
     justifyContent:"space-between",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+      backgroundColor: 'white',
+      padding: 20,
+      borderRadius: 15,
+  },
+  bottombutton1: {
+    backgroundColor: "#E6E6E6",
+    borderRadius: 15,
+    marginTop: "3%",
+    padding: "3%",
+    alignItems: "center",
+  },
+  bottombuttontext1: {
+    color: "#FF392E",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 
