@@ -165,9 +165,6 @@ const EventProfileScreen = (props) => {
   return (
     <ScrollView>
       <View className="container" style={styles.container}>
-        <View className="image-container">
-          <Image source={require("../assets/icon.png")} style={styles.image} />
-        </View>
         <View className="details-container">
           <View className="basiceventinfo" style={styles.basicInfo}>
             <Text style={styles.header}>{data.name}</Text>
@@ -184,10 +181,24 @@ const EventProfileScreen = (props) => {
             <Text>{peopleCount()}</Text>
           </View>
 
-        <View className="location" style={styles.location}>
-          <View style={{justifyContent:"center", flexDirection:"row"}}>
-          <TouchableOpacity style={styles.button} onPress={openFollowersModal}>
-            <Text style={{textAlign: "center", fontSize: 14, fontWeight: "bold", color: "white"}}> Followers </Text>
+        
+          <View className="location" style={styles.location}>
+            <Text style={styles.header}>Location</Text>
+            <Text>{data.location}</Text>
+          </View>
+
+         
+
+          <View className="location" style={styles.location}>
+            <Text style={styles.header}>Date And Time</Text>
+            <Text>{data.start}</Text>
+            <Text>{data.end}</Text>
+          </View>
+
+          <View className="location">
+          <View style={styles.attendingContainer}>
+          <TouchableOpacity style={[styles.attendingButton, {marginBottom: 3}]} onPress={openFollowersModal}>
+            <Text style={styles.attendingButtonText}> Friends That Are Attending </Text>
           </TouchableOpacity>
 
           <Modal
@@ -217,16 +228,6 @@ const EventProfileScreen = (props) => {
                 </ScrollView>
 
 
-
-              {/* <ScrollView>
-                {
-                  friends.map((friend) => (
-                    key={friend.uid}
-                    ))}
-                
-              </ScrollView> */}
-
-
                 <TouchableOpacity style={styles.bottombutton1} onPress={closeFollowersModal}>
                   <Text style={styles.bottombuttontext1}>Close</Text>
                 </TouchableOpacity>
@@ -237,21 +238,9 @@ const EventProfileScreen = (props) => {
           </Modal>
 
           
-        </View>
-
           </View>
-          <View className="location" style={styles.location}>
-            <Text style={styles.header}>Location</Text>
-            <Text>{data.location}</Text>
           </View>
 
-         
-
-          <View className="location" style={styles.location}>
-            <Text style={styles.header}>Date And Time</Text>
-            <Text>{data.start}</Text>
-            <Text>{data.end}</Text>
-          </View>
           <View>
             {attending ? (
               <View style={styles.attendingContainer}>

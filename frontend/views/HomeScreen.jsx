@@ -94,6 +94,7 @@ const HomeScreen = ({ navigation }) => {
               flex: 1,
               alignItems: "center",
               marginTop: "%",
+              justifyContent: "center",
             }}
           >
             {recommendedPerkedEvents.map((event) => (
@@ -106,7 +107,7 @@ const HomeScreen = ({ navigation }) => {
                 key={event.id}
               >
                 <View key={event.id} style={styles.eventsMiniCards}>
-                  <Text>{event.name}</Text>
+                  <Text style={{color: "#FF392E", fontWeight: "bold", fontSize:16 }}>{event.name}</Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -114,8 +115,8 @@ const HomeScreen = ({ navigation }) => {
         </ScrollView>
       </View>
 
-      <View style={styles.eventsCard}>
-        <Text style={styles.eventHeader}>
+      <View style={styles.eventsCard5}>
+        <Text style={styles.eventHeader5}>
           {" "}
           Events with Themes You May Like...{" "}
         </Text>
@@ -138,8 +139,8 @@ const HomeScreen = ({ navigation }) => {
                 }}
                 key={event.id}
               >
-                <View key={event.id} style={styles.eventsMiniCards}>
-                  <Text>{event.name}</Text>
+                <View key={event.id} style={styles.eventsMiniCards5}>
+                  <Text style={{color: "white", fontWeight: "bold", fontSize:16 }}>{event.name}</Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -172,7 +173,7 @@ const HomeScreen = ({ navigation }) => {
                 key={event.id}
               >
                 <View key={event.id} style={styles.eventsMiniCards}>
-                  <Text>{event.name}</Text>
+                  <Text style={{color: "#FF392E", fontWeight: "bold", fontSize:16 }}>{event.name}</Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -209,7 +210,7 @@ const HomeScreen = ({ navigation }) => {
                 key={org.id}
               >
                 <View key={org.id} style={styles.orgsMiniCards}>
-                  <Text>{org.name}</Text>
+                  <Text style={{color: "white", fontWeight: "bold", fontSize:16 }}>{org.name}</Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -245,8 +246,8 @@ const HomeScreen = ({ navigation }) => {
                 }}
                 key={event.event_id}
               >
-                <View key={event.event_id} style={styles.eventsMiniCards}>
-                  <Text>{event.event_name}</Text>
+                <View key={event.event_id} style={styles.orgsMiniCards1}>
+                  <Text style={{color: "#FF392E", fontWeight: "bold", fontSize:16 }}>{event.event_name}</Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -282,8 +283,8 @@ const HomeScreen = ({ navigation }) => {
                 }}
                 key={org.org_id}
               >
-                <View key={org.org_id} style={styles.orgsMiniCards}>
-                  <Text>{org.org_name}</Text>
+                <View key={org.org_id} style={styles.orgsMiniCards2}>
+                  <Text style={{color: "white", fontWeight: "bold", fontSize:16 }}>{org.org_name}</Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -301,7 +302,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF392E",
     borderRadius: 15,
     alignSelf: "center",
-    height: "48%",
+    height: 300,
+    width: "95%",
+    justifyContent: "center",
+    marginTop: "2.5%",
+  },
+  eventsCard5: {
+    backgroundColor: "white",
+    borderRadius: 15,
+    alignSelf: "center",
+    height: 300,
     width: "95%",
     justifyContent: "center",
     marginTop: "2.5%",
@@ -310,7 +320,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 15,
     alignSelf: "center",
-    height: "48%",
+    height: 300,
     width: "95%",
     justifyContent: "center",
     marginTop: "2.5%",
@@ -319,6 +329,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: "white",
+    textAlign: "center",
+    marginTop: "3%",
+  },
+  eventHeader5: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#FF392E",
     textAlign: "center",
     marginTop: "3%",
   },
@@ -335,13 +352,47 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     margin: 10,
     borderRadius: 15,
+    justifyContent: "center",
+    alignItems:"center",
+  },
+  eventsMiniCards5: {
+    width: 200,
+    height: 200,
+    backgroundColor: "#FF392E",
+    margin: 10,
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems:"center",
   },
   orgsMiniCards: {
     width: 200,
     height: 200,
     backgroundColor: "#FF392E",
     margin: 10,
+    marginTop: 300,
     borderRadius: 15,
+    justifyContent: "center",
+    alignItems:"center",
+  },
+  orgsMiniCards1: {
+    width: 200,
+    height: 200,
+    backgroundColor: "white",
+    margin: 10,
+    marginTop: 50,
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems:"center",
+  },
+  orgsMiniCards2: {
+    width: 200,
+    height: 200,
+    backgroundColor: "#FF392E",
+    margin: 10,
+    marginTop: 20,
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems:"center",
   },
 });
 

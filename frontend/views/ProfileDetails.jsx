@@ -223,9 +223,11 @@ if(!loading){
               <View style={styles.modalContent}>
 
                 <Text style={styles.questionText}> Followers: </Text>
+                
                 <View style={styles.card1}>
                     {/* Anish cook over here */}
                     {followerList.map((item) => (
+                      <ScrollView>
                       <TouchableOpacity
                         key={item.uid}
                         onPress={() => {
@@ -238,6 +240,7 @@ if(!loading){
                       >
                         <Text style={styles.modalText}>{item.name}</Text>
                       </TouchableOpacity>
+                      </ScrollView>
                     ))}
                 </View>
 
@@ -263,8 +266,9 @@ if(!loading){
 
             <View style={styles.modalContainer}>
               <View style={styles.modalContent}>
-                <Text style={styles.questionText}> Followers: </Text>
+                <Text style={styles.questionText}> Following: </Text>
                   <View style={styles.card2}>
+                    <ScrollView>
 
                     {/* Anish cook over here */}
                     {followingList.map((item) => (
@@ -277,6 +281,7 @@ if(!loading){
                           });
                           closeFollowersModal();
                         }}
+
                         style={styles.modalList1}
                         
                       >
@@ -294,6 +299,7 @@ if(!loading){
                       
                      </View>
                     ))}
+                    </ScrollView>
                   </View>
 
 
@@ -439,17 +445,18 @@ const styles = StyleSheet.create({
       backgroundColor: 'white',
       borderColor: "#FF392E",
       borderWidth: 1,
-      borderRadius: 10,
+      borderRadius: 15,
       width: 330,
-      height: 120,
+      height: 320,
   },
   card2:{
     backgroundColor: 'white',
     borderColor: "#FF392E",
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: 15,
     width: 330,
     height: 320,
+    alignSelf: "center",
 },
   userInput:{
     color:"red",
@@ -494,8 +501,12 @@ const styles = StyleSheet.create({
   modalList: {
     borderRadius: 15,
     backgroundColor: "#E6E6E6",
-    marginTop: "1%",
+    marginTop: "2%",
     padding: "4%",
+    alignItems:"center",
+    width: 310,
+    height: 50,
+    alignSelf: "center",
   },
   modalList1:{
     borderRadius: 15,
@@ -504,6 +515,9 @@ const styles = StyleSheet.create({
     padding: "4%",
     flexDirection: "row",
     alignItems:"center",
+    width: 310,
+    height: 50,
+    alignSelf: "center",
   },
   modalText: {
     fontSize: 14,
@@ -620,8 +634,7 @@ const styles = StyleSheet.create({
   },
   questionText: {
     color: "black",
-    fontSize: 13,
-    marginTop: "3%",
+    fontSize: 18,
     fontWeight: "bold",
   },
 });

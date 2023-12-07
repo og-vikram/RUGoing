@@ -284,6 +284,7 @@ const OrganizationProfileScreen = () => {
                   eventId: event.id,
                 });
               }}
+              style={{}}
             >
               <View style={styles.eventContainer}>
                 <Text style={styles.eventItem}>{event.name}</Text>
@@ -412,14 +413,17 @@ const styles = StyleSheet.create({
   },
   eventContainer: {
     flexDirection: "row",
-    padding: 10,
-  },
-  eventItem: {
-    width: 150, // Width of each event item
-    margin: 10,
+    marginRight: 10,
+    backgroundColor: "red",
     padding: 10,
     borderRadius: 15,
-    backgroundColor: "#FF392E", // Event item background color
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  eventItem: {
+
+    color: "white",
+    fontWeight: "bold",    
   },
   eventName: {
     fontSize: 18,
