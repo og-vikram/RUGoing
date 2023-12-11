@@ -22,18 +22,16 @@ const EventsScreen = ({ navigation }) => {
   const [themes, setThemes] = useState([]);
   const url = "https://absolute-willing-salmon.ngrok-free.app/api/event/all";
 
+  //fetches all events
   useEffect(() => {
-    fetch(url, {
-      // headers: new Headers({
-      //   "ngrok-skip-browser-warning": "true",
-      // }),
-    })
+    fetch(url)
       .then((response) => response.json())
       .then((json) => setData(json.events))
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
   }, []);
 
+  //fetches all categories
   useEffect(() => {
     fetch(
       "https://absolute-willing-salmon.ngrok-free.app/api/event/categories/all"
@@ -44,6 +42,7 @@ const EventsScreen = ({ navigation }) => {
       .finally(() => setLoading2(false));
   }, []);
 
+  //fetches all themes
   useEffect(() => {
     fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/themes/all")
       .then((response) => response.json())
@@ -52,6 +51,7 @@ const EventsScreen = ({ navigation }) => {
       .finally(() => setThemeLoading(false));
   }, []);
 
+  //fetches all perks
   useEffect(() => {
     fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/perks/all")
       .then((response) => response.json())
@@ -60,6 +60,7 @@ const EventsScreen = ({ navigation }) => {
       .finally(() => setPerkLoading(false));
   }, []);
 
+  //returns categories for each event
   const returnCategories = (event_id) => {
     let item_categories = [];
     for (let i = 0; i < categories.length; i++) {
@@ -70,6 +71,7 @@ const EventsScreen = ({ navigation }) => {
     return item_categories;
   };
 
+  //returns themes for each event
   const returnThemes = (event_id) => {
     let item_themes = [];
     for (let i = 0; i < themes.length; i++) {
@@ -80,6 +82,7 @@ const EventsScreen = ({ navigation }) => {
     return item_themes;
   };
 
+  //returns perks for each event
   const returnPerks = (event_id) => {
     let item_perks = [];
     for (let i = 0; i < perks.length; i++) {
@@ -92,119 +95,223 @@ const EventsScreen = ({ navigation }) => {
 
   //categories stuff
   const [categoriesList, setCategoriesList] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [categoriesModalVisible, setCategoriesModalVisible] = useState(false);
 
-  const [selectedButtons1, setSelectedButtons1] = useState([]);
-  const [modal1Visible, setModal1Visible] = useState(false);
-
+  //fetches a list of all categories
   useEffect(() => {
     fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/categories")
       .then((response) => response.json())
       .then((json) => {
         setCategoriesList(json.categories);
-        console.log("categories: ", categoriesList);
+        // console.log("categories: ", categoriesList);
       })
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
   }, []);
 
+  //handles button clicks for categories
   const handleButtonClick = (id) => {
-    const isSelected = selectedButtons1.includes(id);
+    const isSelected = selectedCategories.includes(id);
     if (isSelected) {
-      setSelectedButtons1(
-        selectedButtons1.filter((buttonId) => buttonId !== id)
+      setSelectedCategories(
+        selectedCategories.filter((buttonId) => buttonId !== id)
       );
     } else {
-      setSelectedButtons1([...selectedButtons1, id]);
+      setSelectedCategories([...selectedCategories, id]);
     }
   };
 
+  //closes the categories modal
   const handleCloseModal = () => {
-    setSelectedButtons1(selectedButtons1);
-    console.log("Selected buttons:", selectedButtons1);
+    setSelectedCategories(selectedCategories);
+    console.log("Selected buttons:", selectedCategories);
+    filterEvents();
 
-    setModal1Visible(false);
+    setCategoriesModalVisible(false);
   };
 
+  //opens the categories modal
   const openModal = () => {
-    setModal1Visible(true);
+    setCategoriesModalVisible(true);
   };
 
   //perks stuff
   const [perksList, setPerksList] = useState([]);
+  const [selectedPerks, setSelectedPerks] = useState([]);
+  const [perkModalVisible, setPerkModalVisible] = useState(false);
 
-  const [selectedButtons2, setSelectedButtons2] = useState([]);
-  const [modal2Visible, setModal2Visible] = useState(false);
-
+  //fetches a list of all perks
   useEffect(() => {
     fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/perks")
       .then((response) => response.json())
       .then((json) => {
         setPerksList(json.perks);
       })
-      .then(() => console.log("perks: ", perksList))
+      // .then(() => console.log("perks: ", perksList))
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
   }, []);
-
+  //handles button clicks for perks
   const handleButton2Click = (id) => {
-    const isSelected = selectedButtons2.includes(id);
+    const isSelected = selectedPerks.includes(id);
     if (isSelected) {
-      setSelectedButtons2(
-        selectedButtons2.filter((buttonId) => buttonId !== id)
-      );
+      setSelectedPerks(selectedPerks.filter((buttonId) => buttonId !== id));
     } else {
-      setSelectedButtons2([...selectedButtons2, id]);
+      setSelectedPerks([...selectedPerks, id]);
     }
   };
+  //closes the perks modal
+  const handleClosePerkModal = () => {
+    setSelectedPerks(selectedPerks);
+    console.log("Selected buttons:", selectedPerks);
+    filterEvents();
 
-  const handleCloseModal2 = () => {
-    setSelectedButtons2(selectedButtons2);
-    console.log("Selected buttons:", selectedButtons2);
-
-    setModal2Visible(false);
+    setPerkModalVisible(false);
   };
-
-  const openModal2 = () => {
-    setModal2Visible(true);
+  //opens the perks modal
+  const openPerkModal = () => {
+    setPerkModalVisible(true);
   };
 
   //themes stuff
   const [themesList, setThemesList] = useState([]);
 
-  const [selectedButtons3, setSelectedButtons3] = useState([]);
-  const [modal3Visible, setModal3Visible] = useState(false);
-
+  const [selectedThemes, setSelectedThemes] = useState([]);
+  const [themeModalVisible, setThemeModalVisible] = useState(false);
+  //fetches a list of all themes
   useEffect(() => {
     fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/themes")
       .then((response) => response.json())
       .then((json) => {
         setThemesList(json.themes);
       })
-      .then(() => console.log("themes: ", themesList))
+      // .then(() => console.log("themes: ", themesList))
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
   }, []);
-
-  const handleButton3Click = (id) => {
-    const isSelected = selectedButtons3.includes(id);
+  //handles button clicks for themes
+  const handleThemeClick = (id) => {
+    const isSelected = selectedThemes.includes(id);
     if (isSelected) {
-      setSelectedButtons3(
-        selectedButtons3.filter((buttonId) => buttonId !== id)
-      );
+      setSelectedThemes(selectedThemes.filter((buttonId) => buttonId !== id));
     } else {
-      setSelectedButtons3([...selectedButtons3, id]);
+      setSelectedThemes([...selectedThemes, id]);
     }
   };
+  //closes the themes modal
+  const handleThemeModalClose = () => {
+    setSelectedThemes(selectedThemes);
+    console.log("Selected buttons:", selectedThemes);
 
-  const handleCloseModal3 = () => {
-    setSelectedButtons3(selectedButtons3);
-    console.log("Selected buttons:", selectedButtons3);
-
-    setModal3Visible(false);
+    filterEvents();
+    setThemeModalVisible(false);
+  };
+  //opens the themes modal
+  const openThemeModal = () => {
+    setThemeModalVisible(true);
   };
 
-  const openModal3 = () => {
-    setModal3Visible(true);
+  const [filteredEvents, setFilteredEvents] = useState([]);
+  const [themedEvents, setThemedEvents] = useState([]);
+  const [perkedEvents, setPerkedEvents] = useState([]);
+  const [categorizedEvents, setCategorizedEvents] = useState([]);
+  //fetches a list of all events that are categorized
+  useEffect(() => {
+    fetch(
+      "https://absolute-willing-salmon.ngrok-free.app/api/event/categorized/all"
+    )
+      .then((response) => response.json())
+      .then((json) => {
+        setCategorizedEvents(json);
+      });
+  }, []);
+  //fetches a list of all events that are perked
+  useEffect(() => {
+    fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/perked/all")
+      .then((response) => response.json())
+      .then((json) => {
+        setPerkedEvents(json);
+      });
+  }, []);
+  //fetches a list of all events that are themed
+  useEffect(() => {
+    fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/themed/all")
+      .then((response) => response.json())
+      .then((json) => {
+        setThemedEvents(json);
+      });
+  }, []);
+  // returns all events that are categorized
+  const returnCategorizedEvents = (category_id) => {
+    let event_ids = [];
+    for (let i = 0; i < categorizedEvents.length; i++) {
+      if (category_id == categorizedEvents[i].category_id) {
+        for (let j = 0; j < categorizedEvents[i].events.length; j++) {
+          event_ids.push(categorizedEvents[i].events[j]);
+        }
+      }
+    }
+    return event_ids;
+  };
+  // returns all events that are themed
+  const returnThemedEvents = (theme_id) => {
+    let event_ids = [];
+    for (let i = 0; i < themedEvents.length; i++) {
+      if (theme_id == themedEvents[i].theme_id) {
+        for (let j = 0; j < themedEvents[i].events.length; j++) {
+          event_ids.push(themedEvents[i].events[j]);
+        }
+      }
+    }
+    return event_ids;
+  };
+  // returns all events that are perked
+  const returnPerkedEvents = (perk_id) => {
+    let event_ids = [];
+    for (let i = 0; i < perkedEvents.length; i++) {
+      if (perk_id == perkedEvents[i].perk_id) {
+        for (let j = 0; j < perkedEvents[i].events.length; j++) {
+          event_ids.push(perkedEvents[i].events[j]);
+        }
+      }
+    }
+    return event_ids;
+  };
+  // MAIN FILTER EVENTS CODE
+  const filterEvents = () => {
+    let filteredEventsLocal = [];
+
+    for (i in selectedCategories) {
+      let category_id = selectedCategories[i];
+      let event_ids = returnCategorizedEvents(category_id);
+      for (let i = 0; i < event_ids.length; i++) {
+        if (!filteredEvents.includes(event_ids[i])) {
+          filteredEventsLocal.push(event_ids[i]);
+        }
+      }
+    }
+    for (i in selectedPerks) {
+      let perk_name = selectedPerks[i];
+      let event_ids = returnPerkedEvents(perk_name);
+      for (let i = 0; i < event_ids.length; i++) {
+        if (!filteredEvents.includes(event_ids[i])) {
+          filteredEventsLocal.push(event_ids[i]);
+        }
+      }
+    }
+    for (i in selectedThemes) {
+      let theme_name = selectedThemes[i];
+      let event_ids = returnThemedEvents(theme_name);
+      for (let i = 0; i < event_ids.length; i++) {
+        if (!filteredEvents.includes(event_ids[i])) {
+          filteredEventsLocal.push(event_ids[i]);
+        }
+      }
+    }
+
+    setFilteredEvents(filteredEventsLocal);
+    console.log("filtered events: ", filteredEventsLocal);
   };
 
   if (!loading && !loading2 && !themeLoading && !perkLoading) {
@@ -218,7 +325,7 @@ const EventsScreen = ({ navigation }) => {
           <Modal
             animationType="slide"
             transparent={true}
-            visible={modal1Visible}
+            visible={categoriesModalVisible}
             onRequestClose={handleCloseModal}
           >
             <View style={styles.modalContainer}>
@@ -235,7 +342,9 @@ const EventsScreen = ({ navigation }) => {
                         style={[
                           styles.button,
                           {
-                            backgroundColor: selectedButtons1.includes(item.id)
+                            backgroundColor: selectedCategories.includes(
+                              item.id
+                            )
                               ? "#FF6961"
                               : "#E6E6E6",
                           },
@@ -257,14 +366,14 @@ const EventsScreen = ({ navigation }) => {
           </Modal>
 
           {/* Event Perks */}
-          <TouchableOpacity style={styles.button2} onPress={openModal2}>
+          <TouchableOpacity style={styles.button2} onPress={openPerkModal}>
             <Text style={styles.button2Text}> Perks </Text>
           </TouchableOpacity>
           <Modal
             animationType="slide"
             transparent={true}
-            visible={modal2Visible}
-            onRequestClose={handleCloseModal2}
+            visible={perkModalVisible}
+            onRequestClose={handleClosePerkModal}
           >
             <View style={styles.modalContainer}>
               <View style={styles.modalContent}>
@@ -280,7 +389,7 @@ const EventsScreen = ({ navigation }) => {
                         style={[
                           styles.button,
                           {
-                            backgroundColor: selectedButtons2.includes(item.id)
+                            backgroundColor: selectedPerks.includes(item.id)
                               ? "#FF6961"
                               : "#E6E6E6",
                           },
@@ -292,7 +401,7 @@ const EventsScreen = ({ navigation }) => {
                   </ScrollView>
                 </View>
                 <TouchableOpacity
-                  onPress={handleCloseModal2}
+                  onPress={handleClosePerkModal}
                   style={styles.bottombutton1}
                 >
                   <Text style={styles.bottombuttontext1}>Close</Text>
@@ -302,14 +411,14 @@ const EventsScreen = ({ navigation }) => {
           </Modal>
 
           {/* Event Themes */}
-          <TouchableOpacity style={styles.button1} onPress={openModal3}>
+          <TouchableOpacity style={styles.button1} onPress={openThemeModal}>
             <Text style={styles.buttonText}> Themes </Text>
           </TouchableOpacity>
           <Modal
             animationType="slide"
             transparent={true}
-            visible={modal3Visible}
-            onRequestClose={handleCloseModal3}
+            visible={themeModalVisible}
+            onRequestClose={handleThemeModalClose}
           >
             <View style={styles.modalContainer}>
               <View style={styles.modalContent}>
@@ -321,11 +430,11 @@ const EventsScreen = ({ navigation }) => {
                     {themesList.map((item) => (
                       <TouchableOpacity
                         key={item.id}
-                        onPress={() => handleButton3Click(item.id)}
+                        onPress={() => handleThemeClick(item.id)}
                         style={[
                           styles.button,
                           {
-                            backgroundColor: selectedButtons3.includes(item.id)
+                            backgroundColor: selectedThemes.includes(item.id)
                               ? "#FF6961"
                               : "#E6E6E6",
                           },
@@ -337,7 +446,7 @@ const EventsScreen = ({ navigation }) => {
                   </ScrollView>
                 </View>
                 <TouchableOpacity
-                  onPress={handleCloseModal3}
+                  onPress={handleThemeModalClose}
                   style={styles.bottombutton1}
                 >
                   <Text style={styles.bottombuttontext1}>Close</Text>
@@ -349,13 +458,21 @@ const EventsScreen = ({ navigation }) => {
 
         <FlatList
           style={styles.flatList}
-          data={data}
+          data={
+            filteredEvents == undefined
+              ? data
+              : filteredEvents.length == 0
+              ? data
+              : filteredEvents
+          }
+          // data={data}
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate("EventProfileScreen", {
                   eventId: item.id,
                 });
+                console.log("length: ", item.length);
               }}
             >
               <EventCard
