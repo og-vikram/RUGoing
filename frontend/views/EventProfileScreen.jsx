@@ -1,19 +1,15 @@
 import {
-  Image,
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
   ScrollView,
-  Modal,
 } from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Button } from "@rneui/themed";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { auth } from "../firebase.config";
 
-const EventProfileScreen = (props) => {
+const EventProfileScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const eventId = route.params.eventId
@@ -21,11 +17,8 @@ const EventProfileScreen = (props) => {
     : route.params.selectedProps.eventId;
   const [data, setData] = useState([]);
   const [host, setHost] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [attending, setAttending] = useState(false);
   const [attendees, setAttendees] = useState([]);
-  const [friends, setFriends] = useState([]);
-  const [loading2, setLoading2] = useState(true);
 
   useLayoutEffect(() => {
     fetch(`https://absolute-willing-salmon.ngrok-free.app/api/event/${eventId}`)
@@ -33,7 +26,7 @@ const EventProfileScreen = (props) => {
       .then((json) => setData(json.event))
       .catch((error) => console.log(error));
   }, []);
-  
+
   useLayoutEffect(() => {
     fetch(
       `https://absolute-willing-salmon.ngrok-free.app/api/event/host/${eventId}`
@@ -50,23 +43,7 @@ const EventProfileScreen = (props) => {
       .then((response) => response.json())
       .then((json) => {
         setAttendees(json.users);
-        console.log('users that are attending: ', json.users);
       })
-      .catch((error) => console.log(error));
-  }, []);
-
-  useEffect(() => {
-    fetch(
-      `https://absolute-willing-salmon.ngrok-free.app/api/users/follows/${auth.currentUser.uid}`
-    )
-      .then((response) => response.json())
-      .then((json) => {
-        follows = json.follows;
-        setFriends(attendees.filter(attendee => {
-          return follows.some(follow => follow.uid === attendee);
-        }));
-      })
-      .then(() => {console.log(friends)})
       .catch((error) => console.log(error));
   }, []);
 
@@ -86,25 +63,6 @@ const EventProfileScreen = (props) => {
       .catch((error) => console.log(error));
   }, []);
 
-  const [followersModalVisible, setFollowersModalVisible] = useState(false);
-  const openFollowersModal = () => {
-    setFollowersModalVisible(true);
-  };
-  
-  const closeFollowersModal = () => {
-    setFollowersModalVisible(false);
-  };
-  
-  //following modal stuff
-  const [followingModalVisible, setFollowingModalVisible] = useState(false);
-  const openFollowingModal = () => {
-    setFollowingModalVisible(true);
-  };
-  
-  const closeFollowingModal = () => {
-    setFollowingModalVisible(false);
-  };  
-  
   const handleAttend = async () => {
     {
       try {
@@ -181,64 +139,15 @@ const EventProfileScreen = (props) => {
             <Text>{peopleCount()}</Text>
           </View>
 
-        
           <View className="location" style={styles.location}>
             <Text style={styles.header}>Location</Text>
             <Text>{data.location}</Text>
           </View>
 
-         
-
           <View className="location" style={styles.location}>
             <Text style={styles.header}>Date And Time</Text>
             <Text>{data.start}</Text>
             <Text>{data.end}</Text>
-          </View>
-
-          <View className="location">
-          <View style={styles.attendingContainer}>
-          <TouchableOpacity style={[styles.attendingButton, {marginBottom: 3}]} onPress={openFollowersModal}>
-            <Text style={styles.attendingButtonText}> Friends That Are Attending </Text>
-          </TouchableOpacity>
-
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={followersModalVisible}
-            onRequestClose={closeFollowersModal}
-            backdropOpacity={.3}
-          >
-
-            <View style={styles.modalContainer}>
-              <View style={styles.modalContent}>
-                <ScrollView>
-                  {friends.map((friend) => (
-                    <TouchableOpacity
-                      onPress={() => {
-                        navigation.navigate("FriendProfileScreen", {
-                          user_uid: friend,
-                        });
-                      }}
-                    >
-                      <View key={friend}>
-                        <Text>{friend}</Text>
-                      </View>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-
-
-                <TouchableOpacity style={styles.bottombutton1} onPress={closeFollowersModal}>
-                  <Text style={styles.bottombuttontext1}>Close</Text>
-                </TouchableOpacity>
-
-              </View>
-
-            </View>
-          </Modal>
-
-          
-          </View>
           </View>
 
           <View>
@@ -294,7 +203,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
-  },  
+  },
   button: {
     backgroundColor: "#FF392E",
     padding: 15,

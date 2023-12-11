@@ -6,9 +6,8 @@ import { useEffect } from "react";
 
 export default (props) => {
   const categories = props.categories[0];
-  useEffect(() => {
-    // console.log(props.categories[0]);
-  }, [categories]);
+
+  useEffect(() => {}, [categories]);
 
   const checkForEmptyCategories = () => {
     if (categories === undefined) {
@@ -17,6 +16,7 @@ export default (props) => {
       return categories;
     }
   };
+
   return (
     <>
       <Card
@@ -34,7 +34,6 @@ export default (props) => {
             />
           </View>
           <View style={styles.details_container}>
-            {/* <Card.Title>Organization Name</Card.Title> */}
             <Text style={styles.title} numberOfLines={2}>
               {props.title}
             </Text>
@@ -65,13 +64,11 @@ const styles = StyleSheet.create({
   details_container: {
     width: "70%",
     height: 120,
-    // backgroundColor: "#BA3B46",
     flexDirection: "column",
     alignItems: "left",
     justifyContent: "space-between",
   },
   fonts: {
-    // marginBottom: 8,
     fontSize: 13,
     color: "#FF392E",
   },

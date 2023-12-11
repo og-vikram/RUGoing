@@ -7,7 +7,6 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { auth } from "../firebase.config";
-import { useNavigation } from "@react-navigation/native";
 import EventProfileScreen from "./EventProfileScreen";
 import OrganizationProfileScreen from "./OrganizationProfileScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -24,7 +23,6 @@ const HomeScreen = ({ navigation }) => {
   const [friendsOrgs, setFriendsOrgs] = useState([]);
   const uid = auth.currentUser.uid;
 
-  const Stack = createNativeStackNavigator();
   useEffect(() => {
     fetch(
       `https://absolute-willing-salmon.ngrok-free.app/api/events/perk/preference/${uid}`
@@ -107,7 +105,15 @@ const HomeScreen = ({ navigation }) => {
                 key={event.id}
               >
                 <View key={event.id} style={styles.eventsMiniCards}>
-                  <Text style={{color: "#FF392E", fontWeight: "bold", fontSize:16 }}>{event.name}</Text>
+                  <Text
+                    style={{
+                      color: "#FF392E",
+                      fontWeight: "bold",
+                      fontSize: 16,
+                    }}
+                  >
+                    {event.name}
+                  </Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -140,7 +146,11 @@ const HomeScreen = ({ navigation }) => {
                 key={event.id}
               >
                 <View key={event.id} style={styles.eventsMiniCards5}>
-                  <Text style={{color: "white", fontWeight: "bold", fontSize:16 }}>{event.name}</Text>
+                  <Text
+                    style={{ color: "white", fontWeight: "bold", fontSize: 16 }}
+                  >
+                    {event.name}
+                  </Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -173,7 +183,15 @@ const HomeScreen = ({ navigation }) => {
                 key={event.id}
               >
                 <View key={event.id} style={styles.eventsMiniCards}>
-                  <Text style={{color: "#FF392E", fontWeight: "bold", fontSize:16 }}>{event.name}</Text>
+                  <Text
+                    style={{
+                      color: "#FF392E",
+                      fontWeight: "bold",
+                      fontSize: 16,
+                    }}
+                  >
+                    {event.name}
+                  </Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -210,7 +228,11 @@ const HomeScreen = ({ navigation }) => {
                 key={org.id}
               >
                 <View key={org.id} style={styles.orgsMiniCards}>
-                  <Text style={{color: "white", fontWeight: "bold", fontSize:16 }}>{org.name}</Text>
+                  <Text
+                    style={{ color: "white", fontWeight: "bold", fontSize: 16 }}
+                  >
+                    {org.name}
+                  </Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -247,7 +269,15 @@ const HomeScreen = ({ navigation }) => {
                 key={event.event_id}
               >
                 <View key={event.event_id} style={styles.orgsMiniCards1}>
-                  <Text style={{color: "#FF392E", fontWeight: "bold", fontSize:16 }}>{event.event_name}</Text>
+                  <Text
+                    style={{
+                      color: "#FF392E",
+                      fontWeight: "bold",
+                      fontSize: 16,
+                    }}
+                  >
+                    {event.event_name}
+                  </Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -284,7 +314,11 @@ const HomeScreen = ({ navigation }) => {
                 key={org.org_id}
               >
                 <View key={org.org_id} style={styles.orgsMiniCards2}>
-                  <Text style={{color: "white", fontWeight: "bold", fontSize:16 }}>{org.org_name}</Text>
+                  <Text
+                    style={{ color: "white", fontWeight: "bold", fontSize: 16 }}
+                  >
+                    {org.org_name}
+                  </Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -353,7 +387,7 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 15,
     justifyContent: "center",
-    alignItems:"center",
+    alignItems: "center",
   },
   eventsMiniCards5: {
     width: 200,
@@ -362,7 +396,7 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 15,
     justifyContent: "center",
-    alignItems:"center",
+    alignItems: "center",
   },
   orgsMiniCards: {
     width: 200,
@@ -372,7 +406,7 @@ const styles = StyleSheet.create({
     marginTop: 300,
     borderRadius: 15,
     justifyContent: "center",
-    alignItems:"center",
+    alignItems: "center",
   },
   orgsMiniCards1: {
     width: 200,
@@ -382,7 +416,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
     borderRadius: 15,
     justifyContent: "center",
-    alignItems:"center",
+    alignItems: "center",
   },
   orgsMiniCards2: {
     width: 200,
@@ -392,7 +426,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 15,
     justifyContent: "center",
-    alignItems:"center",
+    alignItems: "center",
   },
 });
 

@@ -2,7 +2,7 @@ from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import PrimaryKeyConstraint, String
 from sqlalchemy import and_
-from sqlalchemy import func, cast
+from sqlalchemy import func, cast, distinct
 import json
 import dotenv
 import os
@@ -838,21 +838,191 @@ def add_event_perk_pref():
     data = request.get_data()
     data = json.loads(data)
     uid = data['uid']
-    perk_id = data['perk_id']
-    preference = PreferredEventCategories(user_id = uid, org_id = org_id)
-    account = JoinedOrganizations.query.filter(
-        and_(JoinedOrganizations.user_id==uid,
-             JoinedOrganizations.org_id==org_id
-        )
-    ).first()
-    if account is None:
-        db.session.add(attendee)
-        db.session.commit()
-        return json.dumps({'success': True, 'uid': uid, 'org_id': org_id})
-    else:
-        return json.dumps({'relation already exists': True})
+    perk_ids = data['perk_ids']
+    if uid and perk_ids:
+        try:
+            for perk_id in perk_ids:
+                pref = PreferredEventPerks.query.filter(
+                    and_(PreferredEventPerks.user_id==uid,
+                        PreferredEventPerks.perk_id==perk_id
+                    )
+                ).first()
+                if pref is None:
+                    perk_pref = PreferredEventPerks(user_id=uid, perk_id=perk_id)
+                    db.session.add(perk_pref)
+                    
+            db.session.commit()
+            return json.dumps({'success': True, 'uid': uid, 'perk_ids': perk_ids})
 
-@app.route('/api/officers/change/about', methods=['POST'])
+        except Exception as e:
+            print('error: ', e)
+            return json.dumps({'message': 'error'}), 500
+
+    return json.dumps({'error': 'no user or no perks'}), 400
+
+@app.route('/api/events/perk/preference/<uid>')
+def recommend_events_by_perk(uid):
+    all_events = db.session.query(
+        Events.event_id, Events.name
+    ).join(
+        PerkedEvents, PerkedEvents.event_id == Events.event_id
+    ).join(
+        PreferredEventPerks, PreferredEventPerks.perk_id == PerkedEvents.perk_id
+    ).filter(PreferredEventPerks.user_id == uid).distinct().all()
+
+    events = []
+    for event in all_events:
+        event_dict = {
+            'id': event[0],
+            'name': event[1],
+        }
+        events.append(event_dict)
+
+    return json.dumps({'events': events})
+
+@app.route('/api/event/theme/preference/add/', methods=['POST'])
+def add_event_theme_pref():
+    data = request.get_data()
+    data = json.loads(data)
+    uid = data['uid']
+    theme_ids = data['theme_ids']
+    if uid and theme_ids:
+        try:
+            for theme_id in theme_ids:
+                pref = PreferredEventThemes.query.filter(
+                    and_(PreferredEventThemes.user_id==uid,
+                        PreferredEventThemes.theme_id==theme_id
+                    )
+                ).first()
+                if pref is None:
+                    theme_pref = PreferredEventThemes(user_id=uid, theme_id=theme_id)
+                    db.session.add(theme_pref)
+                    
+            db.session.commit()
+            return json.dumps({'success': True, 'uid': uid, 'theme_ids': theme_ids})
+
+        except Exception as e:
+            print('error: ', e)
+            return json.dumps({'message': 'error'}), 500
+
+    return json.dumps({'error': 'no user or no theme'}), 400
+
+@app.route('/api/events/theme/preference/<uid>')
+def recommend_events_by_theme(uid):
+    all_events = db.session.query(
+        Events.event_id, Events.name
+    ).join(
+        ThemedEvents, ThemedEvents.event_id == Events.event_id
+    ).join(
+        PreferredEventThemes, PreferredEventThemes.theme_id == ThemedEvents.theme_id
+    ).filter(PreferredEventThemes.user_id == uid).distinct().all()
+
+    events = []
+    for event in all_events:
+        event_dict = {
+            'id': event[0],
+            'name': event[1],
+        }
+        events.append(event_dict)
+
+    return json.dumps({'events': events})
+
+@app.route('/api/event/category/preference/add/', methods=['POST'])
+def add_event_category_pref():
+    data = request.get_data()
+    data = json.loads(data)
+    uid = data['uid']
+    category_ids = data['category_ids']
+    if uid and category_ids:
+        try:
+            for category_id in category_ids:
+                pref = PreferredEventCategories.query.filter(
+                    and_(PreferredEventCategories.user_id==uid,
+                        PreferredEventCategories.category_id==category_id
+                    )
+                ).first()
+                if pref is None:
+                    cat_pref = PreferredEventCategories(user_id=uid, category_id=category_id)
+                    db.session.add(cat_pref)
+                    
+            db.session.commit()
+            return json.dumps({'success': True, 'uid': uid, 'category_ids': category_ids})
+
+        except Exception as e:
+            print('error: ', e)
+            return json.dumps({'message': 'error'}), 500
+
+    return json.dumps({'error': 'no user or no theme'}), 400
+
+@app.route('/api/events/category/preference/<uid>')
+def recommend_events_by_category(uid):
+    all_events = db.session.query(
+        Events.event_id, Events.name
+    ).join(
+        CategorizedEvents, CategorizedEvents.event_id == Events.event_id
+    ).join(
+        PreferredEventCategories, PreferredEventCategories.category_id == CategorizedEvents.category_id
+    ).filter(PreferredEventCategories.user_id == uid).distinct().all()
+
+    events = []
+    for event in all_events:
+        event_dict = {
+            'id': event[0],
+            'name': event[1],
+        }
+        events.append(event_dict)
+
+    return json.dumps({'events': events})
+
+@app.route('/api/organization/category/preference/add/', methods=['POST'])
+def add_org_category_pref():
+    data = request.get_data()
+    data = json.loads(data)
+    uid = data['uid']
+    category_ids = data['category_ids']
+    if uid and category_ids:
+        try:
+            for category_id in category_ids:
+                pref = PreferredOrganizationCategories.query.filter(
+                    and_(PreferredOrganizationCategories.user_id==uid,
+                        PreferredOrganizationCategories.category_id==category_id
+                    )
+                ).first()
+                if pref is None:
+                    cat_pref = PreferredOrganizationCategories(user_id=uid, category_id=category_id)
+                    db.session.add(cat_pref)
+                    
+            db.session.commit()
+            return json.dumps({'success': True, 'uid': uid, 'category_ids': category_ids})
+
+        except Exception as e:
+            print('error: ', e)
+            return json.dumps({'message': 'error'}), 500
+
+    return json.dumps({'error': 'no user or no theme'}), 400
+
+
+@app.route('/api/organization/category/preference/<uid>')
+def recommend_orgs_by_category(uid):
+    all_orgs = db.session.query(
+        Organizations.org_id, Organizations.name
+    ).join(
+        CategorizedOrganizations, CategorizedOrganizations.org_id == Organizations.org_id
+    ).join(
+        PreferredOrganizationCategories, PreferredOrganizationCategories.category_id == CategorizedOrganizations.category_id
+    ).filter(PreferredOrganizationCategories.user_id == uid).distinct().all()
+
+    orgs = []
+    for org in all_orgs:
+        org_dict = {
+            'id': org[0],
+            'name': org[1],
+        }
+        orgs.append(org_dict)
+
+    return json.dumps({'orgs': orgs})
+
+@app.route('/api/officers/change/about/', methods=['POST'])
 def update_org_about():
     data = request.get_data()
     data = json.loads(data)
@@ -861,7 +1031,8 @@ def update_org_about():
     new_about = data['newAbout']
     user = Users.query.filter_by(user_id=uid).first()
     if user and user.organization == org_id:
-        org = Organizations.query.filter_by(org_id=org_id)
+        org = Organizations.query.filter_by(org_id=org_id).first()
+        print(org)
         if org:
             org.about = new_about
             db.session.commit()
@@ -871,7 +1042,7 @@ def update_org_about():
     else:
         return json.dumps({'error': 'User not found or user is not officer of this organization'})
 
-@app.route('/api/officers/change/contact', methods=['POST'])
+@app.route('/api/officers/change/contact/', methods=['POST'])
 def update_org_contact():
     data = request.get_data()
     data = json.loads(data)
@@ -880,7 +1051,7 @@ def update_org_contact():
     new_contact = data['newContact']
     user = Users.query.filter_by(user_id=uid).first()
     if user and user.organization == org_id:
-        org = Organizations.query.filter_by(org_id=org_id)
+        org = Organizations.query.filter_by(org_id=org_id).first()
         if org:
             org.contact = new_contact
             db.session.commit()

@@ -21,12 +21,10 @@ const ExploreMain = ({ navigation }) => {
   const [orgSearchResults, setOrgSearchResults] = useState([]);
   const [eventSearchResults, setEventSearchResults] = useState([]);
   const [userSearchResults, setUserSearchResults] = useState([]);
-  const [filteredItems, setFilteredItems] = useState(orgData);
   const [orgData, setOrgData] = useState([]);
   const [EventData, setEventData] = useState([]);
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const url =
     "https://absolute-willing-salmon.ngrok-free.app/api/organization/all";
 
@@ -55,6 +53,7 @@ const ExploreMain = ({ navigation }) => {
 
   const performSearch = (query) => {
     const searchTerms = query.toLowerCase().split(" ");
+
     const filteredOrgs = orgData
       .filter((org) => {
         const orgName = org.name.toLowerCase();
@@ -69,6 +68,7 @@ const ExploreMain = ({ navigation }) => {
         name: org.name,
         id: org.id,
       }));
+
     setOrgSearchResults(filteredOrgs);
 
     const filteredEvents = EventData.filter((event) => {
@@ -83,6 +83,7 @@ const ExploreMain = ({ navigation }) => {
       name: event.name,
       id: event.id,
     }));
+
     setEventSearchResults(filteredEvents);
 
     const filteredUsers = userData
@@ -101,6 +102,7 @@ const ExploreMain = ({ navigation }) => {
         uid: user.user_id,
         netid: user.netid,
       }));
+
     setUserSearchResults(filteredUsers);
   };
 
@@ -118,7 +120,6 @@ const ExploreMain = ({ navigation }) => {
   const SearchOrgItem = ({ item }) => (
     <TouchableOpacity
       onPress={() => {
-        console.log(item.id);
         navigation.navigate("OrganizationProfileScreen", {
           organizationId: item.id,
         });
@@ -132,7 +133,6 @@ const ExploreMain = ({ navigation }) => {
   const SearchEventItem = ({ item }) => (
     <TouchableOpacity
       onPress={() => {
-        console.log(item.id);
         navigation.navigate("EventProfileScreen", { eventId: item.id });
       }}
       style={styles.item}
@@ -144,7 +144,6 @@ const ExploreMain = ({ navigation }) => {
   const SearchUserItem = ({ item }) => (
     <TouchableOpacity
       onPress={() => {
-        console.log(item.name, item.netid);
         navigation.navigate("FriendProfileScreen", { user_uid: item.uid });
       }}
       style={styles.item}
@@ -325,19 +324,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingLeft: 10,
     width: "100%",
-    // marginBottom: 16,
     marginTop: "30%",
   },
   sectionList: {
     width: "100%",
     height: "200%",
-    //paddingBottom: 200,
     length: 100,
     backgroundColor: "white",
   },
   item: {
     borderBottomWidth: 1,
-    //borderBottomColor: 'gray',
     borderColor: "red",
     borderTopColor: "gray",
     textAlign: "left",

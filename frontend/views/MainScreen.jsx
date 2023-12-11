@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import HomeScreen from "./HomeScreen";
 import ExploreScreen from "./ExploreScreen";
@@ -26,7 +25,7 @@ const MainScreen = () => {
           tabBarStyle: {
             paddingBottom: 0,
           },
-          color: "red"
+          color: "red",
         }}
       >
         <Tab.Screen

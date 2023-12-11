@@ -1,16 +1,5 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import { auth } from "../firebase.config";
-import { signOut } from "firebase/auth";
-import { reloadAsync } from "expo-updates";
-import { Card } from "@rneui/themed";
-import { Button, Icon } from "react-native-elements";
+import { StyleSheet } from "react-native";
+import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SettingsScreen from "./SettingsScreen";
 import ProfileDetails from "./ProfileDetails";
@@ -19,11 +8,6 @@ import OrganizationProfileScreen from "./OrganizationProfileScreen";
 import FriendProfileScreen from "./FriendProfileScreen";
 
 const ProfileScreen = ({ navigation }) => {
-  const handleLogout = () => {
-    signOut(auth);
-    reloadAsync();
-  };
-
   const ProfileStack = createNativeStackNavigator();
   return (
     <ProfileStack.Navigator>
@@ -89,7 +73,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   cardContainer: {
-    // marginTop: 20,
     width: "100%",
     backgroundColor: "#FF392E",
   },

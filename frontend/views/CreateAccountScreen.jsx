@@ -3,9 +3,7 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   StyleSheet,
-  Alert,
   TouchableOpacity,
   Image,
   Keyboard,
@@ -13,14 +11,10 @@ import {
 import { auth } from "../firebase.config";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { Switch } from "react-native";
-import { getAuth } from "firebase/auth";
-import firebase from "firebase/app";
-import { Icon } from "react-native-elements";
 import MyModal from "./MyModal";
 
 const CreateAccountScreen = ({ navigation }) => {
   const defaultEmailDomain = "@scarletmail.rutgers.edu";
-
   const [emailPrefix, setEmailPrefix] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -34,12 +28,10 @@ const CreateAccountScreen = ({ navigation }) => {
   const [isOfficer, setIsOfficer] = useState(false);
   const [organizationName, setOrganizationName] = useState("");
   const [logoTop, setLogoTop] = useState(90);
-
   const email = emailPrefix + defaultEmailDomain;
 
   const handleSwitchChange = (value) => {
     setIsOfficer(value);
-
     if (isOfficer == false) {
       setLogoTop(70);
     } else {
@@ -53,6 +45,7 @@ const CreateAccountScreen = ({ navigation }) => {
       setLogoTop(80);
     }
   );
+
   const keyboardDidHideListener = Keyboard.addListener(
     "keyboardDidHide",
     () => {
@@ -70,7 +63,6 @@ const CreateAccountScreen = ({ navigation }) => {
   };
 
   const isValidPassword = () => {
-    // Check if the password contains at least one uppercase letter, one number, and one special character
     const passwordRegex =
       /^(?=.*[A-Z])(?=.*\d)(?=.*[@!#$%&])[A-Za-z\d@!#$%&]{8,}$/;
     return passwordRegex.test(password);
@@ -176,12 +168,6 @@ const CreateAccountScreen = ({ navigation }) => {
             }),
           }
         );
-
-        console.log("perk preferences: ", perks);
-        console.log("themes preferences", themes);
-        console.log("cat events preferences: ", cats_events);
-        console.log("cat orgs: ", cats_orgs);
-
         navigation.navigate("LoginScreen");
       } catch (error) {
         const errorCode = error.code;
@@ -330,12 +316,12 @@ const CreateAccountScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   logoContainer: {
     position: "absolute",
-    top: 140, // Adjust to move the logo higher
+    top: 140, 
     alignItems: "center",
   },
   logo: {
-    width: 300, // Adjust to make the logo smaller
-    height: 90, // Adjust to make the logo smaller
+    width: 300, 
+    height: 90,
   },
   container: {
     flex: 1,

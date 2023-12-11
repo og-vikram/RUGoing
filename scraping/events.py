@@ -11,8 +11,6 @@ chrome = webdriver.Chrome()
 
 def get_all_events(cursor):
     url = "https://rutgers.campuslabs.com/engage/events"
-
-    # chrome.maximize_window()
     chrome.get(url)
     time.sleep(3)
     chrome.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -23,7 +21,6 @@ def get_all_events(cursor):
         try:
             time.sleep(0.1)
             show_more.click()
-            # check if element is visible -- this will throw TimeoutException if not
             WebDriverWait(chrome, 10).until(
                 EC.visibility_of_element_located(
                     (
@@ -45,9 +42,8 @@ def get_all_events(cursor):
     for event in event_list[101:151]:
         event_id = str(event['href']).split('/')[3]
         get_event_details(cursor, event_id)
-    print(len(event_list))
 
-def get_event_details(event_id):
+def get_event_details(cursor, event_id):
     base_url = 'https://rutgers.campuslabs.com/engage/event/'
     url = base_url + event_id
     chrome.get(url)
@@ -78,11 +74,8 @@ def get_event_details(event_id):
     start_date = datetime.strptime(start_date_string, date_format)
     end_date = datetime.strptime(end_date_string, date_format)
 
-    start_date_formatted = start_date.strftime("%Y-%m-%d %H:%M")
-    end_date_formatted = end_date.strftime("%Y-%m-%d %H:%M")
-
-    print("Start Date and Time:", start_date_formatted)
-    print("End Date and Time:", end_date_formatted)
+    start = start_date.strftime("%Y-%m-%d %H:%M")
+    start = end_date.strftime("%Y-%m-%d %H:%M")
 
     location_xpath = "/html/body/div[2]/div/div/div/div/div/div/div[1]/div/div/div[2]/div[2]/div[2]/div/div[2]"
     try: 
@@ -112,68 +105,25 @@ def get_event_details(event_id):
     except NoSuchElementException as e:
         description = None
     
-    perks_xpath = "/html/body/div[2]/div/div/div/div/div/div/div[2]/div[1]/div[3]/div"
-    try:
-        perks = chrome.find_element(By.XPATH, perks_xpath, )
-    except NoSuchElementException as e:
-        perks = None
-    
-    categories_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[2]/div[1]/div[4]/div'
-    try:
-        categories = chrome.find_element(By.XPATH, categories_xpath, )
-    except NoSuchElementException as e:
-        categories = None
-    
     rsvp_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div/div/div/a'
     try:
         rsvp = chrome.find_element(By.XPATH, rsvp_xpath, ).get_attribute('href')
     except NoSuchElementException as e:
         rsvp = None
-    
-    host_org_link_xpath = '/html/body/div[2]/div/div/div/div/div/div/div[3]/div/a'
-    try:
-        host_org_link = chrome.find_element(By.XPATH, host_org_link_xpath, )
-        host_org_id = str(host_org_link.get_attribute('href')).split('/')[5]
-    except NoSuchElementException as e:
-        host_org_id = None
-    
-    # print(name)
-    # print(start_time)
-    # print(end_time)
-    # print(location)
-    # print(online_loc)
-    # print(host_org_id)
-    # print(rsvp.get_attribute('href'))
         
-    # query = """INSERT INTO Events (event_id, name, start, end, location, online_location, is_online, description, rsvp)
-    #            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-    #            ON DUPLICATE KEY UPDATE 
-    #            name = VALUES(name), 
-    #            start = VALUES(start), 
-    #            end = VALUES(end), 
-    #            location = VALUES(location), 
-    #            online_location = VALUES(online_location), 
-    #            is_online = VALUES(is_online), 
-    #            description = VALUES(description), 
-    #            rsvp = VALUES(rsvp);"""
+    query = """INSERT INTO Events (event_id, name, start, end, location, online_location, is_online, description, rsvp)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+               ON DUPLICATE KEY UPDATE 
+               name = VALUES(name), 
+               start = VALUES(start), 
+               end = VALUES(end), 
+               location = VALUES(location), 
+               online_location = VALUES(online_location), 
+               is_online = VALUES(is_online), 
+               description = VALUES(description), 
+               rsvp = VALUES(rsvp);"""
                
-    # cursor.execute(query, (event_id, name, start, end, location, online_location, is_online, description, rsvp))
-
-    # print(desc.text)
-    # if desc is not None:
-        # desc_list = desc.text.splitlines()
-        # for description in desc_list[1:]:
-        #     print(description)
-    if perks is not None:
-        perks_list = perks.text.splitlines()
-        for perk in perks_list:
-            print(perk)
-    if categories is not None:
-        categories_list = categories.text.splitlines()
-        for category in categories_list:
-            print(category)
-    print(host_org_id)
-
+    cursor.execute(query, (event_id, name, start, end, location, online_location, is_online, description, rsvp))
    
 def get_categories(conn, cursor):
     url = 'https://rutgers.campuslabs.com/engage/events'
@@ -240,7 +190,6 @@ def get_event_categories(cursor, category_id):
                 load_more = chrome.find_element(By.XPATH, load_more_xpath, )
                 time.sleep(0.1)
                 load_more.click()
-                # check if element is visible -- this will throw TimeoutException if not
                 WebDriverWait(chrome, 10).until(
                     EC.visibility_of_element_located(
                         (
@@ -264,13 +213,6 @@ def get_event_categories(cursor, category_id):
             
         for event in event_list:
             event_id = str(event['href']).split('/')[3]
-            print(event_id, category_id)
-            
-            # query = """INSERT INTO CategorizedEvents (event_id, category_id)
-            #            VALUES (%s, %s)
-            #            ON DUPLICATE KEY UPDATE
-            #            event_id = VALUES(event_id),
-            #            category_id = VALUES(category_id);"""
             query = """INSERT IGNORE INTO CategorizedEvents (event_id, category_id)
                        SELECT %s, %s
                        FROM Events
@@ -345,7 +287,6 @@ def get_event_perks(cursor, perk_id):
                 load_more = chrome.find_element(By.XPATH, load_more_xpath, )
                 time.sleep(0.1)
                 load_more.click()
-                # check if element is visible -- this will throw TimeoutException if not
                 WebDriverWait(chrome, 10).until(
                     EC.visibility_of_element_located(
                         (
@@ -369,13 +310,6 @@ def get_event_perks(cursor, perk_id):
             
         for event in event_list:
             event_id = str(event['href']).split('/')[3]
-            
-            # query = """INSERT INTO PerkedEvents (event_id, perk_id)
-            #            VALUES (%s, %s)
-            #            ON DUPLICATE KEY UPDATE
-            #            event_id = VALUES(event_id),
-            #            perk_id = VALUES(perk_id);"""
-            
             query = """INSERT IGNORE INTO PerkedEvents (event_id, perk_id)
                        SELECT %s, %s
                        FROM Events
@@ -450,7 +384,6 @@ def get_event_themes(cursor, theme_id):
                 load_more = chrome.find_element(By.XPATH, load_more_xpath, )
                 time.sleep(0.1)
                 load_more.click()
-                # check if element is visible -- this will throw TimeoutException if not
                 WebDriverWait(chrome, 10).until(
                     EC.visibility_of_element_located(
                         (
@@ -474,13 +407,6 @@ def get_event_themes(cursor, theme_id):
             
         for event in event_list:
             event_id = str(event['href']).split('/')[3]
-            
-            # query = """INSERT INTO ThemedEvents (event_id, theme_id)
-            #            VALUES (%s, %s)
-            #            ON DUPLICATE KEY UPDATE
-            #            event_id = VALUES(event_id),
-            #            theme_id = VALUES(theme_id);"""
-            
             query = """INSERT IGNORE INTO ThemedEvents (event_id, theme_id)
                        SELECT %s, %s
                        FROM Events
@@ -497,7 +423,6 @@ def modify_dates(cursor):
     
     for event_id in event_ids[250:]:
         base_url = 'https://rutgers.campuslabs.com/engage/event/'
-        print(event_id[0])
         url = base_url + str(event_id[0])
         chrome.get(url)
         time.sleep(0.75)
@@ -533,9 +458,6 @@ def modify_dates(cursor):
 
         start = datetime.strptime(start_date_string, date_format)
         end = datetime.strptime(end_date_string, date_format)
-
-        print(start)  
-        print(end) 
         
         query = """INSERT INTO Events (event_id, start, end, is_cancelled)
                VALUES (%s, %s, %s, %s)
@@ -545,21 +467,3 @@ def modify_dates(cursor):
                is_cancelled = VALUES(is_cancelled);"""
                
         cursor.execute(query, (event_id[0], start, end, is_cancelled))
-        
-        
-# TESTING 
-
-# event1 = 'https://rutgers.campuslabs.com/engage/event/9468557' 
-# event2 = 'https://rutgers.campuslabs.com/engage/event/9392626'
-# event3 = 'https://rutgers.campuslabs.com/engage/event/9404883'
-# event4 = 'https://rutgers.campuslabs.com/engage/event/9454901'
-# event5 = 'https://rutgers.campuslabs.com/engage/event/9404883'
-# event6 = 'https://rutgers.campuslabs.com/engage/event/9467360'
-# get_event_details(event6)
-
-# get_event_themes()
-# get_event_categories()
-# get_event_perks()
-
-# get_event_details('https://rutgers.campuslabs.com/engage/event/9551789')
-# get_event_details('9509343')

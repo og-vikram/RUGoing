@@ -23,6 +23,7 @@ export default (props) => {
       return categories;
     }
   };
+
   const checkForEmptyPerks = () => {
     if (perks === undefined) {
       return [];
@@ -30,6 +31,7 @@ export default (props) => {
       return perks;
     }
   };
+
   const checkForEmptyThemes = () => {
     if (themes === undefined) {
       return [];
@@ -37,6 +39,7 @@ export default (props) => {
       return themes;
     }
   };
+
   return (
     <>
       <TouchableOpacity
@@ -61,7 +64,6 @@ export default (props) => {
               />
             </View>
             <View style={styles.details_container}>
-              {/* <Card.Title>Organization Name</Card.Title> */}
               <Text style={styles.title} numberOfLines={2}>
                 {props.title}
               </Text>
@@ -104,13 +106,11 @@ const styles = StyleSheet.create({
   details_container: {
     width: "70%",
     height: 120,
-    // backgroundColor: "#BA3B46",
     flexDirection: "column",
     alignItems: "left",
     justifyContent: "space-between",
   },
   fonts: {
-    // marginBottom: 8,
     fontSize: 13,
     fontWeight: "400",
     color: "#FF392E",

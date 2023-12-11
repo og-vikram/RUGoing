@@ -1,24 +1,12 @@
 import * as React from "react";
-import { Card, Text } from "@rneui/base";
+import { Text } from "@rneui/base";
 import { View, StyleSheet } from "react-native";
 
 export default (props) => {
   return (
-    // <Card
-    //   containerStyle={{
-    //     borderRadius: 25,
-    //     shadowOpacity: 0,
-    //     height: 25,
-    //     flex: 1,
-    //     alignItems: "center",
-    //     justifyContent: "center",
-    //   }}
-    //   wrapperStyle={{}}
-    // >
     <View style={styles.container}>
       <Text style={styles.fonts}>{props.category}</Text>
     </View>
-    // </Card>
   );
 };
 

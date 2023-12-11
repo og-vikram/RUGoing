@@ -21,7 +21,6 @@ def get_all_organizations(cursor):
         try:
             time.sleep(0.1)
             show_more.click()
-            # check if element is visible -- this will throw TimeoutException if not
             WebDriverWait(chrome, 10).until(
                 EC.visibility_of_element_located(
                     (
@@ -41,30 +40,26 @@ def get_all_organizations(cursor):
     org_list = org_list_container[0].find_all("a")
     org_descs = org_list_container[0].find_all("span")
         
-    # scrape in intervals of 50 to avoid request overload
     for org in org_list[651:]:
         org_id = str(org['href']).split('/')[3]
         get_org_details(cursor, org_id)
-        # org_img = org_descs[i].find('img')
-        # if org_img is not None:
-        #     # The <img> element was found
-        #     image_id = str(org_img['src']).split('/')[5]
-        # else:
-        #     # The <img> element was not found
-        #     image_id = 'no_img'
+        org_img = org_descs[i].find('img')
+        if org_img is not None:
+            image_id = str(org_img['src']).split('/')[5]
+        else:
+            image_id = 'no_img'
         
-        # # get_org_details(cursor, org_id)
-        # get_org_images(cursor, org_id, image_id)
+        get_org_details(cursor, org_id)
+        get_org_images(cursor, org_id, image_id)
 
         
-# def get_org_images(cursor, org_id, image_id):
-#     query = """INSERT INTO Organizations (org_id, image_id)
-#                VALUES(%s, %s) 
-#                ON DUPLICATE KEY UPDATE
-#                image_id = VALUES(image_id);"""
+def get_org_images(cursor, org_id, image_id):
+    query = """INSERT INTO Organizations (org_id, image_id)
+               VALUES(%s, %s) 
+               ON DUPLICATE KEY UPDATE
+               image_id = VALUES(image_id);"""
 
-#     # Execute the query with the data
-#     cursor.execute(query, (org_id, image_id))
+    cursor.execute(query, (org_id, image_id))
     
 def get_org_details(cursor, org_id):
     base_url = 'https://rutgers.campuslabs.com/engage/organization/'
@@ -79,57 +74,49 @@ def get_org_details(cursor, org_id):
     except NoSuchElementException as e:
         image_id = None
         
-    # name_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[1]/h1'
-    # try: 
-    #     name = chrome.find_element(By.XPATH, name_xpath, ).text
-    # except NoSuchElementException as e:
-    #     name = None
+    name_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[1]/h1'
+    try: 
+        name = chrome.find_element(By.XPATH, name_xpath, ).text
+    except NoSuchElementException as e:
+        name = None
     
-    # about_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[2]'
-    # try:
-    #     about = chrome.find_element(By.XPATH, about_xpath, ).text
-    # except NoSuchElementException as e:
-    #     about = None
+    about_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[2]'
+    try:
+        about = chrome.find_element(By.XPATH, about_xpath, ).text
+    except NoSuchElementException as e:
+        about = None
     
-    # contact_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[3]/div/div[2]'
-    # try:
-    #     contact = chrome.find_element(By.XPATH, contact_xpath, ).text
-    # except NoSuchElementException as e:
-    #     contact = None
+    contact_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[3]/div/div[2]'
+    try:
+        contact = chrome.find_element(By.XPATH, contact_xpath, ).text
+    except NoSuchElementException as e:
+        contact = None
     
-    # socials_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[4]'
-    # try:
-    #     socials = chrome.find_element(By.XPATH, socials_xpath, ).find_elements(By.XPATH, './child::*')
-    #     socials = [social.get_attribute('href') for social in socials if social.get_attribute('href') is not None]
-    # except NoSuchElementException as e:
-    #     socials = None
+    socials_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[4]'
+    try:
+        socials = chrome.find_element(By.XPATH, socials_xpath, ).find_elements(By.XPATH, './child::*')
+        socials = [social.get_attribute('href') for social in socials if social.get_attribute('href') is not None]
+    except NoSuchElementException as e:
+        socials = None
         
-    # if contact is None and not socials:
-    #     faq_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[4]/div/div[2]'
-    # else:
-    #     faq_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[5]/div/div[2]'
-    # try:
-    #     faq = chrome.find_element(By.XPATH, faq_xpath, ).text
-    # except NoSuchElementException as e:
-    #     faq = None
-    
-    query = """INSERT INTO Organizations (org_id, image_id)
-               VALUES (%s, %s)
-               ON DUPLICATE KEY UPDATE
-               image_id = VALUES(image_id);"""
+    if contact is None and not socials:
+        faq_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[4]/div/div[2]'
+    else:
+        faq_xpath = '/html/body/div[2]/div/div/div/div/div[1]/div/div[2]/div/div[5]/div/div[2]'
+    try:
+        faq = chrome.find_element(By.XPATH, faq_xpath, ).text
+    except NoSuchElementException as e:
+        faq = None
         
-    # query = """INSERT INTO Organizations (org_id, name, about, contact, faq)
-    #        VALUES (%s, %s, %s, %s, %s)
-    #        ON DUPLICATE KEY UPDATE
-    #        name = VALUES(name),
-    #        about = VALUES(about),
-    #        contact = VALUES(contact),
-    #        faq = VALUES(faq);"""
+    query = """INSERT INTO Organizations (org_id, name, about, contact, faq)
+           VALUES (%s, %s, %s, %s, %s)
+           ON DUPLICATE KEY UPDATE
+           name = VALUES(name),
+           about = VALUES(about),
+           contact = VALUES(contact),
+           faq = VALUES(faq);"""
 
-    # Execute the query with the data
-    # cursor.execute(query, (org_id, name, about, contact, faq))
-    # print(f'org {org_id}: {image_id}')
-    cursor.execute(query, (org_id, image_id))
+    cursor.execute(query, (org_id, name, about, contact, faq))
         
 def get_categories(conn, cursor):
     url = 'https://rutgers.campuslabs.com/engage/organizations'
@@ -159,7 +146,6 @@ def get_categories(conn, cursor):
             )
             
             category = categories.find_elements(By.XPATH, './child::*')[i]
-            # category = chrome.find_element(By.XPATH, categories_xpath).find_elements(By.XPATH, './child::*')[i]
             name = category.text
             category.click()
             category_url = chrome.current_url
@@ -197,7 +183,6 @@ def get_org_categories(cursor, category_id):
                 load_more = chrome.find_element(By.XPATH, load_more_xpath, )
                 time.sleep(0.1)
                 load_more.click()
-                # check if element is visible -- this will throw TimeoutException if not
                 WebDriverWait(chrome, 10).until(
                     EC.visibility_of_element_located(
                         (
@@ -231,24 +216,3 @@ def get_org_categories(cursor, category_id):
             
     except NoSuchElementException as e:
         org_id = None
-        
-# TESTING 
-
-# club1 = 'https://rutgers.campuslabs.com/engage/organization/rutgerschessclub'
-# club2_thaakat = 'https://rutgers.campuslabs.com/engage/organization/thaakat'
-
-# get_org_details(club2_thaakat)
-# get_org_categories()
-# club3_vorheesmentors = 'https://rutgers.campuslabs.com/engage/organization/barbaravoorheesmentors'
-# club4_house = 'https://rutgers.campuslabs.com/engage/organization/canterburyhouse'
-# club5_christiasn = 'https://rutgers.campuslabs.com/engage/organization/rucufi'
-
-# get_org_details(club3_vorheesmentors)
-# get_org_details(club5_christiasn)
-
-# get_all_organizations()
-# get_org_categories('/html/body/div[4]/div[3]/ul/li[1]')
-
-# get_all_organizations()
-# get_org_categories('https://rutgers.campuslabs.com/engage/organizations?categories=17973')
-

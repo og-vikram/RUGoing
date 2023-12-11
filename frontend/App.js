@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
 import LoginScreen from "./views/LoginScreen";
-import MainScreen from "./views/MainScreen";
 import ForgotPassword from "./views/ForgetPassword";
-import { createStackNavigator } from "@react-navigation/stack";
 import CreateAccountScreen from "./views/CreateAccountScreen";
 import {
   onAuthStateChanged,
@@ -14,7 +11,7 @@ import {
 } from "firebase/auth";
 import { auth } from "./firebase.config";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import HomeScreen, { HomeScreenStack } from "./views/HomeScreen";
+import { HomeScreenStack } from "./views/HomeScreen";
 import ExploreScreen from "./views/ExploreScreen";
 import ProfileScreen from "./views/ProfileScreen";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -30,7 +27,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Button } from "@rneui/themed";
 import { reloadAsync } from "expo-updates";
 
 const Stack = createNativeStackNavigator();
@@ -43,7 +39,6 @@ export default function App() {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
-        // console.log("user", user);
       }
     });
   }, []);

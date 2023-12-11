@@ -3,18 +3,14 @@ import {
   View,
   Text,
   ScrollView,
-  Button,
-  FlatList,
   StyleSheet,
   Image,
   TouchableOpacity,
   TextInput,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { auth } from "../firebase.config";
-
-const Stack = createNativeStackNavigator();
+import EventProfileScreen from "./EventProfileScreen";
 
 const url = "https://absolute-willing-salmon.ngrok-free.app/api/organization/";
 const eventHosts =
@@ -31,6 +27,7 @@ const OrganizationProfileScreen = () => {
   const [organizationData, setOrganizationData] = useState({});
   const [eventHostData, setEventHostData] = useState([]);
   const [joining, setJoining] = useState(false);
+  const [members, setMembers] = useState([]);
   const [officer, setOfficer] = useState(false);
   const [editing, setEditing] = useState(false);
   const [newAbout, setNewAbout] = useState("");
@@ -67,6 +64,17 @@ const OrganizationProfileScreen = () => {
           }
         }
       });
+  }, []);
+
+  useEffect(() => {
+    fetch(
+      `https://absolute-willing-salmon.ngrok-free.app/api/organization/members/${organizationId}`
+    )
+      .then((response) => response.json())
+      .then((json) => {
+        setMembers(json.members);
+      })
+      .catch((error) => console.log(error));
   }, []);
 
   useEffect(() => {
@@ -116,8 +124,6 @@ const OrganizationProfileScreen = () => {
             }),
           }
         );
-
-        console.log(user.uid, organizationId);
         setJoining(true);
       } catch (error) {
         const errorCode = error.code;
@@ -230,11 +236,17 @@ const OrganizationProfileScreen = () => {
     setEditing(!editing);
   };
 
+  const memberCount = () => {
+    if (members.length == 1) {
+      return members.length + " member";
+    }
+    return members.length + " members";
+  };
+
   const imageUrl = "https://se-images.campuslabs.com/clink/images/";
 
   return (
     <ScrollView>
-      {/* Banner with background image */}
       <Image
         source={{ uri: imageUrl + organizationData.image_id }}
         style={{ width: "100%", height: 200 }}
@@ -248,12 +260,13 @@ const OrganizationProfileScreen = () => {
           <Text style={styles.organizationName}>{organizationData.name}</Text>
         </View>
         <View style={styles.memberSection}>
-          <Text style={styles.memberCount}>{"# Members"}</Text>
+          <Text style={styles.memberCount}>{memberCount()}</Text>
           <View style={styles.buttonContainer}>{returnOfficerOrJoin()}</View>
         </View>
       </View>
 
       <View style={styles.orgInfo}>
+        <Text style={styles.faqHeader}>{"About"}</Text>
         {editing ? (
           <TextInput
             style={styles.about}
@@ -276,26 +289,30 @@ const OrganizationProfileScreen = () => {
       <View style={styles.orgEvent}>
         <Text style={styles.eventsHeader}>Events</Text>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          {eventHostData.map((event, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => {
-                navigation.navigate("Event Profile", {
-                  eventId: event.id,
-                });
-              }}
-              style={{}}
-            >
-              <View style={styles.eventContainer}>
-                <Text style={styles.eventItem}>{event.name}</Text>
-              </View>
-            </TouchableOpacity>
-          ))}
+          {eventHostData.length > 0 ? (
+            eventHostData.map((event, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  navigation.navigate("EventProfileScreen", {
+                    eventId: event.id,
+                  });
+                }}
+                style={{}}
+              >
+                <View style={styles.eventContainer}>
+                  <Text style={styles.eventItem}>{event.name}</Text>
+                </View>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <Text style={styles.faqInfo}>{"No events!"}</Text>
+          )}
         </ScrollView>
       </View>
 
       <View style={styles.contactContainer}>
-        <Text style={styles.contactHeader}>{"Contact Information:"}</Text>
+        <Text style={styles.contactHeader}>{"Contact Information"}</Text>
         {editing ? (
           <TextInput
             style={styles.contactInfo}
@@ -312,6 +329,11 @@ const OrganizationProfileScreen = () => {
           </Text>
         )}
       </View>
+
+      <View style={styles.faqContainer}>
+        <Text style={styles.faqHeader}>{"Frequently Asked Questions"}</Text>
+        <Text style={styles.faqInfo}>{organizationData.faq}</Text>
+      </View>
     </ScrollView>
   );
 };
@@ -319,7 +341,7 @@ const OrganizationProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white", // Background color
+    backgroundColor: "white",
   },
   orgDetails: {
     backgroundColor: "white",
@@ -335,6 +357,13 @@ const styles = StyleSheet.create({
     marginTop: "1%",
   },
   contactContainer: {
+    backgroundColor: "white",
+    borderRadius: 15,
+    padding: 15,
+    margin: 15,
+    marginTop: "1%",
+  },
+  faqContainer: {
     backgroundColor: "white",
     borderRadius: 15,
     padding: 15,
@@ -400,7 +429,13 @@ const styles = StyleSheet.create({
   },
   about: {
     fontSize: 16,
-    padding: 0,
+    padding: 15,
+    marginTop: "-5%",
+  },
+  aboutHeader: {
+    fontSize: 20,
+    padding: 15,
+    fontWeight: "bold",
   },
   frq: {
     fontSize: 16,
@@ -421,9 +456,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   eventItem: {
-
     color: "white",
-    fontWeight: "bold",    
+    fontWeight: "bold",
   },
   eventName: {
     fontSize: 18,
@@ -448,6 +482,16 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   contactInfo: {
+    fontSize: 16,
+    padding: 15,
+    marginTop: "-5%",
+  },
+  faqHeader: {
+    fontSize: 20,
+    padding: 15,
+    fontWeight: "bold",
+  },
+  faqInfo: {
     fontSize: 16,
     padding: 15,
     marginTop: "-5%",

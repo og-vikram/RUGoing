@@ -7,9 +7,6 @@ import {
 } from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { auth } from "../firebase.config";
-import { reloadAsync } from "expo-updates";
-import { Button, Icon } from "react-native-elements";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Card } from "@rneui/themed";
 import EventProfileScreen from "./EventProfileScreen";
 import OrganizationProfileScreen from "./OrganizationProfileScreen";
@@ -40,6 +37,7 @@ const FriendProfileScreen = ({ navigation }) => {
       .then((json) => {
         if (json && json.follows) {
           follows = json.follows;
+
           const following = follows.some(
             (follow) => follow.uid === route.params.user_uid
           );
@@ -83,7 +81,7 @@ const FriendProfileScreen = ({ navigation }) => {
             }),
           }
         );
-        console.log(user.uid, userData.netid);
+
         setFollowing(true);
       } catch (error) {
         const errorCode = error.code;
@@ -108,7 +106,7 @@ const FriendProfileScreen = ({ navigation }) => {
             }),
           }
         );
-        console.log(user.uid, userData.user_id);
+
         setFollowing(false);
       } catch (error) {
         const errorCode = error.code;
@@ -153,8 +151,6 @@ const FriendProfileScreen = ({ navigation }) => {
                     alignItems: "center",
                   }}
                 >
-                  {/* Content inside the horizontal ScrollView */}
-
                   {events.map((eventDetail) => (
                     <TouchableOpacity
                       onPress={() => {
@@ -199,8 +195,6 @@ const FriendProfileScreen = ({ navigation }) => {
                     marginTop: 0,
                   }}
                 >
-                  {/* Content inside the horizontal ScrollView */}
-
                   {organizations.map((organization) => (
                     <TouchableOpacity
                       onPress={() => {
@@ -326,13 +320,11 @@ const styles = StyleSheet.create({
   italic: {
     fontStyle: "italic",
   },
-
   eventsInfo: {
     marginTop: "0%",
     paddingTop: 10,
     height: "100%",
   },
-
   orgsCard: {
     backgroundColor: "white",
     borderRadius: 15,

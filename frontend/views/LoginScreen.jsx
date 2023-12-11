@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   StyleSheet,
   KeyboardAvoidingView,
   Image,
@@ -30,7 +29,6 @@ const LoginPage = ({ navigation }) => {
         Alert.alert("Please verify your email");
         return;
       }
-      // console.log("User logged in:", userCredential.user);
     } catch (error) {
       console.log(error);
       if (error.code === "auth/invalid-login-credentials") {
@@ -128,14 +126,13 @@ const styles = StyleSheet.create({
 
   logoContainer: {
     position: "absolute",
-    top: 160, // Adjust to move the logo higher
+    top: 160,
     alignItems: "center",
   },
   logo: {
-    width: 300, // Adjust to make the logo smaller
-    height: 90, // Adjust to make the logo smaller
+    width: 300,
+    height: 90,
   },
-
   forgotPasswordContainer: {
     marginTop: 5,
     alignItems: "flex-end",

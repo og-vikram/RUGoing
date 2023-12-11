@@ -18,17 +18,12 @@ conn = mysql.connect(**config)
 cursor = conn.cursor()
 
 try:
-    # events.get_event_details(cursor, '9569310')
-    # events.get_all_events(cursor)
-    # events.modify_dates(cursor)
-    # organizations.get_all_organizations(cursor)
-    # organizations.get_categories(conn, cursor)
-    # events.get_categories(conn, cursor)
+    events.get_all_events(cursor)
+    events.modify_dates(cursor)
+    organizations.get_all_organizations(cursor)
+    organizations.get_categories(conn, cursor)
+    events.get_categories(conn, cursor)
     events.get_themes(conn, cursor)
-    # cursor.execute("SELECT * FROM Organizations")
-    # rows = cursor.fetchall()  # Fetch all rows
-    # for row in rows:
-    #     print(row)
     conn.commit()
 except mysql.Error as err:
     print(f"Error: {err}")

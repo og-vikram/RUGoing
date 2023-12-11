@@ -1,35 +1,36 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, Image,Button } from 'react-native';
-import { auth } from '../firebase.config'; // Assuming you have your Firebase configuration correctly set up in 'firebase.config'
-import {sendPasswordResetEmail} from "firebase/auth";
-
-
-
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+} from "react-native";
+import { auth } from "../firebase.config"; // Assuming you have your Firebase configuration correctly set up in 'firebase.config'
+import { sendPasswordResetEmail } from "firebase/auth";
 
 const ForgotPassword = ({ navigation }) => {
-  const [emailPrefix, setEmailPrefix] = useState('');
+  const [emailPrefix, setEmailPrefix] = useState("");
   const [sentPasswordReset, setPasswordReset] = useState(false);
-
   const defaultEmailDomain = "@scarletmail.rutgers.edu";
   const email = emailPrefix + defaultEmailDomain;
 
-
   const handleForgotPassword = async () => {
-
     await sendPasswordResetEmail(auth, email);
-    
+
     setPasswordReset(true);
+
     setTimeout(() => {
-      navigation.navigate('LoginScreen');
+      navigation.navigate("LoginScreen");
     }, 3000);
   };
-
 
   return (
     <View style={styles.container}>
       <View style={[styles.logoContainer]}>
         <Image
-          source={require('../assets/Screenshot_(276)-transformed.png')}
+          source={require("../assets/Screenshot_(276)-transformed.png")}
           style={styles.logo}
           resizeMode="contain"
         />
@@ -50,10 +51,7 @@ const ForgotPassword = ({ navigation }) => {
           <Text style={styles.fixedText}>@scarletmail.rutgers.edu</Text>
         </View>
       </View>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleForgotPassword}
-      >
+      <TouchableOpacity style={styles.button} onPress={handleForgotPassword}>
         <Text style={styles.buttonText}>Reset My Password</Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -64,34 +62,34 @@ const ForgotPassword = ({ navigation }) => {
       </TouchableOpacity>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 16,
-    backgroundColor: '#E6E6E6',
+    backgroundColor: "#E6E6E6",
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 16, 
-    color: '#FF392E',
+    fontWeight: "bold",
+    marginBottom: 16,
+    color: "#FF392E",
   },
   infoText: {
     marginBottom: 16,
-    color: 'green',
+    color: "green",
   },
   inputContainer: {
     marginBottom: 12,
-    width: '80%',
+    width: "80%",
   },
   emailInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
   },
   emailInput: {
     flex: 1,
@@ -102,39 +100,39 @@ const styles = StyleSheet.create({
   },
   fixedText: {
     marginLeft: 8,
-    color: '#FF392E',
+    color: "#FF392E",
   },
   button: {
-    backgroundColor: '#FF392E',
+    backgroundColor: "#FF392E",
     padding: 10,
-    width: '80%',
+    width: "80%",
     borderRadius: 15,
   },
   buttonText: {
-    color: 'white',
-    textAlign: 'center',
+    color: "white",
+    textAlign: "center",
     fontSize: 18,
   },
-  loginButtonText:{
-    color: '#FF392E',
-    textAlign: 'center',
+  loginButtonText: {
+    color: "#FF392E",
+    textAlign: "center",
     fontSize: 18,
   },
   loginbutton: {
     marginTop: 12,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 10,
-    width: '80%',
+    width: "80%",
     borderRadius: 15,
   },
   logoContainer: {
-    position: 'absolute',
-    top: 260, // Adjust to move the logo higher
-    alignItems: 'center',
+    position: "absolute",
+    top: 260,
+    alignItems: "center",
   },
   logo: {
-    width: 300, // Adjust to make the logo smaller
-    height: 90, // Adjust to make the logo smaller
+    width: 300,
+    height: 90,
   },
 });
 
