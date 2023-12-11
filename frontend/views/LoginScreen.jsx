@@ -10,42 +10,61 @@ import { Alert } from "react-native";
  * @param {object} navigation - React Navigation object for navigation control.
  */
 const LoginPage = ({ navigation }) => {
-  
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [logoTop, setLogoTop] = useState(210);
 
+  /**
+   * handleLogin is an asynchronous function that attempts to log in
+   * a user using provided credentials (username and password). It checks
+   * if the user's email is verified and displays alerts accordingly.
+   */
   const handleLogin = async () => {
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        username,
-        password
-      );
+      // Attempt to sign in with the provided username and password
+      const userCredential = await signInWithEmailAndPassword(auth, username, password);
+
+      // Check if the user's email is not verified
       if (!userCredential.user.emailVerified) {
+        // Display an alert prompting the user to verify their email
         Alert.alert("Please verify your email");
         return;
       }
     } catch (error) {
       console.log(error);
+
+      // Handle specific errors and display appropriate alerts
       if (error.code === "auth/invalid-login-credentials") {
         Alert.alert("Invalid login credentials");
       }
     }
   };
 
+  /**
+   * Add a keyboard event listener for the "keyboardDidShow" event
+   * to adjust the position of the logo when the keyboard is displayed.
+   */
   const keyboardDidShowListener = Keyboard.addListener(
     "keyboardDidShow",
     () => {
+      // Set the top position of the logo when the keyboard is displayed
       setLogoTop(40);
     }
   );
+
+  /**
+   * Add a keyboard event listener for the "keyboardDidHide" event
+   * to adjust the position of the logo when the keyboard is hidden.
+   */
   const keyboardDidHideListener = Keyboard.addListener(
     "keyboardDidHide",
     () => {
+      // Set the top position of the logo when the keyboard is hidden
       setLogoTop(210);
     }
   );
+
 
   return (
     <KeyboardAvoidingView style={styles.mainContainer} behavior="height">
@@ -103,11 +122,6 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: "#E6E6E6",
   },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 16,
-  },
   inputContainer: {
     marginBottom: 12,
     width: "80%",
@@ -120,7 +134,6 @@ const styles = StyleSheet.create({
     color: "#4A4A4A",
     borderRadius: 15,
   },
-
   logoContainer: {
     position: "absolute",
     top: 160,

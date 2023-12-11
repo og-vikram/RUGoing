@@ -1,33 +1,41 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image} from "react-native";
 import { auth } from "../firebase.config"; // Assuming you have your Firebase configuration correctly set up in 'firebase.config'
 import { sendPasswordResetEmail } from "firebase/auth";
 
+/**
+ * ForgotPassword is a React component representing the screen for handling
+ * password recovery. It allows users to reset their password via email.
+ *
+ * @param {object} navigation - React Navigation object for navigation control.
+ */
 const ForgotPassword = ({ navigation }) => {
   const [emailPrefix, setEmailPrefix] = useState("");
   const [sentPasswordReset, setPasswordReset] = useState(false);
   const defaultEmailDomain = "@scarletmail.rutgers.edu";
   const email = emailPrefix + defaultEmailDomain;
 
+ /**
+  * handleForgotPassword is an asynchronous function that initiates the process
+  * of sending a password reset email to the specified email address. It sets a
+  * state flag to indicate that a password reset email has been sent and navigates
+  * to the login screen after a brief delay.
+  */
   const handleForgotPassword = async () => {
+    // Send a password reset email to the specified email address
     await sendPasswordResetEmail(auth, email);
 
+    // Set a state flag to indicate that a password reset email has been sent
     setPasswordReset(true);
 
+    // Navigate to the login screen after a brief delay (3 seconds)
     setTimeout(() => {
       navigation.navigate("LoginScreen");
     }, 3000);
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.mainContainer}>
       <View style={[styles.logoContainer]}>
         <Image
           source={require("../assets/RUGoing_Logo.png")}
@@ -48,11 +56,11 @@ const ForgotPassword = ({ navigation }) => {
             value={emailPrefix}
             onChangeText={setEmailPrefix}
           />
-          <Text style={styles.fixedText}>@scarletmail.rutgers.edu</Text>
+          <Text style={styles.fixedEmailText}>@scarletmail.rutgers.edu</Text>
         </View>
       </View>
-      <TouchableOpacity style={styles.button} onPress={handleForgotPassword}>
-        <Text style={styles.buttonText}>Reset My Password</Text>
+      <TouchableOpacity style={styles.forgotPasswordButton} onPress={handleForgotPassword}>
+        <Text style={styles.forgotPasswordText}>Reset My Password</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.loginbutton}
@@ -65,18 +73,12 @@ const ForgotPassword = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
     backgroundColor: "#E6E6E6",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 16,
-    color: "#FF392E",
   },
   infoText: {
     marginBottom: 16,
@@ -98,17 +100,17 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 15,
   },
-  fixedText: {
+  fixedEmailText: {
     marginLeft: 8,
     color: "#FF392E",
   },
-  button: {
+  forgotPasswordButton: {
     backgroundColor: "#FF392E",
     padding: 10,
     width: "80%",
     borderRadius: 15,
   },
-  buttonText: {
+  forgotPasswordText: {
     color: "white",
     textAlign: "center",
     fontSize: 18,
