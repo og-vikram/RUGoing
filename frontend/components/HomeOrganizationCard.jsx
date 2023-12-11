@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-
+//Component represents a simple card for organizations on the homescreen
 const HomeOrganizationCard = () => {
   return (
     <View>
@@ -10,5 +10,3 @@ const HomeOrganizationCard = () => {
 };
 
 export default HomeOrganizationCard;
-
-const styles = StyleSheet.create({});
