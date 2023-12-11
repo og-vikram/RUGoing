@@ -11,21 +11,24 @@ import { auth } from "../firebase.config"; // Assuming you have your Firebase co
 import { sendPasswordResetEmail } from "firebase/auth";
 
 const ForgotPassword = ({ navigation }) => {
+  //State variables
   const [emailPrefix, setEmailPrefix] = useState("");
   const [sentPasswordReset, setPasswordReset] = useState(false);
   const defaultEmailDomain = "@scarletmail.rutgers.edu";
   const email = emailPrefix + defaultEmailDomain;
 
+  //Method to handle the "Reset My Password" button press
   const handleForgotPassword = async () => {
+    //Send password reset email using Firebase authentification
     await sendPasswordResetEmail(auth, email);
-
+    //Update state to indicate that password 
     setPasswordReset(true);
-
+    //Navigate to the login screen after a delay
     setTimeout(() => {
       navigation.navigate("LoginScreen");
     }, 3000);
   };
-
+  // Component render
   return (
     <View style={styles.container}>
       <View style={[styles.logoContainer]}>
@@ -64,6 +67,7 @@ const ForgotPassword = ({ navigation }) => {
   );
 };
 
+//Styles for the components
 const styles = StyleSheet.create({
   container: {
     flex: 1,
