@@ -261,7 +261,7 @@ const CreateAccountScreen = ({ navigation }) => {
     <View style={styles.mainContainer}>
       <View style={[styles.logoContainer, { top: logoTop }]}>
         <Image
-          source={require("../assets/Screenshot_(276)-transformed.png")}
+          source={require("../assets/RUGoing_Logo.png")}
           style={styles.logo}
           resizeMode="contain"
         />
@@ -427,10 +427,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 8,
     borderRadius: 15,
-  },
-  femailDomain: {
-    marginLeft: 8,
-    color: "#FF392E",
   },
   invalidText: {
     color: "red",

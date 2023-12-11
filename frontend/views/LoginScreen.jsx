@@ -1,19 +1,16 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  KeyboardAvoidingView,
-  Image,
-  TouchableOpacity,
-  Keyboard,
-} from "react-native";
+import { View, Text, TextInput, StyleSheet, KeyboardAvoidingView, Image, TouchableOpacity, Keyboard,} from "react-native";
 import { auth } from "../firebase.config";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { Alert } from "react-native";
 
+/**
+ * LoginPage is a React component representing the login screen.
+ *
+ * @param {object} navigation - React Navigation object for navigation control.
+ */
 const LoginPage = ({ navigation }) => {
+  
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [logoTop, setLogoTop] = useState(210);
@@ -51,10 +48,10 @@ const LoginPage = ({ navigation }) => {
   );
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="height">
+    <KeyboardAvoidingView style={styles.mainContainer} behavior="height">
       <View style={[styles.logoContainer, { top: logoTop }]}>
         <Image
-          source={require("../assets/Screenshot_(276)-transformed.png")}
+          source={require("../assets/RUGoing_Logo.png")}
           style={styles.logo}
           resizeMode="contain"
         />
@@ -89,17 +86,17 @@ const LoginPage = ({ navigation }) => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={styles.accountButton}
+        style={styles.createAccountButton}
         onPress={() => navigation.navigate("CreateAccount")}
       >
-        <Text style={styles.accountButtonText}>Create Account</Text>
+        <Text style={styles.createAccountButtonText}>Create Account</Text>
       </TouchableOpacity>
     </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
@@ -153,7 +150,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  accountButton: {
+  createAccountButton: {
     backgroundColor: "white",
     padding: 15,
     marginTop: 11,
@@ -161,7 +158,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 15,
   },
-  accountButtonText: {
+  createAccountButtonText: {
     color: "#FF392E",
     fontSize: 16,
     fontWeight: "bold",
