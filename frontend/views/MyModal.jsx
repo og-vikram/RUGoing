@@ -1,145 +1,230 @@
 import React, { useState, useEffect } from "react";
-import {
-  Modal,
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from "react-native";
+import {Modal, View, Text, TouchableOpacity, StyleSheet, ScrollView} from "react-native";
 
-const MyModal = ({
-  isVisible,
-  closeModal,
-  modalText,
-  handleSubmit,
-  onSignupClick,
-}) => {
+/**
+ * MyModal is a React Native functional component responsible for rendering a modal 
+ * that allows the user to pick their organizations and events preferences.
+ *
+ * @param {boolean} isVisible - Controls the visibility of the modal.
+ * @param {Function} closeModal - Callback function to close the modal.
+ * @param {string} modalText - Text content displayed in the modal.
+ * @param {Function} handleSubmit - Callback function for handling form submission within the modal.
+ * @param {Function} onSignupClick - Callback function for handling clicks on the signup action.
+*/
+const MyModal = ({ isVisible, closeModal, modalText, handleCreateAccount, onSignupClick,}) => {
+  
+  const [eventCategoriesList, setEventCategoriesList] = useState([]);
+  const [selectedEventCategories, setSelectedEventCategories] = useState([]);
+  const [eventPerksList, setEventPerksList] = useState([]);
+  const [selectedEventPerks, setSelectedEventPerks] = useState([]);
+  const [eventThemesList, setEventThemesList] = useState([]);
+  const [selectedEventThemes, setSelectedEventThemes] = useState([]);
+  const [organizationCategoriesList, setOrganizationCategoriesList] = useState([]);
+  const [selectedOrganizationCategories, setSelectedOrganizationCategories] = useState([]);
+
+  /**
+   * signup is a function that prepares and logs selected event themes,
+   * perks, event categories, and organization categories, then invokes
+   * the necessary callbacks to update the state and close the modal.
+  */
   const signup = () => {
-    setSelectedButtons3(selectedButtons3);
-    console.log("Selected buttons:", selectedButtons3);
+    // Update and log selected event themes
+    setSelectedEventThemes(selectedEventThemes);
+    console.log("Selected event themes:", selectedEventThemes);
 
-    setSelectedButtons2(selectedButtons2);
-    console.log("Selected buttons:", selectedButtons2);
+    // Update and log selected event perks
+    setSelectedEventPerks(selectedEventPerks);
+    console.log("Selected event perks:", selectedEventPerks);
 
-    setSelectedButtons1(selectedButtons1);
-    console.log("Selected buttons:", selectedButtons1);
+    // Update and log selected event categories
+    setSelectedEventCategories(selectedEventCategories);
+    console.log("Selected event categories:", selectedEventCategories);
 
-    setSelectedButtons(selectedButtons);
-    console.log("Selected buttons:", selectedButtons);
+    // Update and log selected organization categories
+    setSelectedOrganizationCategories(selectedOrganizationCategories);
+    console.log("Selected organization categories:", selectedOrganizationCategories);
 
+    // Close the modal
     closeModal();
+
+    // Invoke the onSignupClick callback with selected preferences
     onSignupClick(
-      selectedButtons2,
-      selectedButtons3,
-      selectedButtons1,
-      selectedButtons
+      selectedEventPerks,
+      selectedEventThemes,
+      selectedEventCategories,
+      selectedOrganizationCategories,
     );
   };
 
-  //categories stuff
-  const [categories2List, setCategories2List] = useState([]);
-
-  const [selectedButtons1, setSelectedButtons1] = useState([]);
-
+  /**
+   * useEffect to fetch event categories data from the server
+   * and update the component state accordingly.
+  */
   useEffect(() => {
+    // Fetch event categories data from the server
     fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/categories")
       .then((response) => response.json())
       .then((json) => {
-        setCategories2List(json.categories);
-        console.log("categories: ", categories2List);
+        // Update the component state with the fetched event categories
+        setEventCategoriesList(json.categories);
+        console.log("categories: ", eventCategoriesList);
       })
       .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
+      .finally(() => {
+        // Set loading state to false once the fetch operation is completed
+        setLoading(false);
+      });
   }, []);
 
-  const handleButton1Click = (id) => {
-    const isSelected = selectedButtons1.includes(id);
+
+  /**
+   * handleSelectedEventCategories is a function that toggles the selection
+   * of an event category identified by its ID. It updates the component state
+   * to include or exclude the selected category.
+   *
+   * @param {string} id - The ID of the event category to be toggled.
+  */
+  const handleSelectedEventCategories = (id) => {
+    // Check if the category is already selected
+    const isSelected = selectedEventCategories.includes(id);
+
+    // Toggle the selection by updating the component state
     if (isSelected) {
-      setSelectedButtons1(
-        selectedButtons1.filter((buttonId) => buttonId !== id)
-      );
+      // If selected, remove the category from the selection
+      setSelectedEventCategories(selectedEventCategories.filter((buttonId) => buttonId !== id));
     } else {
-      setSelectedButtons1([...selectedButtons1, id]);
+      // If not selected, add the category to the selection
+      setSelectedEventCategories([...selectedEventCategories, id]);
     }
   };
 
-  //perks stuff
-  const [perksList, setPerksList] = useState([]);
-
-  const [selectedButtons2, setSelectedButtons2] = useState([]);
-
+  /**
+   * useEffect to fetch event perks data from the server
+   * and update the component state accordingly.
+  */
   useEffect(() => {
+    // Fetch event perks data from the server
     fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/perks")
       .then((response) => response.json())
       .then((json) => {
-        setPerksList(json.perks);
+        // Update the component state with the fetched event perks
+        setEventPerksList(json.perks);
       })
-      .then(() => console.log("perks: ", perksList))
+      .then(() => console.log("perks: ", eventPerksList))
       .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
+      .finally(() => {
+        // Set loading state to false once the fetch operation is completed
+        setLoading(false);
+      });
   }, []);
 
-  const handleButton2Click = (id) => {
-    const isSelected = selectedButtons2.includes(id);
+
+  /**
+   * handleSelectedEventPerks is a function that toggles the selection
+   * of an event perk identified by its ID. It updates the component state
+   * to include or exclude the selected perk.
+   *
+   * @param {string} id - The ID of the event perk to be toggled.
+   */
+  const handleSelectedEventPerks = (id) => {
+    // Check if the perk is already selected
+    const isSelected = selectedEventPerks.includes(id);
+
+    // Toggle the selection by updating the component state
     if (isSelected) {
-      setSelectedButtons2(
-        selectedButtons2.filter((buttonId) => buttonId !== id)
-      );
+      // If selected, remove the perk from the selection
+      setSelectedEventPerks(selectedEventPerks.filter((buttonId) => buttonId !== id));
     } else {
-      setSelectedButtons2([...selectedButtons2, id]);
+      // If not selected, add the perk to the selection
+      setSelectedEventPerks([...selectedEventPerks, id]);
     }
   };
 
-  //themes stuff
-  const [themesList, setThemesList] = useState([]);
 
-  const [selectedButtons3, setSelectedButtons3] = useState([]);
 
+  /**
+   * useEffect to fetch event themes data from the server
+   * and update the component state accordingly.
+  */
   useEffect(() => {
+    // Fetch event themes data from the server
     fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/themes")
       .then((response) => response.json())
       .then((json) => {
-        setThemesList(json.themes);
+        // Update the component state with the fetched event themes
+        setEventThemesList(json.themes);
       })
-      .then(() => console.log("themes: ", themesList))
+      .then(() => console.log("themes: ", eventThemesList))
       .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
+      .finally(() => {
+        // Set loading state to false once the fetch operation is completed
+        setLoading(false);
+      });
   }, []);
-  const handleButton3Click = (id) => {
-    const isSelected = selectedButtons3.includes(id);
+
+
+  /**
+   * handleSelectedEventThemes is a function that toggles the selection
+   * of an event theme identified by its ID. It updates the component state
+   * to include or exclude the selected theme.
+   *
+   * @param {string} id - The ID of the event theme to be toggled.
+  */
+  const handleSelectedEventThemes = (id) => {
+    // Check if the theme is already selected
+    const isSelected = selectedEventThemes.includes(id);
+
+    // Toggle the selection by updating the component state
     if (isSelected) {
-      setSelectedButtons3(
-        selectedButtons3.filter((buttonId) => buttonId !== id)
+      // If selected, remove the theme from the selection
+      setSelectedEventThemes(
+        selectedEventThemes.filter((buttonId) => buttonId !== id)
       );
     } else {
-      setSelectedButtons3([...selectedButtons3, id]);
+      // If not selected, add the theme to the selection
+      setSelectedEventThemes([...selectedEventThemes, id]);
     }
   };
 
-  //org stuff
-  const [categoriesList, setCategoriesList] = useState([]);
-
-  const [selectedButtons, setSelectedButtons] = useState([]);
-
+  /**
+   * useEffect to fetch organization categories data from the server
+   * and update the component state accordingly.
+  */
   useEffect(() => {
-    fetch(
-      "https://absolute-willing-salmon.ngrok-free.app/api/organization/categories"
-    )
+    // Fetch organization categories data from the server
+    fetch("https://absolute-willing-salmon.ngrok-free.app/api/organization/categories")
       .then((response) => response.json())
       .then((json) => {
-        setCategoriesList(json.categories);
-        console.log("categories: ", categoriesList);
+        // Update the component state with the fetched organization categories
+        setOrganizationCategoriesList(json.categories);
+        console.log("categories: ", organizationCategoriesList);
       })
       .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
+      .finally(() => {
+        // Set loading state to false once the fetch operation is completed
+        setLoading(false);
+      });
   }, []);
-  const handleButtonClick = (id) => {
-    const isSelected = selectedButtons.includes(id);
+
+
+  /**
+   * handleSelectedOrganizationCategories is a function that toggles the selection
+   * of an organization category identified by its ID. It updates the component state
+   * to include or exclude the selected category.
+   *
+   * @param {string} id - The ID of the organization category to be toggled.
+   */
+  const handleSelectedOrganizationCategories = (id) => {
+    // Check if the category is already selected
+    const isSelected = selectedOrganizationCategories.includes(id);
+
+    // Toggle the selection by updating the component state
     if (isSelected) {
-      setSelectedButtons(selectedButtons.filter((buttonId) => buttonId !== id));
+      // If selected, remove the category from the selection
+      setSelectedOrganizationCategories(selectedOrganizationCategories.filter((buttonId) => buttonId !== id));
     } else {
-      setSelectedButtons([...selectedButtons, id]);
+      // If not selected, add the category to the selection
+      setSelectedOrganizationCategories([...selectedOrganizationCategories, id]);
     }
   };
 
@@ -153,26 +238,26 @@ const MyModal = ({
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <View>
-            <Text style={styles.questionText}>
-              {" "}
-              What event perks are you interest in?
+            <Text style={styles.questionText}> 
+              {" "} 
+              What event perks are you interest in? 
             </Text>
-            <View style={styles.card1}>
+            <View style={styles.scrollViewCard}>
               <ScrollView>
-                {perksList.map((item) => (
+                {eventPerksList.map((item) => (
                   <TouchableOpacity
                     key={item.id}
-                    onPress={() => handleButton2Click(item.id)}
+                    onPress={() => handleSelectedEventPerks (item.id)}
                     style={[
-                      styles.button,
+                      styles.preferencesButton,
                       {
-                        backgroundColor: selectedButtons2.includes(item.id)
+                        backgroundColor: selectedEventPerks.includes(item.id)
                           ? "#FF6961"
                           : "#E6E6E6",
                       },
                     ]}
                   >
-                    <Text style={styles.button2Text}>{item.name}</Text>
+                    <Text>{item.name}</Text>
                   </TouchableOpacity>
                 ))}
               </ScrollView>
@@ -182,22 +267,22 @@ const MyModal = ({
             <Text style={styles.questionText}>
               What event categories are you interested in?
             </Text>
-            <View style={styles.card2}>
+            <View style={styles.scrolllViewCard}>
               <ScrollView>
-                {categories2List.map((item) => (
+                {eventCategoriesList.map((item) => (
                   <TouchableOpacity
                     key={item.id}
-                    onPress={() => handleButton1Click(item.id)}
+                    onPress={() => handleSelectedEventCategories(item.id)}
                     style={[
-                      styles.button,
+                      styles.preferencesButton,
                       {
-                        backgroundColor: selectedButtons1.includes(item.id)
+                        backgroundColor: selectedEventCategories.includes(item.id)
                           ? "#FF6961"
                           : "#E6E6E6",
                       },
                     ]}
                   >
-                    <Text style={styles.button2Text}>{item.name}</Text>
+                    <Text>{item.name}</Text>
                   </TouchableOpacity>
                 ))}
               </ScrollView>
@@ -207,22 +292,22 @@ const MyModal = ({
                 {" "}
                 What event themes are you interest in?
               </Text>
-              <View style={styles.card2}>
+              <View style={styles.scrolllViewCard}>
                 <ScrollView>
-                  {themesList.map((item) => (
+                  {eventThemesList.map((item) => (
                     <TouchableOpacity
                       key={item.id}
-                      onPress={() => handleButton3Click(item.id)}
+                      onPress={() => handleSelectedEventThemes(item.id)}
                       style={[
-                        styles.button,
+                        styles.preferencesButton,
                         {
-                          backgroundColor: selectedButtons3.includes(item.id)
+                          backgroundColor: selectedEventThemes.includes(item.id)
                             ? "#FF6961"
                             : "#E6E6E6",
                         },
                       ]}
                     >
-                      <Text style={styles.button2Text}>{item.name}</Text>
+                      <Text>{item.name}</Text>
                     </TouchableOpacity>
                   ))}
                 </ScrollView>
@@ -233,32 +318,32 @@ const MyModal = ({
                 {" "}
                 What organization categories are you interest in?
               </Text>
-              <View style={styles.card2}>
+              <View style={styles.scrolllViewCard}>
                 <ScrollView>
-                  {categoriesList.map((item) => (
+                  {organizationCategoriesList.map((item) => (
                     <TouchableOpacity
                       key={item.id}
-                      onPress={() => handleButtonClick(item.id)}
+                      onPress={() => handleSelectedOrganizationCategories(item.id)}
                       style={[
-                        styles.button,
+                        styles.preferencesButton,
                         {
-                          backgroundColor: selectedButtons.includes(item.id)
+                          backgroundColor: selectedOrganizationCategories.includes(item.id)
                             ? "#FF6961"
                             : "#E6E6E6",
                         },
                       ]}
                     >
-                      <Text style={styles.buttonText}>{item.name}</Text>
+                      <Text>{item.name}</Text>
                     </TouchableOpacity>
                   ))}
                 </ScrollView>
               </View>
             </View>
-            <TouchableOpacity style={styles.bottombutton} onPress={signup}>
-              <Text style={styles.bottombuttontext}>Sign Up</Text>
+            <TouchableOpacity style={styles.signUpButton} onPress={signup}>
+              <Text style={styles.signUpText}>Sign Up</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.bottombutton1} onPress={closeModal}>
-              <Text style={styles.bottombuttontext1}>Close</Text>
+            <TouchableOpacity style={styles.closeModalButton} onPress={closeModal}>
+              <Text style={styles.closeModalText}>Close</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -274,33 +359,29 @@ const styles = StyleSheet.create({
     marginTop: "3%",
     fontWeight: "bold",
   },
-  bottombuttontext: {
+  signUpText: {
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
   },
-  bottombuttontext1: {
+  closeModalText: {
     color: "#FF392E",
     fontSize: 16,
     fontWeight: "bold",
   },
-  bottombutton: {
+  signUpButton: {
     backgroundColor: "#FF392E",
     borderRadius: 15,
     marginTop: "3%",
     padding: "3%",
     alignItems: "center",
   },
-  bottombutton1: {
+  closeModalButton: {
     backgroundColor: "#E6E6E6",
     borderRadius: 15,
     marginTop: "3%",
     padding: "3%",
     alignItems: "center",
-  },
-  scrollView: {
-    width: 1,
-    height: 1,
   },
   modalContainer: {
     flex: 1,
@@ -313,15 +394,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 15,
   },
-  buttonContainer: {
-    flexDirection: "row",
-    marginBottom: 0,
-  },
-  buttonContainer2: {
-    flexDirection: "row",
-    marginBottom: 10,
-  },
-  button: {
+  preferencesButton: {
     backgroundColor: "#E6E6E6",
     padding: 10,
     marginVertical: 5,
@@ -330,10 +403,7 @@ const styles = StyleSheet.create({
     borderColor: "#FF6961",
     borderWidth: "1%",
   },
-  redButton: {
-    backgroundColor: "#FF6961",
-  },
-  card1: {
+  scrollViewCard: {
     backgroundColor: "white",
     borderColor: "#FF392E",
     borderWidth: 1,
@@ -341,9 +411,9 @@ const styles = StyleSheet.create({
     width: 330,
     height: 120,
   },
-  card2: {
+  scrolllViewCard: {
     backgroundColor: "white",
-    borderColor: "#FF392E",
+    borderColor: "#FF392E", 
     borderWidth: 1,
     borderRadius: 10,
     width: 330,

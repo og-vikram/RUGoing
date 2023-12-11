@@ -1,19 +1,20 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Keyboard,
-} from "react-native";
+import {View, Text, TextInput, StyleSheet, TouchableOpacity, Image, Keyboard} from "react-native";
 import { auth } from "../firebase.config";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { Switch } from "react-native";
 import MyModal from "./MyModal";
 
+/**
+ * CreateAccountScreen is a React Native functional component
+ * responsible for rendering the screen for creating a new account.
+ *
+ * @param {Object} navigation - The navigation object from React Navigation.
+ *                              Used for navigating between screens.
+*/
+
 const CreateAccountScreen = ({ navigation }) => {
+
   const defaultEmailDomain = "@scarletmail.rutgers.edu";
   const [emailPrefix, setEmailPrefix] = useState("");
   const [password, setPassword] = useState("");
@@ -26,49 +27,119 @@ const CreateAccountScreen = ({ navigation }) => {
   const [isInvalidPassword, setInvalidPassword] = useState(false);
   const [isPasswordMismatch, setPasswordMismatch] = useState(false);
   const [isOfficer, setIsOfficer] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+
   const [organizationName, setOrganizationName] = useState("");
   const [logoTop, setLogoTop] = useState(90);
   const email = emailPrefix + defaultEmailDomain;
 
+  /**
+   * handleSwitchChange is a function that handles the change event
+   * of the club officer switch, updating state variables and adjusting the position
+   * of the logo based on the new switch value.
+   *
+   * @param {boolean} value - The new value of the switch.
+  */
   const handleSwitchChange = (value) => {
+
+    // Update the state variable isOfficer with the new switch value
     setIsOfficer(value);
+
+    // Check the previous value of isOfficer to determine the logo position
     if (isOfficer == false) {
+
+      // If the user is not an officer, set the logoTop to 70
       setLogoTop(70);
     } else {
+
+      // If the user is an officer, set the logoTop to 90
       setLogoTop(90);
     }
   };
 
+
+  /**
+   * keyboardDidShowListener is an event listener that responds to
+   * the "keyboardDidShow" event, adjusting the position of the logo
+   * when the keyboard is displayed.
+  */
   const keyboardDidShowListener = Keyboard.addListener(
     "keyboardDidShow",
     () => {
+      // When the keyboard is displayed, set the logoTop position to 80
       setLogoTop(80);
     }
   );
 
+  /**
+   * keyboardDidHideListener is an event listener that responds to
+   * the "keyboardDidHide" event, adjusting the position of the logo
+   * when the keyboard is not displayed.
+  */
   const keyboardDidHideListener = Keyboard.addListener(
     "keyboardDidHide",
     () => {
+      // When the keyboard is not displayed, set the logoTop position to 90
       setLogoTop(90);
     }
   );
 
+  /**
+   * isValidEmail is a function that validates whether the given email
+   * follows the specific pattern for ScarletMail email addresses.
+   *
+   * @returns {boolean} - True if the email is valid, false otherwise.
+  */
   const isValidEmail = () => {
+    // Define a regular expression pattern for ScarletMail email addresses
     const emailRegex = /^[^\s@]+@scarletmail\.rutgers\.edu$/;
+
+    // Test if the provided email matches the defined pattern
     return emailRegex.test(email);
   };
 
+  /**
+   * isValidName is a function that validates whether the given name
+   * consists only of alphabetical characters (both lowercase and uppercase).
+   *
+   * @param {string} name - The name to be validated.
+   * @returns {boolean} - True if the name is valid, false otherwise.
+  */
   const isValidName = (name) => {
-    return /^[a-zA-Z]+$/.test(name);
+    // Define a regular expression pattern for validating alphabetical names
+    const nameRegex = /^[a-zA-Z]+$/;
+
+    // Test if the provided name matches the defined pattern
+    return nameRegex.test(name);
   };
 
+  /**
+   * isValidPassword is a function that validates whether the given password
+   * meets specific criteria, including at least one uppercase letter,
+   * one digit, and one special character, and has a minimum length of 8 characters.
+   *
+   * @returns {boolean} - True if the password is valid, false otherwise.
+  */
   const isValidPassword = () => {
-    const passwordRegex =
-      /^(?=.*[A-Z])(?=.*\d)(?=.*[@!#$%&])[A-Za-z\d@!#$%&]{8,}$/;
+    // Define a regular expression pattern for validating passwords
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@!#$%&])[A-Za-z\d@!#$%&]{8,}$/;
+
+    // Test if the provided password matches the defined pattern
     return passwordRegex.test(password);
   };
 
-  const handleSubmit = async (perks, themes, cats_events, cats_orgs) => {
+  /**
+   * handleCreateAccount is an asynchronous function that handles the
+   * process of creating a new user account, including validation,
+   * data submission, and navigation.
+   *
+   * @param {Array} perks - Array of perk preferences.
+   * @param {Array} themes - Array of theme preferences.
+   * @param {Array} cats_events - Array of category preferences for events.
+   * @param {Array} cats_orgs - Array of category preferences for organizations.
+  */
+  const handleCreateAccount = async (perks, themes, cats_events, cats_orgs) => {
+    // Validate email
     if (!isValidEmail()) {
       setInvalidEmail(true);
       return;
@@ -76,6 +147,7 @@ const CreateAccountScreen = ({ navigation }) => {
       setInvalidEmail(false);
     }
 
+    // Validate first name
     if (!isValidName(firstName)) {
       setInvalidFirstName(true);
       return;
@@ -83,6 +155,7 @@ const CreateAccountScreen = ({ navigation }) => {
       setInvalidFirstName(false);
     }
 
+    // Validate last name
     if (!isValidName(lastName)) {
       setInvalidLastName(true);
       return;
@@ -90,86 +163,73 @@ const CreateAccountScreen = ({ navigation }) => {
       setInvalidLastName(false);
     }
 
+    // Validate password
     if (!isValidPassword()) {
       setInvalidPassword(true);
       return;
     } else {
       setInvalidPassword(false);
-    }
+    } 
 
-    if (
-      isValidEmail &&
-      isValidName(firstName) &&
-      isValidName(lastName) &&
-      isValidPassword()
-    ) {
+    // If all validations pass, proceed with account creation
+    if (isValidEmail && isValidName(firstName) && isValidName(lastName) && isValidPassword()) {
       try {
-        const userCredential = await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
+        // Create user account
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        await fetch(
-          `https://absolute-willing-salmon.ngrok-free.app/api/users/add/`,
-          {
-            method: "POST",
-            body: JSON.stringify({
-              uid: userCredential.user.uid,
-              netid: userCredential.user.email.split("@")[0],
-              firstName: firstName,
-              lastName: lastName,
-              isOfficer: isOfficer,
-            }),
-          }
-        );
+        // Submit user data to the server
+        await fetch(`https://absolute-willing-salmon.ngrok-free.app/api/users/add/`, {
+          method: "POST",
+          body: JSON.stringify({
+            uid: user.uid,
+            netid: user.email.split("@")[0],
+            firstName: firstName,
+            lastName: lastName,
+            isOfficer: isOfficer,
+          }),
+        });
 
-        await fetch(
-          `https://absolute-willing-salmon.ngrok-free.app/api/event/perk/preference/add/`,
-          {
-            method: "POST",
-            body: JSON.stringify({
-              uid: userCredential.user.uid,
-              perk_ids: perks,
-            }),
-          }
-        );
+        // Submit event preferences to the server
+        await fetch(`https://absolute-willing-salmon.ngrok-free.app/api/event/perk/preference/add/`, {
+          method: "POST",
+          body: JSON.stringify({
+            uid: user.uid,
+            perk_ids: perks,
+          }),
+        });
 
-        await fetch(
-          `https://absolute-willing-salmon.ngrok-free.app/api/event/theme/preference/add/`,
-          {
-            method: "POST",
-            body: JSON.stringify({
-              uid: userCredential.user.uid,
-              theme_ids: themes,
-            }),
-          }
-        );
+        // Submit theme preferences to the server
+        await fetch(`https://absolute-willing-salmon.ngrok-free.app/api/event/theme/preference/add/`, {
+          method: "POST",
+          body: JSON.stringify({
+            uid: user.uid,
+            theme_ids: themes,
+          }),
+        });
 
-        await fetch(
-          `https://absolute-willing-salmon.ngrok-free.app/api/event/category/preference/add/`,
-          {
-            method: "POST",
-            body: JSON.stringify({
-              uid: userCredential.user.uid,
-              category_ids: cats_events,
-            }),
-          }
-        );
+        // Submit event category preferences to the server
+        await fetch(`https://absolute-willing-salmon.ngrok-free.app/api/event/category/preference/add/`, {
+          method: "POST",
+          body: JSON.stringify({
+            uid: user.uid,
+            category_ids: cats_events,
+          }),
+        });
 
-        await fetch(
-          `https://absolute-willing-salmon.ngrok-free.app/api/organization/category/preference/add/`,
-          {
-            method: "POST",
-            body: JSON.stringify({
-              uid: userCredential.user.uid,
-              category_ids: cats_orgs,
-            }),
-          }
-        );
+        // Submit organization category preferences to the server
+        await fetch(`https://absolute-willing-salmon.ngrok-free.app/api/organization/category/preference/add/`, {
+          method: "POST",
+          body: JSON.stringify({
+            uid: user.uid,
+            category_ids: cats_orgs,
+          }),
+        });
+
+        // Navigate to the login screen upon successful account creation
         navigation.navigate("LoginScreen");
       } catch (error) {
+        // Handle errors during account creation
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
@@ -177,18 +237,28 @@ const CreateAccountScreen = ({ navigation }) => {
     }
   };
 
-  const [modalVisible, setModalVisible] = useState(false);
 
+
+  /**
+   * openModal is a function that sets the visibility state of a modal to true,
+   * triggering the display of the modal.
+  */
   const openModal = () => {
+    // Set the visibility state of the modal to true
     setModalVisible(true);
   };
 
+  /**
+   * closeModal is a function that sets the visibility state of a modal to false,
+   * triggering the modal to close.
+  */
   const closeModal = () => {
+    // Set the visibility state of the modal to false
     setModalVisible(false);
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.mainContainer}>
       <View style={[styles.logoContainer, { top: logoTop }]}>
         <Image
           source={require("../assets/Screenshot_(276)-transformed.png")}
@@ -230,7 +300,7 @@ const CreateAccountScreen = ({ navigation }) => {
             value={emailPrefix}
             onChangeText={(text) => setEmailPrefix(text)}
           />
-          <Text style={styles.fixedText}>{defaultEmailDomain}</Text>
+          <Text style={styles.emailDomain}>{defaultEmailDomain}</Text>
         </View>
         {isInvalidEmail && (
           <Text style={styles.invalidText}>
@@ -299,8 +369,8 @@ const CreateAccountScreen = ({ navigation }) => {
       <MyModal
         isVisible={modalVisible}
         closeModal={closeModal}
-        handleSubmit={handleSubmit}
-        onSignupClick={handleSubmit}
+        handleSubmit={handleCreateAccount}
+        onSignupClick={handleCreateAccount}
       />
 
       <TouchableOpacity
@@ -323,17 +393,12 @@ const styles = StyleSheet.create({
     width: 300, 
     height: 90,
   },
-  container: {
+  mainContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
     backgroundColor: "#E6E6E6",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 16,
   },
   inputContainer: {
     marginBottom: 12,
@@ -363,7 +428,7 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 15,
   },
-  fixedText: {
+  femailDomain: {
     marginLeft: 8,
     color: "#FF392E",
   },
