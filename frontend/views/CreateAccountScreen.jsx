@@ -28,7 +28,7 @@ const CreateAccountScreen = ({ navigation }) => {
   const [isPasswordMismatch, setPasswordMismatch] = useState(false);
   const [isOfficer, setIsOfficer] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [orgWarning, setOrgWarning] = useState(false);
   const [organizationName, setOrganizationName] = useState("");
   const [logoTop, setLogoTop] = useState(90);
   const email = emailPrefix + defaultEmailDomain;
@@ -139,6 +139,12 @@ const CreateAccountScreen = ({ navigation }) => {
    * @param {Array} cats_orgs - Array of category preferences for organizations.
   */
   const handleCreateAccount = async (perks, themes, cats_events, cats_orgs) => {
+    //validate org officer
+    if(isOfficer && organizationName.length == 0){
+      setOrgWarning(true);
+      return;
+    }
+    
     // Validate email
     if (!isValidEmail()) {
       setInvalidEmail(true);
@@ -187,6 +193,7 @@ const CreateAccountScreen = ({ navigation }) => {
             firstName: firstName,
             lastName: lastName,
             isOfficer: isOfficer,
+            organization: organizationName,
           }),
         });
 
@@ -236,8 +243,6 @@ const CreateAccountScreen = ({ navigation }) => {
       }
     }
   };
-
-
 
   /**
    * openModal is a function that sets the visibility state of a modal to true,
@@ -353,11 +358,15 @@ const CreateAccountScreen = ({ navigation }) => {
         {isOfficer && (
           <View style={styles.inputSwitchContainer}>
             <TextInput
-              placeholder="Please enter the organization name"
+              placeholder="Please enter the organization ID"
               style={styles.input}
               value={organizationName}
-              onChangeText={(text) => setOrganizationName(text)}
+              onChangeText={(text) => setOrganizationName(text)
+              }
             />
+            {orgWarning && (
+                <Text style={{color: 'red'}}>Please enter a valid org ID or untoggle officer</Text>
+              )}
           </View>
         )}
       </View>
