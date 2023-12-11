@@ -10,12 +10,14 @@ import {
 import Category from "./Category";
 import { useNavigation } from "@react-navigation/native";
 
+//Functional component representing an event card
 export default (props) => {
   const navigation = useNavigation();
+  //Destructuring props to the respective categories, perks and themes
   const categories = props.categories[0];
   const perks = props.perks[0];
   const themes = props.themes[0];
-
+//Helper function to handle undefined categories
   const checkForEmptyCategories = () => {
     if (categories === undefined) {
       return [];
@@ -23,7 +25,7 @@ export default (props) => {
       return categories;
     }
   };
-
+//Helper function to handle undefined perks
   const checkForEmptyPerks = () => {
     if (perks === undefined) {
       return [];
@@ -31,7 +33,7 @@ export default (props) => {
       return perks;
     }
   };
-
+//Helper function to handle undefined themes
   const checkForEmptyThemes = () => {
     if (themes === undefined) {
       return [];
@@ -39,7 +41,7 @@ export default (props) => {
       return themes;
     }
   };
-
+//Component render
   return (
     <>
       <TouchableOpacity
@@ -93,7 +95,7 @@ export default (props) => {
     </>
   );
 };
-
+//Styles for the component
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
