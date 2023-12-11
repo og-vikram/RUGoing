@@ -70,7 +70,7 @@ export default (props) => {
                 {props.title}
               </Text>
               <Text style={styles.fonts} numberOfLines={2}>
-                {props.host}
+                {props.description}
               </Text>
               <ScrollView
                 horizontal={true}
