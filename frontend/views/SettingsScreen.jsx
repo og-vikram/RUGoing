@@ -1,156 +1,278 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Modal,
-  ScrollView,
-} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Modal, ScrollView, } from "react-native";
 import React, { useState, useEffect } from "react";
 import { auth } from "../firebase.config";
 import { signOut } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import { reloadAsync } from "expo-updates";
 
+/**
+ * SettingsScreen is a React component representing the screen where users
+ * can configure and adjust application settings.
+ */
 const SettingsScreen = () => {
+
   const navigation = useNavigation();
   const [termsModalVisible, setTermsModalVisible] = useState(false);
   const [aboutModalVisible, setAboutModalVisible] = useState(false);
   const [preferencesModalVisible, setPreferencesModalVisible] = useState(false);
-  const [categories2List, setCategories2List] = useState([]);
-  const [selectedButtons1, setSelectedButtons1] = useState([]);
-  const [perksList, setPerksList] = useState([]);
-  const [selectedButtons2, setSelectedButtons2] = useState([]);
-  const [themesList, setThemesList] = useState([]);
-  const [selectedButtons3, setSelectedButtons3] = useState([]);
-  const [categoriesList, setCategoriesList] = useState([]);
-  const [selectedButtons, setSelectedButtons] = useState([]);
+  const [eventCategoriesList, setEventCategoriesList] = useState([]);
+  const [selectedEventCategories, setSelectedEventCategories] = useState([]);
+  const [eventPerksList, setEventPerksList] = useState([]);
+  const [selectedEventPerks, setSelectedEventPerks] = useState([]);
+  const [eventThemesList, setEventThemesList] = useState([]);
+  const [selectedEventThemes, setSelectedEventThemes] = useState([]);
+  const [organizationCategoriesList, setOrganizationCategoriesList] = useState([]);
+  const [selectedOrganizationCategories, setSelectedOrganizationCategories] = useState([]);
+  
 
+  /**
+   * handleLogout is a function that logs the user out by signing out
+   * of the authentication system and triggers a reload of the application.
+   */
   const handleLogout = () => {
+    // Sign out of the authentication system
     signOut(auth);
+
+    // Trigger a reload of the application
     reloadAsync();
   };
 
+  /**
+   * openTermsModal is a function that sets the visibility state
+   * of the terms modal to true, displaying the modal.
+   */
   const openTermsModal = () => {
+    // Set the visibility state of the terms modal to true
     setTermsModalVisible(true);
   };
 
+  /**
+   * closeTermsModal is a function that sets the visibility state
+   * of the terms modal to false, hiding the modal.
+   */
   const closeTermsModal = () => {
+    // Set the visibility state of the terms modal to false
     setTermsModalVisible(false);
   };
 
+
+  /**
+   * openAboutModal is a function that sets the visibility state
+   * of the about modal to true, displaying the modal.
+   */
   const openAboutModal = () => {
+    // Set the visibility state of the about modal to true
     setAboutModalVisible(true);
   };
 
+  /**
+   * closeAboutModal is a function that sets the visibility state
+   * of the about modal to false, hiding the modal.
+   */
   const closeAboutModal = () => {
+    // Set the visibility state of the about modal to false
     setAboutModalVisible(false);
   };
 
+
+  /**
+   * openPreferencesModal is a function that sets the visibility state
+   * of the preferences modal to true, displaying the modal.
+   */
   const openPreferencesModal = () => {
+    // Set the visibility state of the preferences modal to true
     setPreferencesModalVisible(true);
   };
 
+  /**
+   * closePreferencesModal is a function that updates and logs the selected
+   * event themes, event perks, event categories, and organization categories.
+   * It then sets the visibility state of the preferences modal to false, hiding the modal.
+   */
   const closePreferencesModal = () => {
-    setSelectedButtons3(selectedButtons3);
-    console.log("Selected buttons:", selectedButtons3);
+    // Update and log selected event themes
+    setSelectedEventThemes(selectedEventThemes);
+    console.log("Selected event themes:", selectedEventThemes);
 
-    setSelectedButtons2(selectedButtons2);
-    console.log("Selected buttons:", selectedButtons2);
+    // Update and log selected event perks
+    setSelectedEventPerks(selectedEventPerks);
+    console.log("Selected event perks:", selectedEventPerks);
 
-    setSelectedButtons1(selectedButtons1);
-    console.log("Selected buttons:", selectedButtons1);
+    // Update and log selected event categories
+    setSelectedEventCategories(selectedEventCategories);
+    console.log("Selected event categories:", selectedEventCategories);
 
-    setSelectedButtons(selectedButtons);
-    console.log("Selected buttons:", selectedButtons);
+    // Update and log selected organization categories
+    setSelectedOrganizationCategories(selectedOrganizationCategories);
+    console.log("Selected organization categories:", selectedOrganizationCategories);
+
+    // Close the preferences modal
     setPreferencesModalVisible(false);
   };
 
+  /**
+   * useEffect to fetch event categories data from the server
+   * and update the component state accordingly.
+  */
   useEffect(() => {
+    // Fetch event categories data from the server
     fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/categories")
       .then((response) => response.json())
       .then((json) => {
-        setCategories2List(json.categories);
-        console.log("categories: ", categories2List);
+        // Update the component state with the fetched event categories
+        setEventCategoriesList(json.categories);
+        console.log("categories: ", eventCategoriesList);
       })
       .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
+      .finally(() => {
+        // Set loading state to false once the fetch operation is completed
+        setLoading(false);
+      });
   }, []);
 
-  const handleButton1Click = (id) => {
-    const isSelected = selectedButtons1.includes(id);
+  /**
+   * handleSelectedEventCategories is a function that toggles the selection
+   * of an event category identified by its ID. It updates the component state
+   * to include or exclude the selected category.
+   *
+   * @param {string} id - The ID of the event category to be toggled.
+  */
+  const handleSelectedEventCategories = (id) => {
+    // Check if the category is already selected
+    const isSelected = selectedEventCategories.includes(id);
+
+    // Toggle the selection by updating the component state
     if (isSelected) {
-      setSelectedButtons1(
-        selectedButtons1.filter((buttonId) => buttonId !== id)
-      );
+      // If selected, remove the category from the selection
+      setSelectedEventCategories(selectedEventCategories.filter((buttonId) => buttonId !== id));
     } else {
-      setSelectedButtons1([...selectedButtons1, id]);
+      // If not selected, add the category to the selection
+      setSelectedEventCategories([...selectedEventCategories, id]);
     }
   };
 
+  /**
+   * useEffect to fetch event perks data from the server
+   * and update the component state accordingly.
+  */
   useEffect(() => {
+    // Fetch event perks data from the server
     fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/perks")
       .then((response) => response.json())
       .then((json) => {
-        setPerksList(json.perks);
+        // Update the component state with the fetched event perks
+        setEventPerksList(json.perks);
       })
-      .then(() => console.log("perks: ", perksList))
+      .then(() => console.log("perks: ", eventPerksList))
       .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
+      .finally(() => {
+        // Set loading state to false once the fetch operation is completed
+        setLoading(false);
+      });
   }, []);
 
-  const handleButton2Click = (id) => {
-    const isSelected = selectedButtons2.includes(id);
+  /**
+   * handleSelectedEventPerks is a function that toggles the selection
+   * of an event perk identified by its ID. It updates the component state
+   * to include or exclude the selected perk.
+   *
+   * @param {string} id - The ID of the event perk to be toggled.
+   */
+  const handleSelectedEventPerks = (id) => {
+    // Check if the perk is already selected
+    const isSelected = selectedEventPerks.includes(id);
+
+    // Toggle the selection by updating the component state
     if (isSelected) {
-      setSelectedButtons2(
-        selectedButtons2.filter((buttonId) => buttonId !== id)
-      );
+      // If selected, remove the perk from the selection
+      setSelectedEventPerks(selectedEventPerks.filter((buttonId) => buttonId !== id));
     } else {
-      setSelectedButtons2([...selectedButtons2, id]);
+      // If not selected, add the perk to the selection
+      setSelectedEventPerks([...selectedEventPerks, id]);
     }
   };
 
+  /**
+   * useEffect to fetch event themes data from the server
+   * and update the component state accordingly.
+  */
   useEffect(() => {
+    // Fetch event themes data from the server
     fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/themes")
       .then((response) => response.json())
       .then((json) => {
-        setThemesList(json.themes);
+        // Update the component state with the fetched event themes
+        setEventThemesList(json.themes);
       })
-      .then(() => console.log("themes: ", themesList))
+      .then(() => console.log("themes: ", eventThemesList))
       .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
+      .finally(() => {
+        // Set loading state to false once the fetch operation is completed
+        setLoading(false);
+      });
   }, []);
 
-  const handleButton3Click = (id) => {
-    const isSelected = selectedButtons3.includes(id);
+  /**
+   * handleSelectedEventThemes is a function that toggles the selection
+   * of an event theme identified by its ID. It updates the component state
+   * to include or exclude the selected theme.
+   *
+   * @param {string} id - The ID of the event theme to be toggled.
+  */
+  const handleSelectedEventThemes = (id) => {
+    // Check if the theme is already selected
+    const isSelected = selectedEventThemes.includes(id);
+
+    // Toggle the selection by updating the component state
     if (isSelected) {
-      setSelectedButtons3(
-        selectedButtons3.filter((buttonId) => buttonId !== id)
+      // If selected, remove the theme from the selection
+      setSelectedEventThemes(
+        selectedEventThemes.filter((buttonId) => buttonId !== id)
       );
     } else {
-      setSelectedButtons3([...selectedButtons3, id]);
+      // If not selected, add the theme to the selection
+      setSelectedEventThemes([...selectedEventThemes, id]);
     }
   };
 
+  /**
+   * useEffect to fetch organization categories data from the server
+   * and update the component state accordingly.
+  */
   useEffect(() => {
-    fetch(
-      "https://absolute-willing-salmon.ngrok-free.app/api/organization/categories"
-    )
+    // Fetch organization categories data from the server
+    fetch("https://absolute-willing-salmon.ngrok-free.app/api/organization/categories")
       .then((response) => response.json())
       .then((json) => {
-        setCategoriesList(json.categories);
-        console.log("categories: ", categoriesList);
+        // Update the component state with the fetched organization categories
+        setOrganizationCategoriesList(json.categories);
+        console.log("categories: ", organizationCategoriesList);
       })
       .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
+      .finally(() => {
+        // Set loading state to false once the fetch operation is completed
+        setLoading(false);
+      });
   }, []);
 
-  const handleButtonClick = (id) => {
-    const isSelected = selectedButtons.includes(id);
+  /**
+   * handleSelectedOrganizationCategories is a function that toggles the selection
+   * of an organization category identified by its ID. It updates the component state
+   * to include or exclude the selected category.
+   *
+   * @param {string} id - The ID of the organization category to be toggled.
+   */
+  const handleSelectedOrganizationCategories = (id) => {
+    // Check if the category is already selected
+    const isSelected = selectedOrganizationCategories.includes(id);
+
+    // Toggle the selection by updating the component state
     if (isSelected) {
-      setSelectedButtons(selectedButtons.filter((buttonId) => buttonId !== id));
+      // If selected, remove the category from the selection
+      setSelectedOrganizationCategories(selectedOrganizationCategories.filter((buttonId) => buttonId !== id));
     } else {
-      setSelectedButtons([...selectedButtons, id]);
+      // If not selected, add the category to the selection
+      setSelectedOrganizationCategories([...selectedOrganizationCategories, id]);
     }
   };
 
@@ -158,9 +280,9 @@ const SettingsScreen = () => {
     <View style={{ alignItems: "center" }}>
       <TouchableOpacity
         onPress={openPreferencesModal}
-        style={[styles.customButtonContainer, { marginTop: "3%" }]}
+        style={[styles.settingsButtons, { marginTop: "3%" }]}
       >
-        <Text style={styles.editProfileButtonText}>Edit Preferences</Text>
+        <Text style={styles.settingsButtonsText}>Edit Preferences</Text>
       </TouchableOpacity>
       <Modal
         animationType="slide"
@@ -175,16 +297,16 @@ const SettingsScreen = () => {
                 {" "}
                 What event perks are you interest in?
               </Text>
-              <View style={styles.card1}>
+              <View style={styles.scrollViewCards}>
                 <ScrollView>
-                  {perksList.map((item) => (
+                  {eventPerksList.map((item) => (
                     <TouchableOpacity
                       key={item.id}
-                      onPress={() => handleButton2Click(item.id)}
+                      onPress={() => handleSelectedEventPerks(item.id)}
                       style={[
-                        styles.button,
+                        styles.preferencesButtons,
                         {
-                          backgroundColor: selectedButtons2.includes(item.id)
+                          backgroundColor: selectedEventPerks.includes(item.id)
                             ? "#FF6961"
                             : "#E6E6E6",
                         },
@@ -200,16 +322,16 @@ const SettingsScreen = () => {
               <Text style={styles.questionText}>
                 What event categories are you interested in?
               </Text>
-              <View style={styles.card2}>
+              <View style={styles.scrollViewCards}>
                 <ScrollView>
-                  {categories2List.map((item) => (
+                  {eventCategoriesList.map((item) => (
                     <TouchableOpacity
                       key={item.id}
-                      onPress={() => handleButton1Click(item.id)}
+                      onPress={() => handleSelectedEventCategories(item.id)}
                       style={[
-                        styles.button,
+                        styles.preferencesButtons,
                         {
-                          backgroundColor: selectedButtons1.includes(item.id)
+                          backgroundColor: selectedEventCategories.includes(item.id)
                             ? "#FF6961"
                             : "#E6E6E6",
                         },
@@ -225,16 +347,16 @@ const SettingsScreen = () => {
                   {" "}
                   What event themes are you interest in?
                 </Text>
-                <View style={styles.card2}>
+                <View style={styles.scrollViewCards}>
                   <ScrollView>
-                    {themesList.map((item) => (
+                    {eventThemesList.map((item) => (
                       <TouchableOpacity
                         key={item.id}
-                        onPress={() => handleButton3Click(item.id)}
+                        onPress={() => handleSelectedEventThemes(item.id)}
                         style={[
-                          styles.button,
+                          styles.preferencesButtons,
                           {
-                            backgroundColor: selectedButtons3.includes(item.id)
+                            backgroundColor: selectedEventThemes.includes(item.id)
                               ? "#FF6961"
                               : "#E6E6E6",
                           },
@@ -251,16 +373,16 @@ const SettingsScreen = () => {
                   {" "}
                   What organization categories are you interest in?
                 </Text>
-                <View style={styles.card2}>
+                <View style={styles.scrollViewCards}>
                   <ScrollView>
-                    {categoriesList.map((item) => (
+                    {organizationCategoriesList.map((item) => (
                       <TouchableOpacity
                         key={item.id}
-                        onPress={() => handleButtonClick(item.id)}
+                        onPress={() => handleSelectedOrganizationCategories(item.id)}
                         style={[
-                          styles.button,
+                          styles.preferencesButtons,
                           {
-                            backgroundColor: selectedButtons.includes(item.id)
+                            backgroundColor: selectedOrganizationCategories.includes(item.id)
                               ? "#FF6961"
                               : "#E6E6E6",
                           },
@@ -273,10 +395,10 @@ const SettingsScreen = () => {
                 </View>
               </View>
               <TouchableOpacity
-                style={styles.bottombutton1}
+                style={styles.modalCloseButton}
                 onPress={closePreferencesModal}
               >
-                <Text style={styles.bottombuttontext1}>Close</Text>
+                <Text style={styles.modalCloseText}>Close</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -285,9 +407,9 @@ const SettingsScreen = () => {
 
       <TouchableOpacity
         onPress={openAboutModal}
-        style={styles.customButtonContainer}
+        style={styles.settingsButtons}
       >
-        <Text style={styles.editProfileButtonText}>About RUSWE</Text>
+        <Text style={styles.settingsButtonsText}>About RUSWE</Text>
       </TouchableOpacity>
       <Modal
         animationType="slide"
@@ -314,18 +436,18 @@ const SettingsScreen = () => {
             </Text>
             <TouchableOpacity
               onPress={closeAboutModal}
-              style={styles.bottombutton1}
+              style={styles.modalCloseButton}
             >
-              <Text style={styles.bottombuttontext1}>Close</Text>
+              <Text style={styles.modalCloseText}>Close</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
       <TouchableOpacity
         onPress={openTermsModal}
-        style={styles.customButtonContainer}
+        style={styles.settingsButtons}
       >
-        <Text style={styles.editProfileButtonText}>Terms of Use</Text>
+        <Text style={styles.settingsButtonsText}>Terms of Use</Text>
       </TouchableOpacity>
 
       <Modal
@@ -414,26 +536,26 @@ const SettingsScreen = () => {
             </Text>
 
             <TouchableOpacity
-              style={styles.bottombutton1}
+              style={styles.modalCloseButton}
               onPress={closeTermsModal}
             >
-              <Text style={styles.bottombuttontext1}>Close</Text>
+              <Text style={styles.modalCloseText}>Close</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
       <TouchableOpacity
-        style={[styles.customButtonContainer]}
+        style={[styles.settingsButtons]}
         onPress={handleLogout}
       >
-        <Text style={styles.customButtonText}>Logout</Text>
+        <Text style={styles.settingsButtonsText}>Logout</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  customButtonContainer: {
+  settingsButtons: {
     backgroundColor: "#FF392E",
     borderRadius: 15,
     padding: 10,
@@ -443,13 +565,7 @@ const styles = StyleSheet.create({
     marginBottom: "3%",
     width: "95%",
   },
-  customButtonText: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 16,
-    alignItems: "center",
-  },
-  editProfileButtonText: {
+  settingsButtonsText: {
     color: "white",
     fontWeight: "bold",
     fontSize: 16,
@@ -461,33 +577,17 @@ const styles = StyleSheet.create({
     marginTop: "3%",
     fontWeight: "bold",
   },
-  bottombuttontext: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  bottombuttontext1: {
+  modalCloseText: {
     color: "#FF392E",
     fontSize: 16,
     fontWeight: "bold",
   },
-  bottombutton: {
-    backgroundColor: "#FF392E",
-    borderRadius: 15,
-    marginTop: "3%",
-    padding: "3%",
-    alignItems: "center",
-  },
-  bottombutton1: {
+  modalCloseButton: {
     backgroundColor: "#E6E6E6",
     borderRadius: 15,
     marginTop: "3%",
     padding: "3%",
     alignItems: "center",
-  },
-  scrollView: {
-    width: 1,
-    height: 1,
   },
   modalContainer: {
     flex: 1,
@@ -500,15 +600,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 15,
   },
-  buttonContainer: {
-    flexDirection: "row",
-    marginBottom: 0,
-  },
-  buttonContainer2: {
-    flexDirection: "row",
-    marginBottom: 10,
-  },
-  button: {
+  preferencesButtons: {
     backgroundColor: "#E6E6E6",
     padding: 10,
     marginVertical: 5,
@@ -517,18 +609,7 @@ const styles = StyleSheet.create({
     borderColor: "#FF6961",
     borderWidth: "1%",
   },
-  redButton: {
-    backgroundColor: "#FF6961",
-  },
-  card1: {
-    backgroundColor: "white",
-    borderColor: "#FF392E",
-    borderWidth: 1,
-    borderRadius: 10,
-    width: 330,
-    height: 120,
-  },
-  card2: {
+  scrollViewCards: {
     backgroundColor: "white",
     borderColor: "#FF392E",
     borderWidth: 1,
