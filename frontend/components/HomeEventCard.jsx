@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import React from "react";
-
+//Component represents a simple card for events on the homescreen
 const HomeEventCard = () => {
+  //Container view for the card
   return (
     <View>
       <Text>HomeEventCard</Text>
@@ -10,5 +11,3 @@ const HomeEventCard = () => {
 };
 
 export default HomeEventCard;
-
-const styles = StyleSheet.create({});
