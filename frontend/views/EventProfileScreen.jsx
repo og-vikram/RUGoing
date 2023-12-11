@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  Linking
 } from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -19,6 +20,7 @@ const EventProfileScreen = () => {
   const [host, setHost] = useState([]);
   const [attending, setAttending] = useState(false);
   const [attendees, setAttendees] = useState([]);
+
 
   useLayoutEffect(() => {
     fetch(`https://absolute-willing-salmon.ngrok-free.app/api/event/${eventId}`)
@@ -65,6 +67,7 @@ const EventProfileScreen = () => {
 
   const handleAttend = async () => {
     {
+      OpenURLButton();
       try {
         const user = auth.currentUser;
 
@@ -90,6 +93,7 @@ const EventProfileScreen = () => {
 
   const handleRemove = async () => {
     {
+      OpenURLButton();
       try {
         const user = auth.currentUser;
 
@@ -119,6 +123,12 @@ const EventProfileScreen = () => {
     }
     return attendees.length + " people attending";
   };
+
+  const OpenURLButton = async () => {
+    const supported = await Linking.canOpenURL(data.rsvp);
+    if(supported)
+    await Linking.openURL(data.rsvp);
+  }
 
   return (
     <ScrollView>

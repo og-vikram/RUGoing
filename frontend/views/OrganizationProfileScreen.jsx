@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
+  Linking
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { auth } from "../firebase.config";
@@ -32,6 +33,9 @@ const OrganizationProfileScreen = () => {
   const [editing, setEditing] = useState(false);
   const [newAbout, setNewAbout] = useState("");
   const [newContact, setNewContact] = useState("");
+
+  const externalURL = 'https://rutgers.campuslabs.com/engage/organization/' + organizationId;
+
 
   useEffect(() => {
     fetch(newUrl)
@@ -111,6 +115,7 @@ const OrganizationProfileScreen = () => {
 
   const handleJoin = async () => {
     {
+      OpenURLButton();
       try {
         const user = auth.currentUser;
 
@@ -135,6 +140,7 @@ const OrganizationProfileScreen = () => {
 
   const handleRemove = async () => {
     {
+      OpenURLButton();
       try {
         const user = auth.currentUser;
 
@@ -244,6 +250,11 @@ const OrganizationProfileScreen = () => {
   };
 
   const imageUrl = "https://se-images.campuslabs.com/clink/images/";
+
+
+  const OpenURLButton = async () => {
+    await Linking.openURL(externalURL);
+  }
 
   return (
     <ScrollView>
