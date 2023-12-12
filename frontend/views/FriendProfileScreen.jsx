@@ -8,17 +8,18 @@ import {
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { auth } from "../firebase.config";
 import { Card } from "@rneui/themed";
-import EventProfileScreen from "./EventProfileScreen";
-import OrganizationProfileScreen from "./OrganizationProfileScreen";
 import { useRoute } from "@react-navigation/native";
 
+//FriendProfileScreen component, takes in parameter navigation route
 const FriendProfileScreen = ({ navigation }) => {
+  //Retrieve parameters from the navigation route
   const route = useRoute();
   const [userData, setUserData] = useState({});
   const [following, setFollowing] = useState(false);
   const [events, setEvents] = useState([]);
   const [organizations, setOrganizations] = useState([]);
 
+  //Fetch user data based on the provided user ID
   useEffect(() => {
     fetch(
       `https://absolute-willing-salmon.ngrok-free.app/api/users/${route.params.user_uid}`
@@ -28,10 +29,11 @@ const FriendProfileScreen = ({ navigation }) => {
       .catch((error) => console.log(error));
   }, {});
 
+  //Check if the current user is following the displayed user
   useEffect(() => {
     fetch(
       "https://absolute-willing-salmon.ngrok-free.app/api/users/follows/" +
-        auth.currentUser.uid
+      auth.currentUser.uid
     )
       .then((response) => response.json())
       .then((json) => {
@@ -49,6 +51,7 @@ const FriendProfileScreen = ({ navigation }) => {
       .catch((error) => console.log(error));
   }, []);
 
+  //Fetch events and organizations associated with the displayed user
   useLayoutEffect(() => {
     fetch(
       `https://absolute-willing-salmon.ngrok-free.app/api/event/attending/${route.params.user_uid}`
@@ -66,6 +69,7 @@ const FriendProfileScreen = ({ navigation }) => {
       .catch((error) => console.log(error));
   }, []);
 
+  //Follow the displayed user
   const handleFollow = async () => {
     {
       try {
@@ -91,6 +95,7 @@ const FriendProfileScreen = ({ navigation }) => {
     }
   };
 
+  //unfollow the displayed user
   const handleUnfollow = async () => {
     {
       try {
@@ -116,6 +121,7 @@ const FriendProfileScreen = ({ navigation }) => {
     }
   };
 
+  //Render the component
   return (
     <ScrollView>
       <View>
@@ -253,6 +259,7 @@ const FriendProfileScreen = ({ navigation }) => {
   );
 };
 
+//Styles for the component
 const styles = StyleSheet.create({
   container: {
     flex: 1,
