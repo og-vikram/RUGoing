@@ -1,0 +1,8 @@
+pm.test("Status code is 200", function() {
+    pm.response.to.have.status(200);
+})
+
+pm.test("Response returns array of categories of events", function(){
+    var jsonData = pm.response.json();
+    tests["First element is a dictionary"] = typeof jsonData[0] === 'object';
+})
