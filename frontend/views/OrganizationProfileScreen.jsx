@@ -1,30 +1,29 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  TextInput,
-  Linking
-} from "react-native";
+import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, TextInput, Linking } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { auth } from "../firebase.config";
 import EventProfileScreen from "./EventProfileScreen";
 
 const url = "https://absolute-willing-salmon.ngrok-free.app/api/organization/";
-const eventHosts =
-  "https://absolute-willing-salmon.ngrok-free.app/api/organization/events/";
-const eventEndpoint =
-  "https://absolute-willing-salmon.ngrok-free.app/api/event/";
 
+const eventHosts = "https://absolute-willing-salmon.ngrok-free.app/api/organization/events/";
+
+const eventEndpoint = "https://absolute-willing-salmon.ngrok-free.app/api/event/";
+
+/**
+ * OrganizationProfileScreen is a React component representing the profile screen
+ * for an organization in the application. It may include components for displaying
+ * details about the organization, events, members, and other relevant information.
+ */
 const OrganizationProfileScreen = () => {
+
   const navigation = useNavigation();
   const route = useRoute();
   const organizationId = route.params.organizationId;
   const newUrl = url + organizationId;
   const newEventHosts = eventHosts + organizationId;
+  const imageUrl = "https://se-images.campuslabs.com/clink/images/";
+
   const [organizationData, setOrganizationData] = useState({});
   const [eventHostData, setEventHostData] = useState([]);
   const [joining, setJoining] = useState(false);
@@ -36,32 +35,49 @@ const OrganizationProfileScreen = () => {
 
   const externalURL = 'https://rutgers.campuslabs.com/engage/organization/' + organizationId;
 
-
+  /**
+   * useEffect hook fetches and sets data for the organization profile screen.
+   * It makes a GET request to the specified URL, expecting JSON data that
+   * includes details about the organization. If the data is available, it
+   * updates the state with the organization data.
+   */
   useEffect(() => {
+    // Fetch data for the organization profile screen
     fetch(newUrl)
       .then((response) => response.json())
       .then((json) => {
+        // Check if organization data is available in the JSON response
         if (json && json.org) {
+          // Set the organization data in the state
           setOrganizationData(json.org);
         }
       })
       .catch((error) => console.log(error));
   }, []);
 
+  /**
+   * useEffect hook fetches and sets data for event hosts associated with
+   * the specified URL. It makes a GET request to the URL expecting JSON data
+   * that includes information about events and their hosts. If the data is
+   * available, it iterates through the events, fetches additional details
+   * for each event, and updates the state with the event host data.
+   */
   useEffect(() => {
+    // Fetch data for event hosts associated with the specified URL
     fetch(newEventHosts)
       .then((response) => response.json())
       .then((json) => {
+        // Check if events data is available in the JSON response
         if (json && json.events) {
+          // Iterate through events and fetch additional details for each event
           for (let i = 0; i < json.events.length; i++) {
             fetch(eventEndpoint + json.events[i])
               .then((response) => response.json())
               .then((json) => {
+                // Check if event data is available in the JSON response
                 if (json && json.event) {
-                  setEventHostData((eventHostData) => [
-                    ...eventHostData,
-                    json.event,
-                  ]);
+                  // Update the state with the event host data
+                  setEventHostData((eventHostData) => [...eventHostData, json.event]);
                 }
               })
               .catch((error) => console.log(error));
@@ -70,102 +86,163 @@ const OrganizationProfileScreen = () => {
       });
   }, []);
 
+  /**
+   * useEffect hook fetches and sets the members of the organization with the
+   * specified organization ID. It makes a GET request to the server endpoint
+   * that retrieves information about the members of the organization. If the
+   * data is available, it updates the state with the members' information.
+   */
   useEffect(() => {
-    fetch(
-      `https://absolute-willing-salmon.ngrok-free.app/api/organization/members/${organizationId}`
-    )
+    // Fetch members of the organization with the specified ID
+    fetch(`https://absolute-willing-salmon.ngrok-free.app/api/organization/members/${organizationId}`)
       .then((response) => response.json())
       .then((json) => {
+        // Set the state with the members' information
         setMembers(json.members);
       })
       .catch((error) => console.log(error));
   }, []);
 
+  /**
+   * useEffect hook fetches and checks if the current user is already a member
+   * of the organization with the specified organization ID. It makes a GET
+   * request to the server endpoint that retrieves information about the
+   * organizations joined by the current user. If the data is available,
+   * it checks if the user is a member of the specified organization and
+   * updates the state accordingly.
+   */
   useEffect(() => {
-    fetch(
-      "https://absolute-willing-salmon.ngrok-free.app/api/organization/joined/" +
-        auth.currentUser.uid
-    )
+    // Fetch organizations joined by the current user
+    fetch("https://absolute-willing-salmon.ngrok-free.app/api/organization/joined/" + auth.currentUser.uid)
       .then((response) => response.json())
       .then((json) => {
+        // Check if organizations data is available in the JSON response
         if (json && json.orgs) {
-          orgs = json.orgs;
-          if (orgs.some((org) => org.id === organizationId)) setJoining(true);
-          else setJoining(false);
+          // Store organizations data in a variable
+          const orgs = json.orgs;
+
+          // Check if the user is a member of the specified organization
+          if (orgs.some((org) => org.id === organizationId)) {
+            // Set state to indicate that the user is joining the organization
+            setJoining(true);
+          } else {
+            // Set state to indicate that the user is not joining the organization
+            setJoining(false);
+          }
         }
       })
       .catch((error) => console.log(error));
   }, []);
 
+/**
+ * useEffect hook fetches and checks if the current user is an officer
+ * of the organization with the specified organization ID. It makes a GET
+ * request to the server endpoint that retrieves information about the
+ * current user. If the data is available, it checks if the user is an
+ * officer of the specified organization and updates the state accordingly.
+ */
   useEffect(() => {
-    fetch(
-      `https://absolute-willing-salmon.ngrok-free.app/api/users/${auth.currentUser.uid}`
-    )
+    // Fetch information about the current user
+    fetch(`https://absolute-willing-salmon.ngrok-free.app/api/users/${auth.currentUser.uid}`)
       .then((response) => response.json())
       .then((json) => {
+        // Check if user data is available in the JSON response
         if (json) {
-          user = json.user;
-          if (user.isOfficer && user.organization == organizationId) {
+          // Store user data in a variable
+          const user = json.user;
+
+          // Check if the user is an officer of the specified organization
+          if (user.isOfficer && user.organization === organizationId) {
+            // Set state to indicate that the user is an officer
             setOfficer(true);
           }
         }
       })
       .catch((error) => console.log(error));
-  });
+  }, []);
 
+  /**
+   * handleJoin is a function that initiates the process of joining
+   * the organization with the specified organization ID. It opens
+   * a URL and then makes a POST request to the server endpoint to
+   * add the current user to the organization's members. It updates
+   * the state to indicate that the user is joining the organization.
+   */
   const handleJoin = async () => {
-    {
-      OpenURLButton();
-      try {
-        const user = auth.currentUser;
+    // Open a URL (assuming OpenURLButton is a function defined elsewhere)
+    OpenURLButton();
 
-        fetch(
-          `https://absolute-willing-salmon.ngrok-free.app/api/organization/joined/add/`,
-          {
-            method: "POST",
-            body: JSON.stringify({
-              uid: user.uid,
-              org_id: organizationId,
-            }),
-          }
-        );
-        setJoining(true);
-      } catch (error) {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-      }
+    try {
+      // Get the current user
+      const user = auth.currentUser;
+
+      // Make a POST request to add the user to the organization's members
+      await fetch(`https://absolute-willing-salmon.ngrok-free.app/api/organization/joined/add/`, {
+        method: "POST",
+        body: JSON.stringify({
+          uid: user.uid,
+          org_id: organizationId,
+        }),
+      });
+
+      // Set state to indicate that the user is joining the organization
+      setJoining(true);
+    } catch (error) {
+      // Handle any errors that occur during the process
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode, errorMessage);
     }
   };
 
+  /**
+   * handleRemove is a function that initiates the process of removing
+   * the current user from the organization with the specified organization ID.
+   * It opens a URL and then makes a POST request to the server endpoint to
+   * remove the current user from the organization's members. It updates
+   * the state to indicate that the user is no longer a member of the organization.
+   */
   const handleRemove = async () => {
-    {
-      OpenURLButton();
-      try {
-        const user = auth.currentUser;
+    // Open a URL (assuming OpenURLButton is a function defined elsewhere)
+    OpenURLButton();
 
-        fetch(
-          `https://absolute-willing-salmon.ngrok-free.app/api/organization/joined/remove/`,
-          {
-            method: "POST",
-            body: JSON.stringify({
-              uid: user.uid,
-              org_id: organizationId,
-            }),
-          }
-        );
-        console.log(user.uid, organizationId);
-        setJoining(false);
-      } catch (error) {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-      }
+    try {
+      // Get the current user
+      const user = auth.currentUser;
+
+      // Make a POST request to remove the user from the organization's members
+      await fetch(`https://absolute-willing-salmon.ngrok-free.app/api/organization/joined/remove/`, {
+        method: "POST",
+        body: JSON.stringify({
+          uid: user.uid,
+          org_id: organizationId,
+        }),
+      });
+
+      // Log user ID and organization ID to the console
+      console.log(user.uid, organizationId);
+
+      // Set state to indicate that the user is no longer a member of the organization
+      setJoining(false);
+    } catch (error) {
+      // Handle any errors that occur during the process
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode, errorMessage);
     }
   };
 
+  /**
+   * returnOfficerOrJoin is a function that dynamically renders different
+   * buttons based on the user's role (officer or member) and the current
+   * editing state. It returns a button to either edit, leave, join, or
+   * confirm changes, depending on the user's role and the editing state.
+   *
+   * @returns {JSX.Element} - A JSX element representing the rendered button.
+   */
   const returnOfficerOrJoin = () => {
     if (officer && !editing) {
+      // Render "Edit" button when the user is an officer and not in editing mode
       return (
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.joinButton} onPress={handleEdit}>
@@ -174,6 +251,7 @@ const OrganizationProfileScreen = () => {
         </View>
       );
     } else if (officer && editing) {
+      // Render "Done" button when the user is an officer and in editing mode
       return (
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.joinButton} onPress={handleEdit}>
@@ -182,6 +260,7 @@ const OrganizationProfileScreen = () => {
         </View>
       );
     } else if (joining && !officer) {
+      // Render "Leave" button when the user is a member and already joined
       return (
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.unJoinButton} onPress={handleRemove}>
@@ -190,6 +269,7 @@ const OrganizationProfileScreen = () => {
         </View>
       );
     } else {
+      // Render "Join" button when the user is not an officer and not joined
       return (
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.joinButton} onPress={handleJoin}>
@@ -200,61 +280,94 @@ const OrganizationProfileScreen = () => {
     }
   };
 
+  /**
+   * updateAbout is a function that updates the about information of the organization
+   * by making a POST request to the server endpoint. It checks if the newAbout value
+   * is not empty before sending the request.
+   */
   const updateAbout = () => {
-    if (newAbout == "") {
+    // Check if newAbout is an empty string
+    if (newAbout === "") {
+      // If newAbout is empty, return without making the request
       return;
     }
-    fetch(
-      `https://absolute-willing-salmon.ngrok-free.app/api/officers/change/about/`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          uid: auth.currentUser.uid,
-          org_id: organizationId,
-          newAbout: newAbout,
-        }),
-      }
-    );
+
+    // Make a POST request to update the about information
+    fetch(`https://absolute-willing-salmon.ngrok-free.app/api/officers/change/about/`, {
+      method: "POST",
+      body: JSON.stringify({
+        uid: auth.currentUser.uid,
+        org_id: organizationId,
+        newAbout: newAbout,
+      }),
+    });
   };
 
+  /**
+   * updateContact is a function that updates the contact information of the organization
+   * by making a POST request to the server endpoint. It checks if the newContact value
+   * is not empty before sending the request.
+   */
   const updateContact = () => {
-    if (newContact == "") {
+    // Check if newContact is an empty string
+    if (newContact === "") {
+      // If newContact is empty, return without making the request
       return;
     }
-    fetch(
-      `https://absolute-willing-salmon.ngrok-free.app/api/officers/change/contact/`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          uid: auth.currentUser.uid,
-          org_id: organizationId,
-          newContact: newContact,
-        }),
-      }
-    );
+
+    // Make a POST request to update the contact information
+    fetch(`https://absolute-willing-salmon.ngrok-free.app/api/officers/change/contact/`, {
+      method: "POST",
+      body: JSON.stringify({
+        uid: auth.currentUser.uid,
+        org_id: organizationId,
+        newContact: newContact,
+      }),
+    });
   };
 
+  /**
+   * handleEdit is a function that toggles the editing state and, if in editing mode,
+   * triggers the update of about and contact information by calling updateAbout
+   * and updateContact functions.
+   */
   const handleEdit = () => {
+    // Check if currently in editing mode
     if (editing) {
+      // If in editing mode, update about and contact information
       updateAbout();
       updateContact();
     }
+
+    // Toggle the editing state
     setEditing(!editing);
   };
 
+  /**
+   * memberCount is a function that formats and returns the count of members
+   * as a string based on the length of the members array.
+   *
+   * @returns {string} - A formatted string representing the count of members.
+   */
   const memberCount = () => {
-    if (members.length == 1) {
+    // Check if there is only one member
+    if (members.length === 1) {
+      // If there's one member, return singular form
       return members.length + " member";
     }
+
+    // If there are multiple members, return plural form
     return members.length + " members";
   };
 
-  const imageUrl = "https://se-images.campuslabs.com/clink/images/";
-
-
+  /**
+   * OpenURLButton is an asynchronous function that opens a specified external URL
+   * using the Linking module. It waits for the URL to be opened before proceeding.
+   */
   const OpenURLButton = async () => {
+    // Open the specified external URL using Linking module
     await Linking.openURL(externalURL);
-  }
+  };
 
   return (
     <ScrollView>
@@ -350,10 +463,6 @@ const OrganizationProfileScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-  },
   orgDetails: {
     backgroundColor: "white",
     borderRadius: 15,
@@ -387,10 +496,6 @@ const styles = StyleSheet.create({
     padding: 15,
     margin: 15,
     marginTop: "-10%",
-  },
-  bannerImage: {
-    width: "100%",
-    height: 200,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -443,11 +548,6 @@ const styles = StyleSheet.create({
     padding: 15,
     marginTop: "-5%",
   },
-  aboutHeader: {
-    fontSize: 20,
-    padding: 15,
-    fontWeight: "bold",
-  },
   frq: {
     fontSize: 16,
     padding: 15,
@@ -469,23 +569,6 @@ const styles = StyleSheet.create({
   eventItem: {
     color: "white",
     fontWeight: "bold",
-  },
-  eventName: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "white",
-  },
-  eventDate: {
-    fontSize: 14,
-    color: "white",
-  },
-  eventLocation: {
-    fontSize: 14,
-    color: "white",
-  },
-  eventDescription: {
-    fontSize: 14,
-    color: "white",
   },
   contactHeader: {
     fontSize: 20,

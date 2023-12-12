@@ -6,16 +6,19 @@ import HomeScreen from "./HomeScreen";
 import ExploreScreen from "./ExploreScreen";
 import ProfileScreen from "./ProfileScreen";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import {
-  faHouse,
-  faMagnifyingGlass,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
-import EventProfileScreen from "./EventProfileScreen";
-import OrganizationsScreen from "./OrganizationsScreen";
+import { faHouse, faMagnifyingGlass, faUser, } from "@fortawesome/free-solid-svg-icons";
 
+/**
+ * Tab is a variable that holds the configuration for a bottom tab navigator
+ * using React Navigation's createBottomTabNavigator. It is used to define
+ * the structure and behavior of the app's bottom navigation tabs.
+ */
 const Tab = createBottomTabNavigator();
 
+/**
+ * MainScreen is a React component representing the main screen
+ * of the application where users interact with the primary content.
+ */
 const MainScreen = () => {
   return (
     <>

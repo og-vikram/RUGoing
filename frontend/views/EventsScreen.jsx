@@ -1,17 +1,14 @@
-import {
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  TouchableOpacity,
-  Modal,
-} from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, } from "react-native";
 import React, { useEffect, useState } from "react";
 import EventCard from "../components/EventCard";
 
+/**
+ * EventsScreen is a React component representing the screen that displays events.
+ *
+ * @param {object} navigation - Navigation prop for navigating within the app.
+ */
 const EventsScreen = ({ navigation }) => {
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loading2, setLoading2] = useState(true);
@@ -20,191 +17,381 @@ const EventsScreen = ({ navigation }) => {
   const [perkLoading, setPerkLoading] = useState(true);
   const [perks, setPerks] = useState([]);
   const [themes, setThemes] = useState([]);
+  const [eventsCategoriesList, setEventsCategoriesList] = useState([]);
+  const [selectedEventCategories, setSelectedEventCategories] = useState([]);
+  const [eventCategoriesModalVisible, setEventCategoriesModalVisible] = useState(false);
+  const [eventsPerksList, setEventsPerksList] = useState([]);
+  const [selectedEventsPerks, setSelectedEventsPerks] = useState([]);
+  const [eventsPerksModalVisible, setEventsPerksModalVisible] = useState(false);
+  const [eventThemesList, setEventThemesList] = useState([]);
+  const [selectedEventThemes, setSelectedEventThemes] = useState([]);
+  const [eventThemesModalVisible, setEventThemesModalVisible] = useState(false);
+
   const url = "https://absolute-willing-salmon.ngrok-free.app/api/event/all";
 
+  /**
+   * useEffect hook fetches data from the specified URL and updates the component state.
+   * It sets the loading state to false after the data retrieval process is completed.
+   */
   useEffect(() => {
-    fetch(url, {
-      // headers: new Headers({
-      //   "ngrok-skip-browser-warning": "true",
-      // }),
-    })
+    // Fetch data from the specified URL
+    fetch(url, {})
       .then((response) => response.json())
-      .then((json) => setData(json.events))
-      .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
+      .then((json) => {
+        // Update the component state with the retrieved data
+        setData(json.events);
+      })
+      .catch((error) => {
+        // Log any errors that occur during the data retrieval process
+        console.log(error);
+      })
+      .finally(() => {
+        // Set the loading state to false after data retrieval is completed
+        setLoading(false);
+      });
   }, []);
 
+  /**
+   * useEffect hook fetches all event categories from the specified API endpoint,
+   * updates the component state with the retrieved categories, and sets the loading
+   * state to false after the data retrieval process is completed.
+   */
   useEffect(() => {
-    fetch(
-      "https://absolute-willing-salmon.ngrok-free.app/api/event/categories/all"
-    )
+    // Fetch all event categories from the specified API endpoint
+    fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/categories/all")
       .then((response) => response.json())
-      .then((json) => setCategories(json))
-      .catch((error) => console.log(error))
-      .finally(() => setLoading2(false));
+      .then((json) => {
+        // Update the component state with the retrieved categories
+        setCategories(json);
+      })
+      .catch((error) => {
+        // Log any errors that occur during the data retrieval process
+        console.log(error);
+      })
+      .finally(() => {
+        // Set the loading state to false after data retrieval is completed
+        setLoading2(false);
+      });
   }, []);
 
+  /**
+   * useEffect hook fetches all event themes from the specified API endpoint,
+   * updates the component state with the retrieved themes, and sets the loading
+   * state for themes to false after the data retrieval process is completed.
+   */
   useEffect(() => {
+    // Fetch all event themes from the specified API endpoint
     fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/themes/all")
       .then((response) => response.json())
-      .then((json) => setThemes(json))
-      .catch((error) => console.log(error))
-      .finally(() => setThemeLoading(false));
+      .then((json) => {
+        // Update the component state with the retrieved themes
+        setThemes(json);
+      })
+      .catch((error) => {
+        // Log any errors that occur during the data retrieval process
+        console.log(error);
+      })
+      .finally(() => {
+        // Set the loading state for themes to false after data retrieval is completed
+        setThemeLoading(false);
+      });
   }, []);
 
+  /**
+   * useEffect hook fetches all event perks from the specified API endpoint,
+   * updates the component state with the retrieved perks, and sets the loading
+   * state for perks to false after the data retrieval process is completed.
+   */
   useEffect(() => {
+    // Fetch all event perks from the specified API endpoint
     fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/perks/all")
       .then((response) => response.json())
-      .then((json) => setPerks(json))
-      .catch((error) => console.log(error))
-      .finally(() => setPerkLoading(false));
+      .then((json) => {
+        // Update the component state with the retrieved perks
+        setPerks(json);
+      })
+      .catch((error) => {
+        // Log any errors that occur during the data retrieval process
+        console.log(error);
+      })
+      .finally(() => {
+        // Set the loading state for perks to false after data retrieval is completed
+        setPerkLoading(false);
+      });
   }, []);
 
+  /**
+   * Returns an array of category names associated with the specified event ID.
+   *
+   * @param {number} event_id - The ID of the event to retrieve categories for.
+   * @returns {string[]} An array of category names associated with the specified event.
+   */
   const returnCategories = (event_id) => {
+    // Initialize an empty array to store category names
     let item_categories = [];
+
+    // Iterate through the categories array to find categories associated with the event_id
     for (let i = 0; i < categories.length; i++) {
-      if (categories[i].event_id == event_id) {
+      if (categories[i].event_id === event_id) {
+        // Push category names to the item_categories array
         item_categories.push(categories[i].category_names);
       }
     }
-    return item_categories;
+
+  // Return the array of category names
+  return item_categories;
   };
 
+  /**
+   * Returns an array of theme names associated with the specified event ID.
+   *
+   * @param {number} event_id - The ID of the event to retrieve themes for.
+   * @returns {string[]} An array of theme names associated with the specified event.
+   */
   const returnThemes = (event_id) => {
+    // Initialize an empty array to store theme names
     let item_themes = [];
+
+    // Iterate through the themes array to find themes associated with the event_id
     for (let i = 0; i < themes.length; i++) {
-      if (themes[i].event_id == event_id) {
+      if (themes[i].event_id === event_id) {
+        // Push theme names to the item_themes array
         item_themes.push(themes[i].theme_names);
       }
     }
+
+    // Return the array of theme names
     return item_themes;
   };
 
+  /**
+   * Returns an array of perk names associated with the specified event ID.
+   *
+   * @param {number} event_id - The ID of the event to retrieve perks for.
+   * @returns {string[]} An array of perk names associated with the specified event.
+   */
   const returnPerks = (event_id) => {
+    // Initialize an empty array to store perk names
     let item_perks = [];
+
+    // Iterate through the perks array to find perks associated with the event_id
     for (let i = 0; i < perks.length; i++) {
-      if (perks[i].event_id == event_id) {
+      if (perks[i].event_id === event_id) {
+        // Push perk names to the item_perks array
         item_perks.push(perks[i].perk_names);
       }
     }
+
+    // Return the array of perk names
     return item_perks;
   };
 
-  //categories stuff
-  const [categoriesList, setCategoriesList] = useState([]);
-
-  const [selectedButtons1, setSelectedButtons1] = useState([]);
-  const [modal1Visible, setModal1Visible] = useState(false);
-
+  /**
+   * useEffect hook fetches event categories from the specified API endpoint,
+   * sets the component state with the retrieved categories, logs the categories
+   * to the console, and sets the loading state to false after the fetch is complete.
+   */
   useEffect(() => {
+    // Fetch event categories from the specified API endpoint
     fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/categories")
       .then((response) => response.json())
       .then((json) => {
-        setCategoriesList(json.categories);
-        console.log("categories: ", categoriesList);
+        // Set the fetched event categories to the state
+        setEventsCategoriesList(json.categories);
+        
+        // Log the fetched categories to the console
+        console.log("categories: ", eventsCategoriesList);
       })
-      .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
+      .catch((error) => {
+        // Log any errors that occur during the fetch
+        console.log(error);
+      })
+      .finally(() => {
+        // Set loading state to false after fetch is complete
+        setLoading(false);
+      });
   }, []);
 
-  const handleButtonClick = (id) => {
-    const isSelected = selectedButtons1.includes(id);
+  /**
+   * Handles the selection and deselection of event categories.
+   *
+   * @param {number} id - The ID of the event category to be selected or deselected.
+   */
+  const handleEventCategories = (id) => {
+    // Check if the category with the given ID is already selected
+    const isSelected = selectedEventCategories.includes(id);
+
+    // Update the selectedEventCategories state based on whether the category is selected or not
     if (isSelected) {
-      setSelectedButtons1(
-        selectedButtons1.filter((buttonId) => buttonId !== id)
+      // If selected, remove the category from the selected list
+      setSelectedEventCategories(
+        selectedEventCategories.filter((buttonId) => buttonId !== id)
       );
     } else {
-      setSelectedButtons1([...selectedButtons1, id]);
+      // If not selected, add the category to the selected list
+      setSelectedEventCategories([...selectedEventCategories, id]);
     }
   };
 
-  const handleCloseModal = () => {
-    setSelectedButtons1(selectedButtons1);
-    console.log("Selected buttons:", selectedButtons1);
+  /**
+   * Closes the event categories modal, logs the selected event categories to the console,
+   * and updates the component state with the final selected event categories.
+   */
+  const closeEventCategoriesModal = () => {
+    // Log the selected event categories to the console
+    console.log("Selected buttons:", selectedEventCategories);
 
-    setModal1Visible(false);
+    // Update the component state with the final selected event categories
+    setSelectedEventCategories(selectedEventCategories);
+
+    // Close the event categories modal
+    setEventCategoriesModalVisible(false);
   };
 
-  const openModal = () => {
-    setModal1Visible(true);
+  /**
+   * Opens the event categories modal, allowing users to select event categories.
+   */
+  const openEventCategoriesModal = () => {
+    // Set the event categories modal to be visible
+    setEventCategoriesModalVisible(true);
   };
 
-  //perks stuff
-  const [perksList, setPerksList] = useState([]);
-
-  const [selectedButtons2, setSelectedButtons2] = useState([]);
-  const [modal2Visible, setModal2Visible] = useState(false);
-
+  /**
+   * Fetches the list of event perks from the API and updates the component state accordingly.
+   * Logs the fetched perks to the console and sets the loading state to false once the fetch is complete.
+   */
   useEffect(() => {
+    // Fetch event perks from the API
     fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/perks")
       .then((response) => response.json())
       .then((json) => {
-        setPerksList(json.perks);
+        // Set the fetched event perks to the component state
+        setEventsPerksList(json.perks);
       })
-      .then(() => console.log("perks: ", perksList))
-      .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
+      .then(() => {
+        // Log the fetched perks to the console
+        console.log("perks: ", eventsPerksList);
+      })
+      .catch((error) => {
+        // Log any errors that occur during the fetch
+        console.log(error);
+      })
+      .finally(() => {
+        // Set loading state to false after fetch is complete
+        setLoading(false);
+      });
   }, []);
 
-  const handleButton2Click = (id) => {
-    const isSelected = selectedButtons2.includes(id);
+  /**
+   * Handles the selection or deselection of an event perk.
+   * If the perk is already selected, it is removed from the selected list.
+   * If the perk is not selected, it is added to the selected list.
+   *
+   * @param {string} id - The unique identifier of the event perk.
+   */
+  const handleEventPerks = (id) => {
+    // Check if the perk is already selected
+    const isSelected = selectedEventsPerks.includes(id);
+
+    // Update the selected event perks based on the current selection status
     if (isSelected) {
-      setSelectedButtons2(
-        selectedButtons2.filter((buttonId) => buttonId !== id)
+      // If the perk is selected, remove it from the list
+      setSelectedEventsPerks(
+        selectedEventsPerks.filter((buttonId) => buttonId !== id)
       );
     } else {
-      setSelectedButtons2([...selectedButtons2, id]);
+      // If the perk is not selected, add it to the list
+      setSelectedEventsPerks([...selectedEventsPerks, id]);
     }
   };
 
-  const handleCloseModal2 = () => {
-    setSelectedButtons2(selectedButtons2);
-    console.log("Selected buttons:", selectedButtons2);
+  /**
+   * Closes the events perks modal, preserving the selected event perks and logging them.
+   * This function sets the modal visibility to false.
+   */
+  const closeEventsPerksModal = () => {
+    // Preserve the selected event perks and log them
+    setSelectedEventsPerks(selectedEventsPerks);
+    console.log("Selected event perks:", selectedEventsPerks);
 
-    setModal2Visible(false);
+    // Set the events perks modal visibility to false
+    setEventsPerksModalVisible(false);
   };
 
-  const openModal2 = () => {
-    setModal2Visible(true);
+  /**
+   * Opens the events perks modal by setting its visibility to true.
+   */
+  const openEventsPerksModal = () => {
+    // Set the events perks modal visibility to true
+    setEventsPerksModalVisible(true);
   };
 
-  //themes stuff
-  const [themesList, setThemesList] = useState([]);
-
-  const [selectedButtons3, setSelectedButtons3] = useState([]);
-  const [modal3Visible, setModal3Visible] = useState(false);
-
+  /**
+   * Fetches event themes from the API and updates the state with the retrieved data.
+   * The themes are then logged to the console, and loading state is set to false.
+   * This effect runs once on component mount.
+   */
   useEffect(() => {
+    // Fetch event themes from the API
     fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/themes")
       .then((response) => response.json())
       .then((json) => {
-        setThemesList(json.themes);
+        // Update the state with the retrieved event themes
+        setEventThemesList(json.themes);
       })
-      .then(() => console.log("themes: ", themesList))
-      .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
+      .then(() => {
+        // Log the themes to the console
+        console.log("themes: ", eventThemesList);
+      })
+      .catch((error) => {
+        // Log any errors that occur during the fetch
+        console.log(error);
+      })
+      .finally(() => {
+        // Set loading state to false after the fetch is complete
+        setLoading(false);
+      });
   }, []);
 
-  const handleButton3Click = (id) => {
-    const isSelected = selectedButtons3.includes(id);
+  /**
+   * Handles the selection or deselection of an event theme.
+   * @param {string} id - The unique identifier of the event theme.
+   */
+  const handleEventThemes = (id) => {
+    // Check if the theme is already selected
+    const isSelected = selectedEventThemes.includes(id);
+
+    // If selected, remove the theme from the selected themes list
+    // If not selected, add the theme to the selected themes list
     if (isSelected) {
-      setSelectedButtons3(
-        selectedButtons3.filter((buttonId) => buttonId !== id)
+      setSelectedEventThemes(
+        selectedEventThemes.filter((buttonId) => buttonId !== id)
       );
     } else {
-      setSelectedButtons3([...selectedButtons3, id]);
+      setSelectedEventThemes([...selectedEventThemes, id]);
     }
   };
 
-  const handleCloseModal3 = () => {
-    setSelectedButtons3(selectedButtons3);
-    console.log("Selected buttons:", selectedButtons3);
+  /**
+   * Closes the event themes modal and logs the selected event themes.
+   */
+  const closeEventThemesModal = () => {
+    // Update the state with the selected event themes
+    setSelectedEventThemes(selectedEventThemes);
 
-    setModal3Visible(false);
+    // Log the selected event themes to the console for debugging or monitoring
+    console.log("Selected buttons:", selectedEventThemes);
+
+    // Close the event themes modal
+    setEventThemesModalVisible(false);
   };
 
-  const openModal3 = () => {
-    setModal3Visible(true);
+  /**
+   * Opens the event themes modal.
+   */
+  const openEventThemesModal = () => {
+    // Set the visibility state to true, displaying the event themes modal
+    setEventThemesModalVisible(true);
   };
 
   if (!loading && !loading2 && !themeLoading && !perkLoading) {
@@ -212,135 +399,135 @@ const EventsScreen = ({ navigation }) => {
       <View>
         <View style={styles.buttonContainer}>
           {/* Event Categories */}
-          <TouchableOpacity style={styles.button1} onPress={openModal}>
-            <Text style={styles.buttonText}> Categories </Text>
+          <TouchableOpacity style={styles.categoriesAndThemesButton} onPress={openEventCategoriesModal}>
+            <Text style={styles.buttonTextWhite}> Categories </Text>
           </TouchableOpacity>
           <Modal
             animationType="slide"
             transparent={true}
-            visible={modal1Visible}
-            onRequestClose={handleCloseModal}
+            visible={eventCategoriesModalVisible}
+            onRequestClose={closeEventCategoriesModal}
           >
             <View style={styles.modalContainer}>
               <View style={styles.modalContent}>
                 <Text style={styles.questionText}>
                   What event categories are you interested in?
                 </Text>
-                <View style={styles.card2}>
+                <View style={styles.scrollViewContainer}>
                   <ScrollView>
-                    {categoriesList.map((item) => (
+                    {eventsCategoriesList.map((item) => (
                       <TouchableOpacity
                         key={item.id}
-                        onPress={() => handleButtonClick(item.id)}
+                        onPress={() => handleEventCategories(item.id)}
                         style={[
-                          styles.button,
+                          styles.scrollViewButton,
                           {
-                            backgroundColor: selectedButtons1.includes(item.id)
+                            backgroundColor: selectedEventCategories.includes(item.id)
                               ? "#FF6961"
                               : "#E6E6E6",
                           },
                         ]}
                       >
-                        <Text style={styles.button2Text}>{item.name}</Text>
+                        <Text style={styles.buttonTextRed}>{item.name}</Text>
                       </TouchableOpacity>
                     ))}
                   </ScrollView>
                 </View>
                 <TouchableOpacity
-                  onPress={handleCloseModal}
-                  style={styles.bottombutton1}
+                  onPress={closeEventCategoriesModal}
+                  style={styles.closeButton}
                 >
-                  <Text style={styles.bottombuttontext1}>Close</Text>
+                  <Text style={styles.closeButtonText}>Close</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </Modal>
 
           {/* Event Perks */}
-          <TouchableOpacity style={styles.button2} onPress={openModal2}>
-            <Text style={styles.button2Text}> Perks </Text>
+          <TouchableOpacity style={styles.perksButton} onPress={openEventsPerksModal}>
+            <Text style={styles.buttonTextRed}> Perks </Text>
           </TouchableOpacity>
           <Modal
             animationType="slide"
             transparent={true}
-            visible={modal2Visible}
-            onRequestClose={handleCloseModal2}
+            visible={eventsPerksModalVisible}
+            onRequestClose={closeEventsPerksModal}
           >
             <View style={styles.modalContainer}>
               <View style={styles.modalContent}>
                 <Text style={styles.questionText}>
                   What event perks are you interested in?
                 </Text>
-                <View style={styles.card2}>
+                <View style={styles.scrollViewContainer}>
                   <ScrollView>
-                    {perksList.map((item) => (
+                    {eventsPerksList.map((item) => (
                       <TouchableOpacity
                         key={item.id}
-                        onPress={() => handleButton2Click(item.id)}
+                        onPress={() => handleEventPerks(item.id)}
                         style={[
-                          styles.button,
+                          styles.scrollViewButton,
                           {
-                            backgroundColor: selectedButtons2.includes(item.id)
+                            backgroundColor: selectedEventsPerks.includes(item.id)
                               ? "#FF6961"
                               : "#E6E6E6",
                           },
                         ]}
                       >
-                        <Text style={styles.button2Text}>{item.name}</Text>
+                        <Text style={styles.buttonTextRed}>{item.name}</Text>
                       </TouchableOpacity>
                     ))}
                   </ScrollView>
                 </View>
                 <TouchableOpacity
-                  onPress={handleCloseModal2}
-                  style={styles.bottombutton1}
+                  onPress={closeEventsPerksModal}
+                  style={styles.closeButton}
                 >
-                  <Text style={styles.bottombuttontext1}>Close</Text>
+                  <Text style={styles.closeButtonText}>Close</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </Modal>
 
           {/* Event Themes */}
-          <TouchableOpacity style={styles.button1} onPress={openModal3}>
-            <Text style={styles.buttonText}> Themes </Text>
+          <TouchableOpacity style={styles.categoriesAndThemesButton} onPress={openEventThemesModal}>
+            <Text style={styles.buttonTextWhite}> Themes </Text>
           </TouchableOpacity>
           <Modal
             animationType="slide"
             transparent={true}
-            visible={modal3Visible}
-            onRequestClose={handleCloseModal3}
+            visible={eventThemesModalVisible}
+            onRequestClose={closeEventThemesModal}
           >
             <View style={styles.modalContainer}>
               <View style={styles.modalContent}>
                 <Text style={styles.questionText}>
                   What event themes are you interested in?
                 </Text>
-                <View style={styles.card2}>
+                <View style={styles.scrollViewContainer}>
                   <ScrollView>
-                    {themesList.map((item) => (
+                    {eventThemesList.map((item) => (
                       <TouchableOpacity
                         key={item.id}
-                        onPress={() => handleButton3Click(item.id)}
+                        onPress={() => handleEventThemes(item.id)}
                         style={[
-                          styles.button,
+                          styles.scrollViewButton,
                           {
-                            backgroundColor: selectedButtons3.includes(item.id)
+                            backgroundColor: selectedEventThemes.includes(item.id)
                               ? "#FF6961"
                               : "#E6E6E6",
                           },
                         ]}
                       >
-                        <Text style={styles.button2Text}>{item.name}</Text>
+                        <Text style={styles.buttonTextRed}>{item.name}</Text>
                       </TouchableOpacity>
                     ))}
                   </ScrollView>
                 </View>
                 <TouchableOpacity
-                  onPress={handleCloseModal3}
-                  style={styles.bottombutton1}
+                  onPress={closeEventThemesModal}
+                  style={styles.closeButton}
                 >
-                  <Text style={styles.bottombuttontext1}>Close</Text>
+                  <Text style={styles.closeButtonText}>Close</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -384,13 +571,7 @@ const EventsScreen = ({ navigation }) => {
 export default EventsScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#FF392E",
-  },
-  eventCard: {
-    color: "red",
-  },
-  button1: {
+  categoriesAndThemesButton: {
     backgroundColor: "#FF392E",
     paddingVertical: 10,
     paddingHorizontal: 20,
@@ -401,7 +582,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
   },
-  button2: {
+  perksButton: {
     backgroundColor: "white",
     paddingVertical: 10,
     paddingHorizontal: 20,
@@ -412,13 +593,13 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
   },
-  button2Text: {
+  buttonTextRed: {
     color: "#FF392E",
     fontSize: 16,
     textAlign: "center",
     fontWeight: "bold",
   },
-  buttonText: {
+  buttonTextWhite: {
     color: "white",
     fontSize: 16,
     textAlign: "center",
@@ -430,13 +611,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     height: "8.5%",
   },
-  button2Text: {
-    color: "#FF392E",
-    fontSize: 16,
-    textAlign: "center",
-    fontWeight: "bold",
-  },
-  card2: {
+  scrollViewContainer: {
     backgroundColor: "white",
     borderColor: "#FF392E",
     borderWidth: 1,
@@ -444,7 +619,7 @@ const styles = StyleSheet.create({
     width: 330,
     height: 525,
   },
-  button: {
+  scrollViewButton: {
     backgroundColor: "#E6E6E6",
     padding: 10,
     marginVertical: 5,
@@ -453,21 +628,18 @@ const styles = StyleSheet.create({
     borderColor: "#FF6961",
     borderWidth: "1%",
   },
-  redButton: {
-    backgroundColor: "#FF6961",
-  },
   questionText: {
     color: "black",
     fontSize: 13,
     marginTop: "3%",
     fontWeight: "bold",
   },
-  bottombuttontext1: {
+  closeButtonText: {
     color: "#FF392E",
     fontSize: 16,
     fontWeight: "bold",
   },
-  bottombutton1: {
+  closeButton: {
     backgroundColor: "#E6E6E6",
     borderRadius: 15,
     marginTop: "3%",

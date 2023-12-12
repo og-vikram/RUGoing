@@ -1,77 +1,101 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, } from "react-native";
 import React, { useEffect, useState } from "react";
 import { auth } from "../firebase.config";
 import EventProfileScreen from "./EventProfileScreen";
 import OrganizationProfileScreen from "./OrganizationProfileScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
+/**
+ * HomeScreen is a React component representing the home screen
+ * of the application. It may receive navigation props for user
+ * navigation within the app.
+ *
+ * @param {object} navigation - Navigation prop for navigating within the app.
+ */
 const HomeScreen = ({ navigation }) => {
+
   const [recommendedPerkedEvents, setRecommendedPerkedEvents] = useState([]);
   const [recommendedThemedEvents, setRecommendedThemedEvents] = useState([]);
-  const [recommendedCategorizedEvents, setRecommendedCategorizedEvents] =
-    useState([]);
-  const [recommendedCategorizedOrgs, setRecommendedCategorizedOrgs] = useState(
-    []
-  );
+  const [recommendedCategorizedEvents, setRecommendedCategorizedEvents] = useState([]);
+  const [recommendedCategorizedOrgs, setRecommendedCategorizedOrgs] = useState([]);
   const [friendsEvents, setFriendsEvents] = useState([]);
   const [friendsOrgs, setFriendsOrgs] = useState([]);
+
   const uid = auth.currentUser.uid;
 
+  /**
+   * useEffect hook fetches and sets the recommended events based on user's
+   * perk preferences. It makes a GET request to the server endpoint that
+   * retrieves events tailored to the user's preferences.
+   */
   useEffect(() => {
-    fetch(
-      `https://absolute-willing-salmon.ngrok-free.app/api/events/perk/preference/${uid}`
-    )
+    // Fetch recommended events based on user's perk preferences
+    fetch(`https://absolute-willing-salmon.ngrok-free.app/api/events/perk/preference/${uid}`)
       .then((response) => response.json())
       .then((json) => setRecommendedPerkedEvents(json.events))
       .catch((error) => console.log(error));
   }, []);
 
+  /**
+   * useEffect hook fetches and sets the recommended events based on user's
+   * theme preferences. It makes a GET request to the server endpoint that
+   * retrieves events tailored to the user's theme preferences.
+   */
   useEffect(() => {
-    fetch(
-      `https://absolute-willing-salmon.ngrok-free.app/api/events/theme/preference/${uid}`
-    )
+    // Fetch recommended events based on user's theme preferences
+    fetch(`https://absolute-willing-salmon.ngrok-free.app/api/events/theme/preference/${uid}`)
       .then((response) => response.json())
       .then((json) => setRecommendedThemedEvents(json.events))
       .catch((error) => console.log(error));
   }, []);
 
+  /**
+   * useEffect hook fetches and sets the recommended events based on user's
+   * category preferences. It makes a GET request to the server endpoint that
+   * retrieves events tailored to the user's category preferences.
+   */
   useEffect(() => {
-    fetch(
-      `https://absolute-willing-salmon.ngrok-free.app/api/events/category/preference/${uid}`
-    )
+    // Fetch recommended events based on user's category preferences
+    fetch(`https://absolute-willing-salmon.ngrok-free.app/api/events/category/preference/${uid}`)
       .then((response) => response.json())
       .then((json) => setRecommendedCategorizedEvents(json.events))
       .catch((error) => console.log(error));
   }, []);
 
+  /**
+   * useEffect hook fetches and sets the recommended organizations based on user's
+   * category preferences. It makes a GET request to the server endpoint that
+   * retrieves organizations tailored to the user's category preferences.
+   */
   useEffect(() => {
-    fetch(
-      `https://absolute-willing-salmon.ngrok-free.app/api/organization/category/preference/${uid}`
-    )
+    // Fetch recommended organizations based on user's category preferences
+    fetch(`https://absolute-willing-salmon.ngrok-free.app/api/organization/category/preference/${uid}`)
       .then((response) => response.json())
       .then((json) => setRecommendedCategorizedOrgs(json.orgs))
       .catch((error) => console.log(error));
   }, []);
 
+  /**
+   * useEffect hook fetches and sets the events attended by user's followees (friends).
+   * It makes a GET request to the server endpoint that retrieves events attended by
+   * the users the current user is following.
+   */
   useEffect(() => {
-    fetch(
-      `https://absolute-willing-salmon.ngrok-free.app/api/event/attending/followees/${uid}`
-    )
+    // Fetch events attended by user's followees (friends)
+    fetch(`https://absolute-willing-salmon.ngrok-free.app/api/event/attending/followees/${uid}`)
       .then((response) => response.json())
       .then((json) => setFriendsEvents(json.events))
       .catch((error) => console.log(error));
   }, []);
 
+  /**
+   * useEffect hook fetches and sets the organizations joined by user's followees (friends).
+   * It makes a GET request to the server endpoint that retrieves organizations joined by
+   * the users the current user is following.
+   */
   useEffect(() => {
-    fetch(
-      `https://absolute-willing-salmon.ngrok-free.app/api/organization/joined/followees/${uid}`
-    )
+    // Fetch organizations joined by user's followees (friends)
+    fetch(`https://absolute-willing-salmon.ngrok-free.app/api/organization/joined/followees/${uid}`)
       .then((response) => response.json())
       .then((json) => setFriendsOrgs(json.orgs))
       .catch((error) => console.log(error));
@@ -104,7 +128,7 @@ const HomeScreen = ({ navigation }) => {
                 }}
                 key={event.id}
               >
-                <View key={event.id} style={styles.eventsMiniCards}>
+                <View key={event.id} style={styles.scrollViewMiniCards}>
                   <Text
                     style={{
                       color: "#FF392E",
@@ -121,8 +145,8 @@ const HomeScreen = ({ navigation }) => {
         </ScrollView>
       </View>
 
-      <View style={styles.eventsCard5}>
-        <Text style={styles.eventHeader5}>
+      <View style={styles.alternateEventsCard}>
+        <Text style={styles.alternateEventHeader}>
           {" "}
           Events with Themes You May Like...{" "}
         </Text>
@@ -145,7 +169,7 @@ const HomeScreen = ({ navigation }) => {
                 }}
                 key={event.id}
               >
-                <View key={event.id} style={styles.eventsMiniCards5}>
+                <View key={event.id} style={styles.alternateScrollViewMiniCards}>
                   <Text
                     style={{ color: "white", fontWeight: "bold", fontSize: 16 }}
                   >
@@ -182,7 +206,7 @@ const HomeScreen = ({ navigation }) => {
                 }}
                 key={event.id}
               >
-                <View key={event.id} style={styles.eventsMiniCards}>
+                <View key={event.id} style={styles.scrollViewMiniCards}>
                   <Text
                     style={{
                       color: "#FF392E",
@@ -199,8 +223,8 @@ const HomeScreen = ({ navigation }) => {
         </ScrollView>
       </View>
 
-      <View style={styles.orgsCard}>
-        <Text style={styles.orgHeader}>
+      <View style={styles.alternateEventsCard}>
+        <Text style={styles.alternateEventHeader}>
           {" "}
           Organizations with Categories You May Like ...{" "}
         </Text>
@@ -227,7 +251,7 @@ const HomeScreen = ({ navigation }) => {
                 }}
                 key={org.id}
               >
-                <View key={org.id} style={styles.orgsMiniCards}>
+                <View key={org.id} style={styles.alternateScrollViewMiniCards}>
                   <Text
                     style={{ color: "white", fontWeight: "bold", fontSize: 16 }}
                   >
@@ -285,8 +309,8 @@ const HomeScreen = ({ navigation }) => {
         </ScrollView>
       </View>
 
-      <View style={styles.orgsCard}>
-        <Text style={styles.orgHeader}>
+      <View style={styles.alternateEventsCard}>
+        <Text style={styles.alternateEventHeader}>
           {" "}
           Organizations Your Friends Joined ...{" "}
         </Text>
@@ -341,16 +365,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: "2.5%",
   },
-  eventsCard5: {
-    backgroundColor: "white",
-    borderRadius: 15,
-    alignSelf: "center",
-    height: 300,
-    width: "95%",
-    justifyContent: "center",
-    marginTop: "2.5%",
-  },
-  orgsCard: {
+  alternateEventsCard: {
     backgroundColor: "white",
     borderRadius: 15,
     alignSelf: "center",
@@ -366,21 +381,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: "3%",
   },
-  eventHeader5: {
+  alternateEventHeader: {
     fontSize: 20,
     fontWeight: "bold",
     color: "#FF392E",
     textAlign: "center",
     marginTop: "3%",
   },
-  orgHeader: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#FF392E",
-    textAlign: "center",
-    marginTop: "3%",
-  },
-  eventsMiniCards: {
+  scrollViewMiniCards: {
     width: 200,
     height: 200,
     backgroundColor: "white",
@@ -389,21 +397,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  eventsMiniCards5: {
+  alternateScrollViewMiniCards: {
     width: 200,
     height: 200,
     backgroundColor: "#FF392E",
     margin: 10,
-    borderRadius: 15,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  orgsMiniCards: {
-    width: 200,
-    height: 200,
-    backgroundColor: "#FF392E",
-    margin: 10,
-    marginTop: 300,
     borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
@@ -430,8 +428,16 @@ const styles = StyleSheet.create({
   },
 });
 
+/**
+ * HomeScreenStack is a navigation stack component representing the
+ * stack of screens related to the home functionality in the application.
+ * It may include navigation routes, headers, and other components needed
+ * for the home screen experience.
+ */
 export const HomeScreenStack = () => {
+  
   const Stack = createNativeStackNavigator();
+  
   return (
     <Stack.Navigator>
       <Stack.Screen

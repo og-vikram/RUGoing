@@ -7,8 +7,18 @@ import EventProfileScreen from "./EventProfileScreen";
 import OrganizationProfileScreen from "./OrganizationProfileScreen";
 import FriendProfileScreen from "./FriendProfileScreen";
 
+/**
+ * ProfileScreen is a React component representing the user profile screen
+ * in the application. It receives a navigation prop for navigating within
+ * the app and may include components for displaying user details, posts,
+ * followers, and other profile-related information.
+ *
+ * @param {object} navigation - Navigation prop for navigating within the app.
+ */
 const ProfileScreen = ({ navigation }) => {
+
   const ProfileStack = createNativeStackNavigator();
+
   return (
     <ProfileStack.Navigator>
       <ProfileStack.Screen
@@ -50,78 +60,6 @@ const ProfileScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  card: {
-    margin: 10,
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: "#FF392E",
-  },
-  customButtonContainer: {
-    backgroundColor: "#FF392E",
-    marginTop: 10,
-    borderRadius: 15,
-    padding: 10,
-    alignItems: "center",
-    height: 50,
-    justifyContent: "center",
-  },
-  customButtonText: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 16,
-    alignItems: "center",
-  },
-  cardContainer: {
-    width: "100%",
-    backgroundColor: "#FF392E",
-  },
-  eventsCard: {
-    backgroundColor: "#FF392E",
-    borderRadius: 15,
-    alignSelf: "center",
-    height: "35%",
-    width: "95%",
-    justifyContent: "center",
-    marginTop: "2.5%",
-  },
-  orgsCard: {
-    backgroundColor: "white",
-    borderRadius: 15,
-    alignSelf: "center",
-    height: "35%",
-    width: "95%",
-    justifyContent: "center",
-    marginTop: "2.5%",
-  },
-  eventHeader: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "white",
-    textAlign: "center",
-    marginTop: "3%",
-  },
-  orgHeader: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#FF392E",
-    textAlign: "center",
-    marginTop: "3%",
-  },
-  eventsMiniCards: {
-    width: 100,
-    height: 100,
-    backgroundColor: "white",
-    margin: 10,
-    borderRadius: 15,
-  },
-  orgsMiniCards: {
-    width: 100,
-    height: 100,
-    backgroundColor: "#FF392E",
-    margin: 10,
-    borderRadius: 15,
-  },
-});
+const styles = StyleSheet.create({});
 
 export default ProfileScreen;
