@@ -2,13 +2,10 @@ import * as React from "react";
 import { Card, Text } from "@rneui/base";
 import { View, Image, StyleSheet, ScrollView } from "react-native";
 import Category from "./Category";
-import { useEffect } from "react";
-
+// Component representing a card for displaying event details
 export default (props) => {
   const categories = props.categories[0];
-
-  useEffect(() => {}, [categories]);
-
+//Function to handle undefined categories
   const checkForEmptyCategories = () => {
     if (categories === undefined) {
       return [];
@@ -16,7 +13,7 @@ export default (props) => {
       return categories;
     }
   };
-
+//Container view for the component
   return (
     <>
       <Card
@@ -51,7 +48,7 @@ export default (props) => {
     </>
   );
 };
-
+//Styles for the component
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",

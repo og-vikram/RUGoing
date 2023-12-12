@@ -29,12 +29,16 @@ import {
 } from "react-native";
 import { reloadAsync } from "expo-updates";
 
+//Create native stack and bottom tab navigators
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+//Main app component
 export default function App() {
+  //State variable to track the user's authentification status
   const [user, setUser] = useState(null);
 
+  //Check the user's authentification status on component mount
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -43,6 +47,7 @@ export default function App() {
     });
   }, []);
 
+  //If the user is authentificated but email is not verified, prompt verification
   if (user && !user.emailVerified) {
     return (
       <SafeAreaView>
@@ -127,6 +132,7 @@ export default function App() {
         </View>
       </SafeAreaView>
     );
+    //If the user is authenticated and email is verified, display the main navigation
   } else if (user && user.emailVerified) {
     return (
       <NavigationContainer>
@@ -195,6 +201,7 @@ export default function App() {
     );
   }
 
+  //If the user is not authenticated, display the authentication stack
   return (
     <NavigationContainer>
       <Stack.Navigator

@@ -14,8 +14,10 @@ import EventProfileScreen from "./EventProfileScreen";
 import OrganizationProfileScreen from "./OrganizationProfileScreen";
 import FriendProfileScreen from "./FriendProfileScreen";
 
+//Creating a native stack navigator for the explorescreen
 const ExploreStack = createNativeStackNavigator();
 
+//ExploreMain component takes the current navigationstack as a parameter
 const ExploreMain = ({ navigation }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [orgSearchResults, setOrgSearchResults] = useState([]);
@@ -28,6 +30,7 @@ const ExploreMain = ({ navigation }) => {
   const url =
     "https://absolute-willing-salmon.ngrok-free.app/api/organization/all";
 
+  //Fetch organizations data on component mount
   useEffect(() => {
     fetch(url)
       .then((response) => response.json())
@@ -35,6 +38,7 @@ const ExploreMain = ({ navigation }) => {
       .catch((error) => console.log(error));
   }, []);
 
+  //Fetch events data on component mount
   useEffect(() => {
     fetch("https://absolute-willing-salmon.ngrok-free.app/api/event/all")
       .then((response) => response.json())
@@ -43,6 +47,7 @@ const ExploreMain = ({ navigation }) => {
       .finally(() => setLoading(false));
   }, []);
 
+  //Fetch user data on component mount
   useEffect(() => {
     fetch("https://absolute-willing-salmon.ngrok-free.app/api/users/all")
       .then((response) => response.json())
@@ -51,9 +56,12 @@ const ExploreMain = ({ navigation }) => {
       .finally(() => setLoading(false));
   }, []);
 
+  //Perform search based on the given query entered by the user
+  //Sets the list of filtered organizations that match the search within orgSearchResults
   const performSearch = (query) => {
     const searchTerms = query.toLowerCase().split(" ");
 
+    //Filter organizations based on the search terms
     const filteredOrgs = orgData
       .filter((org) => {
         const orgName = org.name.toLowerCase();
@@ -71,6 +79,8 @@ const ExploreMain = ({ navigation }) => {
 
     setOrgSearchResults(filteredOrgs);
 
+    //Filter events based on search terms
+    //Sets matching events within eventSearchResults
     const filteredEvents = EventData.filter((event) => {
       const eventName = event.name.toLowerCase();
       for (const term of searchTerms) {
@@ -85,11 +95,11 @@ const ExploreMain = ({ navigation }) => {
     }));
 
     setEventSearchResults(filteredEvents);
-
+    //Filters users based on search terms
+    //Sets matching users within the userSearchResults
     const filteredUsers = userData
       .filter((user) => {
         const name = user.firstname + " " + user.lastname;
-        console.log(name);
         for (const term of searchTerms) {
           if (!name.toLowerCase().includes(term)) {
             return false;
@@ -106,6 +116,7 @@ const ExploreMain = ({ navigation }) => {
     setUserSearchResults(filteredUsers);
   };
 
+  //Handle changes in the search input
   const handleSearchChange = (text) => {
     setSearchTerm(text);
     if (text.length > 2) performSearch(text);
@@ -113,10 +124,12 @@ const ExploreMain = ({ navigation }) => {
 
   const searchBarRef = useRef(null);
 
+  //Handle button click to focus on search input
   const handleButtonClick = () => {
     searchBarRef.current && searchBarRef.current.focus();
   };
 
+  //Section list item for organizations
   const SearchOrgItem = ({ item }) => (
     <TouchableOpacity
       onPress={() => {
@@ -130,6 +143,7 @@ const ExploreMain = ({ navigation }) => {
     </TouchableOpacity>
   );
 
+  //Section list items for events
   const SearchEventItem = ({ item }) => (
     <TouchableOpacity
       onPress={() => {
@@ -141,6 +155,7 @@ const ExploreMain = ({ navigation }) => {
     </TouchableOpacity>
   );
 
+  //Section list items for users
   const SearchUserItem = ({ item }) => (
     <TouchableOpacity
       onPress={() => {
@@ -152,6 +167,7 @@ const ExploreMain = ({ navigation }) => {
     </TouchableOpacity>
   );
 
+  //Render component content after loading data
   if (!loading) {
     return (
       <View>
@@ -228,6 +244,7 @@ const ExploreMain = ({ navigation }) => {
   }
 };
 
+//ExploreScreen component
 const ExploreScreen = () => {
   return (
     <ExploreStack.Navigator>
@@ -279,6 +296,7 @@ const ExploreScreen = () => {
 
 export default ExploreScreen;
 
+//Styles for the component
 const styles = StyleSheet.create({
   event_button: {
     backgroundColor: "#FF392E",

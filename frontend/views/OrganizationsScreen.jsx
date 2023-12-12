@@ -1,7 +1,6 @@
 import {
   ActivityIndicator,
   FlatList,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -11,41 +10,23 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import OrganizationCard from "../components/OrganizationCard";
-import EventCard from "../components/EventCard";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Button } from "react-native-elements";
 
-const Stack = createNativeStackNavigator();
-
+//URL for API to recieve all organizations
 const url =
   "https://absolute-willing-salmon.ngrok-free.app/api/organization/all";
 
+//OrganizationsScreen component
 const OrganizationsScreen = ({ navigation }) => {
+  //State variables for organization data, categories, selected categories, boolean modalVisible, selected filter buttons, and loading states
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loading2, setLoading2] = useState(true);
-
   const [categories, setCategories] = useState([]);
-
-  //me
   const [categoriesList, setCategoriesList] = useState([]);
+  const [selectedButtons, setSelectedButtons] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const[selectedButtons, setSelectedButtons] = useState([]);
-  const[modalVisible, setModalVisible] = useState(false);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try{
-  //       const response = await fetch('');
-  //       const result= await response.json();
-  //       setData(result);
-  //     } catch ( error) {
-  //       console.error('Error fetching data: ', error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
-
+  //Fetch organization categories from the API on component mount
   useEffect(() => {
     fetch(
       "https://absolute-willing-salmon.ngrok-free.app/api/organization/categories"
@@ -53,48 +34,44 @@ const OrganizationsScreen = ({ navigation }) => {
       .then((response) => response.json())
       .then((json) => {
         setCategoriesList(json.categories);
-        console.log('categories: ', categoriesList)
       })
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
   }, []);
 
+  //Handle button click to toggle selection in filter screen
   const handleButtonClick = (id) => {
     const isSelected = selectedButtons.includes(id);
-    if(isSelected) {
+    if (isSelected) {
       setSelectedButtons(selectedButtons.filter((buttonId) => buttonId !== id));
-    }else{
+    } else {
       setSelectedButtons([...selectedButtons, id]);
     }
   };
 
+  //Handle closing the modal
   const handleCloseModal = () => {
 
     setSelectedButtons(selectedButtons);
-    console.log('Selected buttons:', selectedButtons);
-
     setModalVisible(false);
   }
 
-
+  //Handle opening the modal
   const openModal = () => {
     setModalVisible(true);
   };
 
-
+  //Fetch organizations data from the API on component mount
   useEffect(() => {
     fetch(url, {
-      // headers: new Headers({
-      //   "ngrok-skip-browser-warning": "true",
-      // }),
     })
       .then((response) => response.json())
       .then((json) => setData(json.orgs))
-      // .then(() => console.log(data))
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
   }, []);
 
+  //Fetch all organization categories from the API
   useEffect(() => {
     fetch(
       "https://absolute-willing-salmon.ngrok-free.app/api/organization/categories/all"
@@ -105,6 +82,7 @@ const OrganizationsScreen = ({ navigation }) => {
       .finally(() => setLoading2(false));
   }, []);
 
+  //Return categories associated with an organization
   const returnCategories = (org_id) => {
     let item_categories = [];
     for (let i = 0; i < categories.length; i++) {
@@ -115,6 +93,7 @@ const OrganizationsScreen = ({ navigation }) => {
     return item_categories;
   };
 
+  //Render component after loading is complete
   if (!loading && !loading2) {
     return (
       <View>
@@ -130,31 +109,31 @@ const OrganizationsScreen = ({ navigation }) => {
           >
             <View style={styles.modalContainer}>
               <View style={styles.modalContent}>
-                
-              <Text style={styles.questionText}>What organization categories are you interested in?</Text>
+
+                <Text style={styles.questionText}>What organization categories are you interested in?</Text>
                 <View style={styles.card2}>
-                <ScrollView>
-                      {categoriesList.map((item) => (
-                        <TouchableOpacity
-                          key={item.id}
-                          onPress={()=>handleButtonClick(item.id)}
-                          style={[
-                            styles.button, {
-                              backgroundColor: selectedButtons.includes(item.id) ? '#FF6961' : '#E6E6E6',
-                            },
-                          ]}
-                        >
-                          <Text style={styles.buttonText}>{item.name}</Text>
-                        </TouchableOpacity>
-                      ))}
-                </ScrollView>
-        
+                  <ScrollView>
+                    {categoriesList.map((item) => (
+                      <TouchableOpacity
+                        key={item.id}
+                        onPress={() => handleButtonClick(item.id)}
+                        style={[
+                          styles.button, {
+                            backgroundColor: selectedButtons.includes(item.id) ? '#FF6961' : '#E6E6E6',
+                          },
+                        ]}
+                      >
+                        <Text style={styles.buttonText}>{item.name}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+
                 </View>
-              <TouchableOpacity onPress={handleCloseModal} style={styles.bottombutton1}>
-                <Text style={styles.bottombuttontext1}>
-                  Close
-                </Text>
-              </TouchableOpacity>
+                <TouchableOpacity onPress={handleCloseModal} style={styles.bottombutton1}>
+                  <Text style={styles.bottombuttontext1}>
+                    Close
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
           </Modal>
@@ -185,12 +164,14 @@ const OrganizationsScreen = ({ navigation }) => {
       </View>
     );
   }
-
+  //Display loading indicator while data is being fetched
   return <ActivityIndicator size="large" color="#000000" />;
 };
 
+//Export the OrganizationsScreen component
 export default OrganizationsScreen;
 
+//Styles for the component
 const styles = StyleSheet.create({
   flatList: {
     backgroundColor: "#FF392E",
@@ -200,13 +181,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    
+
   },
   modalContent: {
-      backgroundColor: 'white',
-      padding: 20,
-      borderRadius: 15,
-      height: "75%",
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 15,
+    height: "75%",
   },
   button: {
     backgroundColor: '#E6E6E6',
@@ -219,7 +200,7 @@ const styles = StyleSheet.create({
 
   },
   redButton: {
-      backgroundColor: '#FF6961',
+    backgroundColor: '#FF6961',
   },
   bottombuttontext1: {
     color: "#FF392E",
@@ -242,14 +223,14 @@ const styles = StyleSheet.create({
     borderTopWidth: "2%",
   },
   button1: {
-    backgroundColor: 'white', 
+    backgroundColor: 'white',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 15,
     width: "96%",
   },
   buttonText: {
-    color: '#FF392E', 
+    color: '#FF392E',
     fontSize: 16,
     textAlign: 'center',
     fontWeight: "bold",
