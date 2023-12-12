@@ -428,7 +428,7 @@ const ProfileDetails = ({ navigation }) => {
             )}
             {!edit && (
               <View style={styles.displayUserInput}>
-                <Text>{user.bio_descrip}</Text>
+                <Text style={{color: "#FF392E"}}>{user.bio_descrip}</Text>
               </View>
             )}
           </View>
@@ -526,6 +526,19 @@ const ProfileDetails = ({ navigation }) => {
 const styles = StyleSheet.create({
   userInput: {
     color: "red",
+    height: 60,
+  },
+  displayUserInput: {
+    flex: 1,
+    paddingHorizontal: 10,
+    height: 60,
+    color: "red",
+  },
+  userInputText: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 8,
   },
   removeFriendButton: {
     backgroundColor: "#FF392E",
