@@ -9,9 +9,12 @@ import os
 
 dotenv.load_dotenv()
 
+#Configure SQLAlchemy
 db = SQLAlchemy()
+# Initialize Flask app
 app = Flask(__name__)
 
+#Database Configuration
 username = os.getenv("DB_USER")
 password = os.getenv("DB_PASSWORD")
 userpass = 'mysql+pymysql://' + username + ':' + password + '@'
@@ -21,8 +24,17 @@ dbname   = os.getenv("DB_NAME")
 app.config['SQLALCHEMY_DATABASE_URI'] = userpass + server + dbname
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
+#Initialize SQLAlchemy
 db.init_app(app)
 
+"""
+Events Model
+   - Table Name: `Events`
+   - Description: Represents events with various details such as name, start and end times, location, and description.
+
+    Fields:
+ event_id, name, start, end, is_cancelled, location, online_location, is_online, description and rsvp
+"""
 class Events(db.Model):
     __tablename__ = 'Events'
 
@@ -36,7 +48,16 @@ class Events(db.Model):
     is_online = db.Column(db.Boolean)
     description = db.Column(db.Text)
     rsvp = db.Column(db.String(150))
-    
+   
+"""
+AttendingEvents Model:
+Table Name: `AttendingEvents`
+   - Description: Represents the relationship between users and events they are attending.
+
+    Fields:
+    - `event_id` (Integer, Primary Key): Foreign key referencing the `event_id` in the `Events` table.
+    - `user_id` (String, 50 characters, Primary Key): Identifier for the user attending the event.
+"""
 class AttendingEvents(db.Model):
     __tablename__ = 'AttendingEvents'
 
@@ -47,11 +68,31 @@ class AttendingEvents(db.Model):
         PrimaryKeyConstraint('event_id', 'user_id'),
     )
 
+"""
+EventPerks Model
+   - Table Name: `EventPerks`
+   - Description: Represents perks that can be associated with events.
+
+    Fields:
+    - `perk_id` (String, 25 characters, Primary Key): Unique identifier for each perk.
+    - `name` (String, 20 characters, Not Null): Name of the perk.
+"""
+
 class EventPerks(db.Model):
     __tablename__ = 'EventPerks'
 
     perk_id = db.Column(db.String(25), primary_key=True)
     name = db.Column(db.String(20), nullable=False)
+
+"""
+PerkedEvents Model
+   - Table Name: `PerkedEvents`
+   - Description: Represents the relationship between events and the perks associated with them.
+
+    Fields:
+    - `event_id` (Integer, Primary Key): Foreign key referencing the `event_id` in the `Events` table.
+    - `perk_id` (String, 25 characters, Primary Key): Foreign key referencing the `perk_id` in the `EventPerks` table.
+"""
 
 class PerkedEvents(db.Model):
     __tablename__ = 'PerkedEvents'
@@ -63,12 +104,31 @@ class PerkedEvents(db.Model):
         PrimaryKeyConstraint('event_id', 'perk_id'),
     )
 
+"""
+EventThemes Model
+   - Table Name: `EventThemes`
+   - Description: Represents themes that can be associated with events.
+
+    Fields:
+    - `theme_id` (String, 25 characters, Primary Key): Unique identifier for each theme.
+    - `name` (String, 50 characters, Not Null): Name of the theme.
+"""
 class EventThemes(db.Model):
     __tablename__ = 'EventThemes'
 
     theme_id = db.Column(db.String(25), primary_key=True)
     name = db.Column(db.String(50), nullable=False)
 
+
+"""
+ThemedEvents Model
+   - Table Name: `ThemedEvents`
+   - Description: Represents the relationship between events and themes associated with them.
+
+    Fields:
+    - `event_id` (Integer, Primary Key): Foreign key referencing the `event_id` in the `Events` table.
+    - `theme_id` (String, 25 characters, Primary Key): Foreign key referencing the `theme_id` in the `EventThemes` table.
+"""
 class ThemedEvents(db.Model):
     __tablename__ = 'ThemedEvents'
 
@@ -79,12 +139,30 @@ class ThemedEvents(db.Model):
         PrimaryKeyConstraint('event_id', 'theme_id'),
     )
 
+"""
+EventCategories Model
+   - Table Name: `EventCategories`
+   - Description: Represents categories that can be associated with events.
+
+    Fields:
+    - `category_id` (Integer, Primary Key): Unique identifier for each category.
+    - `name` (String, 50 characters, Not Null): Name of the category.
+"""
 class EventCategories(db.Model):
     __tablename__ = 'EventCategories'
 
     category_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
 
+"""
+EventHosts Model
+   - Table Name: `EventHosts`
+   - Description: Represents the relationship between events and hosting organizations.
+
+    Fields:
+    - `event_id` (Integer, Primary Key): Foreign key referencing the `event_id` in the `Events` table.
+    - `org_id` (String, 200 characters, Primary Key): Identifier for the hosting organization.
+"""
 class EventHosts(db.Model):
     __tablename__ = 'EventHosts'
 
@@ -95,6 +173,16 @@ class EventHosts(db.Model):
         PrimaryKeyConstraint('event_id', 'org_id'),
     )
 
+"""
+CategorizedEvents Model
+   - Table Name: `CategorizedEvents`
+   - Description: Represents the relationship between events and categories associated with them.
+
+    Fields:
+    - `event_id` (Integer, Primary Key): Foreign key referencing the `event_id` in the `Events` table.
+    - `category_id` (Integer, Primary Key): Foreign key referencing the `category_id` in the `EventCategories` table.
+
+"""
 class CategorizedEvents(db.Model):
     __tablename__ = 'CategorizedEvents'  
 
@@ -104,6 +192,20 @@ class CategorizedEvents(db.Model):
     __table_args__ = (
         PrimaryKeyConstraint('event_id', 'category_id'),
     )
+
+"""
+Organizations Model
+   - Table Name: `Organizations`
+   - Description: Represents organizations with details such as name, about, contact information, and frequently asked questions.
+
+    Fields:
+    - `org_id` (String, 200 characters, Primary Key): Unique identifier for each organization.
+    - `image_id` (String, 100 characters): Identifier for the organization's image.
+    - `name` (String, 200 characters): Name of the organization.
+    - `about` (Text): Description of the organization.
+    - `contact` (Text): Contact information for the organization.
+    - `faq` (Text): Frequently asked questions about the organization.
+"""
 
 class Organizations(db.Model):
     __tablename__ = 'Organizations'
@@ -115,23 +217,50 @@ class Organizations(db.Model):
     contact = db.Column(db.Text)
     faq = db.Column(db.Text)
 
+
+"""
+OrganizationCategories Model
+   - Table Name: `OrganizationCategories`
+   - Description: Represents categories that can be associated with organizations.
+
+    Fields:
+    - `category_id` (Integer, Primary Key): Unique identifier for each category.
+    - `name` (String, 255 characters, Not Null): Name of the category.
+"""
 class OrganizationCategories(db.Model):
     __tablename__ = 'OrganizationCategories'
 
     category_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
-    
+   
+"""
+JoinedOrganizations Model
+   - Table Name: `JoinedOrganizations`
+   - Description: Represents the relationship between users and organizations they have joined.
+
+    Fields:
+    - `user_id` (String, 50 characters, Primary Key): Identifier for the user.
+    - `org_id` (String, 200 characters, Primary Key): Identifier for the joined organization.
+"""
 class JoinedOrganizations(db.Model):
     __tablename__ = 'JoinedOrganizations'
-    
+   
     user_id = db.Column(db.String(50), primary_key=True)
     org_id = db.Column(db.String(200), primary_key=True)
-
 
     __table_args__ = (
         PrimaryKeyConstraint('user_id', 'org_id'),
     )
 
+"""
+CategorizedOrganizations Model
+    - Table Name: `CategorizedOrganizations`
+    - Description: Represents the relationship between organizations and categories associated with them.
+
+    Fields:
+    - `org_id` (String, 200 characters, Primary Key): Foreign key referencing the `org_id` in the `Organizations` table.
+    - `category_id` (Integer, Primary Key): Foreign key referencing the `category_id` in the `OrganizationCategories` table.
+"""
 class CategorizedOrganizations(db.Model):
     __tablename__ = 'CategorizedOrganizations'
 
@@ -142,6 +271,15 @@ class CategorizedOrganizations(db.Model):
         PrimaryKeyConstraint('org_id', 'category_id'),
     )
 
+"""
+PreferredEventPerks Model
+    - Table Name: `PreferredEventPerks`
+    - Description: Represents the preferred perks for a user.
+
+    Fields:
+    - `user_id` (String, 50 characters, Primary Key): Identifier for the user.
+    - `perk_id` (String, 25 characters, Primary Key): Identifier for the preferred perk.
+"""
 class PreferredEventPerks(db.Model):
     __tablename__ = 'PreferredEventPerks'
 
@@ -152,6 +290,15 @@ class PreferredEventPerks(db.Model):
         PrimaryKeyConstraint('user_id', 'perk_id'),
     )
 
+"""
+PreferredEventCategories Model
+    - Table Name: `PreferredEventCategories`
+    - Description: Represents the preferred event categories for a user.
+
+    Fields:
+    - `user_id` (String, 50 characters, Primary Key): Identifier for the user.
+    - `category_id` (Integer, Primary Key): Identifier for the preferred event category.
+"""
 class PreferredEventCategories(db.Model):
     __tablename__ = 'PreferredEventCategories'
 
@@ -162,6 +309,14 @@ class PreferredEventCategories(db.Model):
         PrimaryKeyConstraint('user_id', 'category_id'),
     )
 
+"""PreferredEventThemes Model
+    - Table Name: `PreferredEventThemes`
+    - Description: Represents the preferred event themes for a user.
+
+    Fields:
+    - `user_id` (String, 50 characters, Primary Key): Identifier for the user.
+    - `theme_id` (String, 25 characters, Primary Key): Identifier for the preferred event theme.
+"""
 class PreferredEventThemes(db.Model):
     __tablename__ = 'PreferredEventThemes'
 
@@ -172,6 +327,14 @@ class PreferredEventThemes(db.Model):
         PrimaryKeyConstraint('user_id', 'theme_id'),
     )
 
+"""PreferredOrganizationCategories Model
+    - Table Name: `PreferredOrganizationCategories`
+    - Description: Represents the preferred organization categories for a user.
+
+    Fields:
+    - `user_id` (String, 50 characters, Primary Key): Identifier for the user.
+    - `category_id` (Integer, Primary Key): Identifier for the preferred organization category.
+"""
 class PreferredOrganizationCategories(db.Model):
     __tablename__ = 'PreferredOrganizationCategories'
 
@@ -182,6 +345,21 @@ class PreferredOrganizationCategories(db.Model):
         PrimaryKeyConstraint('user_id', 'category_id'),
     )
 
+"""
+Users Model
+    - Table Name: `Users`
+    - Description: Represents user profiles with details such as username, bio description, first name, last name, officer status, and associated organization.
+
+    Fields:
+    - `user_id` (String, 50 characters, Primary Key): Unique identifier for each user.
+    - `netid` (String, 50 characters): User's net ID.
+    - `username` (String, 50 characters, Not Null): User's username.
+    - `bio_descrip` (Text): User's bio description.
+    - `firstname` (String, 50 characters): User's first name.
+    - `lastname` (String, 50 characters): User's last name.
+    - `isOfficer` (Boolean): Indicates whether the user is an officer.
+    - `organization` (String, 200 characters): Identifier for the associated organization.
+"""
 class Users(db.Model):
     __tablename__ = 'Users'
 
@@ -194,16 +372,33 @@ class Users(db.Model):
     isOfficer = db.Column(db.Boolean)
     organization = db.Column(db.String(200))
 
+"""
+Follows Model
+    - Table Name: `Follows`
+    - Description: Represents the relationship between users where one user follows another.
+
+    Fields:
+    - `follower_id` (String, 50 characters, Primary Key): Identifier for the user following.
+    - `followee_id` (String, 50 characters, Primary Key): Identifier for the user being followed.
+"""
 class Follows(db.Model):
     __tablename__ = 'Follows'
 
     follower_id = db.Column(db.String(50), primary_key=True)
     followee_id = db.Column(db.String(50), primary_key=True)
-    
+   
     __table_args__ = (
         PrimaryKeyConstraint('follower_id', 'followee_id'),
     )
 
+"""
+Get All Events
+Endpoint: /api/event/all
+Method: GET
+Description: Retrieve information about all events.
+Response:
+200 OK: List of events with details.
+"""
 @app.route('/api/event/all')
 def get_events():
     all_events = Events.query.all()
@@ -224,6 +419,17 @@ def get_events():
         event_list.append(event_dict)
     return json.dumps({'events': event_list})
 
+"""
+Get Event By ID
+Endpoint: /api/event/<int:id>
+Method: GET
+Description: Retrieve details about a specific event by its ID.
+Parameters:
+id (Integer): ID of the event.
+Response:
+200 OK: Details of the event.
+404 Not Found: If the event with the given ID does not exist.
+"""
 @app.route('/api/event/<int:id>')
 def get_event(id):
     event_data = db.session.query(
@@ -258,6 +464,17 @@ def get_event(id):
     else:
         return json.dumps({'error': 'Event not found'})
    
+"""
+Get Event Host by Event ID
+Endpoint: /api/event/host/<int:id>
+Method: GET
+Description: Retrieve the host organization of a specific event by its ID.
+Parameters:
+id (Integer): ID of the event.
+Response:
+200 OK: Host organization details.
+404 Not Found: If the host organization or event does not exist.
+"""
 @app.route('/api/event/host/<int:id>')
 def get_event_host(id):
     host = EventHosts.query.filter_by(event_id=id).with_entities(EventHosts.org_id).first()
@@ -274,7 +491,19 @@ def get_event_host(id):
             return json.dumps({'error': 'Organization not found'})
     else:
         return json.dumps({'error': 'Event host not found'})
-    
+   
+"""
+Add Event Attendee
+Endpoint: /api/event/attending/add/
+Method: POST
+Description: Add a user as an attendee to a specific event.
+Request Body:
+uid (String): User ID.
+event_id (Integer): Event ID.
+Response:
+200 OK: Success message if the attendee is added successfully.
+200 OK (if relation already exists): Message indicating that the relationship already exists.
+"""
 @app.route('/api/event/attending/add/', methods=['POST'])
 def add_event_attendee():
     data = request.get_data()
@@ -293,7 +522,18 @@ def add_event_attendee():
         return json.dumps({'success': True, 'uid': uid, 'event_id': event_id})
     else:
         return json.dumps({'relation already exists': True})
-    
+   
+"""
+Remove Event Attendee
+Endpoint: /api/event/attending/remove/
+Method: POST
+Description: Remove a user as an attendee from a specific event.
+Request Body:
+uid (String): User ID.
+event_id (Integer): Event ID.
+Response:
+200 OK: Success message if the attendee is removed successfully.
+"""
 @app.route('/api/event/attending/remove/', methods=['POST'])
 def remove_event_attendee():
     data = request.get_data()
@@ -312,6 +552,17 @@ def remove_event_attendee():
     else:
         return json.dumps({'message': 'Attendee does not exist.'})
 
+
+"""
+Get Attending Events for a User
+Endpoint: /api/event/attending/<uid>
+Method: GET
+Description: Retrieve events that a specific user is attending.
+Parameters:
+uid (String): User ID.
+Response:
+200 OK: List of events with details.
+"""
 @app.route('/api/event/attending/<uid>', methods=['GET'])
 def get_attending_events(uid):
     event_data = db.session.query(
@@ -332,15 +583,35 @@ def get_attending_events(uid):
         events.append(event_dict)
     return json.dumps({'user': uid, 'events': events})
 
+"""
+Get Event Attendees
+Endpoint: /api/event/attending/<int:event_id>
+Method: GET
+Description: Retrieve the list of users attending a specific event.
+Parameters:
+event_id (Integer): Event ID.
+Response:
+200 OK: List of user IDs attending the event.
+"""
 @app.route('/api/event/attending/<int:event_id>', methods=['GET'])
 def get_event_attendees(event_id):
     user_ids = AttendingEvents.query.filter_by(event_id=event_id).with_entities(AttendingEvents.user_id).all()
     users = [user_id[0] for user_id in user_ids]
-    
+   
     total_users_count = len(users)
 
     return json.dumps({'event': event_id, 'users': users, 'total_users_count': total_users_count})
 
+"""
+Events Attended by Followees
+Endpoint: /api/event/attending/followees/<uid>
+Method: GET
+Description: Retrieve events attended by users followed by a specific user.
+Parameters:
+uid (String): User ID.
+Response:
+200 OK: List of events with details.
+"""
 @app.route('/api/event/attending/followees/<uid>')
 def events_attended_by_followees(uid):
     result = db.session.query(
@@ -355,6 +626,14 @@ def events_attended_by_followees(uid):
     events_attended = [{'event_id': event[0], 'event_name': event[1]} for event in result]
     return json.dumps({'uid': uid, 'events': events_attended})
 
+"""
+Get Event Categories
+Endpoint: /api/event/categories
+Method: GET
+Description: Retrieve a list of all event categories.
+Response:
+200 OK: List of categories with details.
+"""
 @app.route('/api/event/categories')
 def get_event_categories():
     all_categories = EventCategories.query.all()
@@ -367,6 +646,14 @@ def get_event_categories():
         cat_list.append(cat_dict)
     return json.dumps({'categories': cat_list})
 
+"""
+Get Events by Categories
+Endpoint: /api/event/categorized/all
+Method: GET
+Description: Retrieve events grouped by their categories.
+Response:
+200 OK: List of categorized events with details.
+"""
 @app.route('/api/event/categorized/all')
 def get_events_by_categories():
     result = db.session.query(
@@ -374,8 +661,9 @@ def get_events_by_categories():
         EventCategories.name.label('category_name'),
         cast(db.func.group_concat(
             func.json_object(
-                'event_id',Events.event_id,
-                'event_name', Events.name
+                'id',Events.event_id,
+                'name', Events.name,
+                'description', Events.description
             )
         ), String).label('event_list')
     ).join(
@@ -383,14 +671,22 @@ def get_events_by_categories():
     ).join(
         Events, CategorizedEvents.event_id == Events.event_id
     ).group_by(EventCategories.category_id, EventCategories.name).all()
-    
+   
     categorized_events = []
     for category_id, category_name, event_list_str in result:
         events = json.loads(f"[{event_list_str.replace('},{', '},{')}]")
         categorized_events.append({'category_id': category_id, 'category_name': category_name, 'events': events})
-    
+   
     return json.dumps(categorized_events)
-    
+   
+"""
+Get Categories by Event
+Endpoint: /api/event/categories/all
+Method: GET
+Description: Retrieve categories associated with each event.
+Response:
+200 OK: List of events with their associated categories.
+"""
 @app.route('/api/event/categories/all')
 def get_categories_by_event():
     result = db.session.query(
@@ -403,6 +699,14 @@ def get_categories_by_event():
     categorized_events = [{'event_id': event_id, 'category_names': category_names.split(',')} for event_id, category_names in result]
     return json.dumps(categorized_events)
 
+"""
+Get Event Themes
+Endpoint: /api/event/themes
+Method: GET
+Description: Retrieve a list of all event themes.
+Response:
+200 OK: List of themes with details.
+"""
 @app.route('/api/event/themes')
 def get_event_themes():
     all_themes = EventThemes.query.all()
@@ -415,6 +719,14 @@ def get_event_themes():
         theme_list.append(theme_dict)
     return json.dumps({'themes': theme_list})
 
+"""
+Get Events by Themes
+Endpoint: /api/event/themed/all
+Method: GET
+Description: Retrieve events grouped by their themes.
+Response:
+200 OK: List of themed events with details.
+"""
 @app.route('/api/event/themed/all')
 def get_events_by_themes():
     result = db.session.query(
@@ -422,8 +734,9 @@ def get_events_by_themes():
         EventThemes.name.label('theme_name'),
         cast(db.func.group_concat(
             func.json_object(
-                'event_id',Events.event_id,
-                'event_name', Events.name
+                'id',Events.event_id,
+                'name', Events.name,
+                'description', Events.description
             )
         ), String).label('event_list')
     ).join(
@@ -439,6 +752,14 @@ def get_events_by_themes():
 
     return json.dumps(themed_events)
 
+"""
+Get Themes by Events
+Endpoint: /api/event/themes/all
+Method: GET
+Description: Retrieve themes associated with each event.
+Response:
+200 OK: List of events with their associated themes.
+"""
 @app.route('/api/event/themes/all')
 def get_themes_by_events():
     result = db.session.query(
@@ -451,6 +772,15 @@ def get_themes_by_events():
     themed_events = [{'event_id': event_id, 'theme_names': theme_names.split(',')} for event_id, theme_names in result]
     return json.dumps(themed_events)
 
+
+"""
+Get Event Perks
+Endpoint: /api/event/perks
+Method: GET
+Description: Retrieve a list of all event perks.
+Response:
+200 OK: List of perks with details.
+"""
 @app.route('/api/event/perks')
 def get_event_perks():
     all_perks = EventPerks.query.all()
@@ -463,6 +793,15 @@ def get_event_perks():
         perk_list.append(perk_dict)
     return json.dumps({'perks': perk_list})
 
+
+"""
+Get Perks by Event
+Endpoint: /api/event/perks/all
+Method: GET
+Description: Retrieve perks associated with each event.
+Response:
+200 OK: List of events with their associated perks.
+"""
 @app.route('/api/event/perks/all')
 def get_perks_by_event():
     result = db.session.query(
@@ -475,6 +814,15 @@ def get_perks_by_event():
     perked_events = [{'event_id': event_id, 'perk_names': perk_names.split(',')} for event_id, perk_names in result]
     return json.dumps(perked_events)
 
+
+"""
+Get Events by Perks
+Endpoint: /api/event/perked/all
+Method: GET
+Description: Retrieve events grouped by their perks.
+Response:
+200 OK: List of perked events with details.
+"""
 @app.route('/api/event/perked/all')
 def get_events_by_perks():
     result = db.session.query(
@@ -482,8 +830,9 @@ def get_events_by_perks():
         EventPerks.name.label('perk_name'),
         cast(db.func.group_concat(
             func.json_object(
-                'event_id',Events.event_id,
-                'event_name', Events.name
+                'id',Events.event_id,
+                'name', Events.name,
+                'description', Events.description
             )
         ), String).label('event_list')
     ).join(
@@ -499,6 +848,15 @@ def get_events_by_perks():
 
     return json.dumps(perked_events)
 
+
+"""
+Get Organizations
+Endpoint: /api/organization/all
+Method: GET
+Description: Retrieve a list of all organizations.
+Response:
+200 OK: List of organizations with details.
+"""
 @app.route('/api/organization/all')
 def get_organizations():
     all_orgs = Organizations.query.all()
@@ -515,22 +873,43 @@ def get_organizations():
         org_list.append(org_dict)
     return json.dumps({'orgs': org_list})
 
+
+"""
+Get Organization Details
+Endpoint: /api/organization/<id>
+Method: GET
+Description: Retrieve details of a specific organization.
+Parameters:
+id (String): Organization ID.
+Response:
+200 OK: Details of the organization.
+"""
 @app.route('/api/organization/<id>')
 def get_organization(id):
     org = Organizations.query.filter_by(org_id=id).first()
     if org:
         org_details = {
-    	    'org_id': org.org_id,
-    	    'image_id': org.image_id,
+       'org_id': org.org_id,
+       'image_id': org.image_id,
             'name': org.name,
             'about': org.about,
             'contact': org.contact,
             'faq': org.faq,
-    	}
+    }
         return json.dumps({'org': org_details})
     else:
         return json.dumps({'error': 'Organization not found'})
-    
+   
+"""
+Get Joined Organizations for a User
+Endpoint: /api/organization/joined/<uid>
+Method: GET
+Description: Retrieve organizations joined by a specific user.
+Parameters:
+uid (String): User ID.
+Response:
+200 OK: List of organizations joined by the user.
+"""
 @app.route('/api/organization/joined/<uid>', methods=['GET'])
 def get_joined_organizations(uid):
     org_data = db.session.query(
@@ -550,6 +929,18 @@ def get_joined_organizations(uid):
         orgs.append(org_dict)
     return json.dumps({'user': uid, 'orgs': orgs})
 
+
+"""
+Add Member to Organization
+Endpoint: /api/organization/joined/add/
+Method: POST
+Description: Add a user as a member to a specific organization.
+Request Body:
+uid (String): User ID.
+org_id (String): Organization ID.
+Response:
+200 OK: Success message if the member is added successfully.
+"""
 @app.route('/api/organization/joined/add/', methods=['POST'])
 def add_member_to_org():
     data = request.get_data()
@@ -568,7 +959,19 @@ def add_member_to_org():
         return json.dumps({'success': True, 'uid': uid, 'org_id': org_id})
     else:
         return json.dumps({'relation already exists': True})
-    
+   
+
+"""
+Remove Member from Organization
+Endpoint: /api/organization/joined/remove/
+Method: POST
+Description: Remove a user as a member from a specific organization.
+Request Body:
+uid (String): User ID.
+org_id (String): Organization ID.
+Response:
+200 OK: Success message if the member is removed successfully.
+"""
 @app.route('/api/organization/joined/remove/', methods=['POST'])
 def remove_member_from_org():
     data = request.get_data()
@@ -587,12 +990,31 @@ def remove_member_from_org():
     else:
         return json.dumps({'message': 'Member does not exist.'})
 
+
+"""
+Get Organization Members
+Endpoint: /api/organization/members/<org_id>
+Method: GET
+Description: Retrieve the list of users who are members of a specific organization.
+Parameters:
+org_id (String): Organization ID.
+Response:
+200 OK: List of user IDs who are members of the organization.
+"""
 @app.route('/api/organization/members/<org_id>', methods=['GET'])
 def get_organization_members(org_id):
     user_ids = JoinedOrganizations.query.filter_by(org_id=org_id).with_entities(JoinedOrganizations.user_id).all()
     users = [user_id[0] for user_id in user_ids]
     return json.dumps({'org': org_id, 'members': users})
 
+"""
+Get Organization Categories
+Endpoint: /api/organization/categories
+Method: GET
+Description: Retrieve a list of all organization categories.
+Response:
+200 OK: List of organization categories with details
+"""
 @app.route('/api/organization/categories')
 def get_organization_categories():
     all_categories = OrganizationCategories.query.all()
@@ -605,12 +1027,15 @@ def get_organization_categories():
         cat_list.append(cat_dict)
     return json.dumps({'categories': cat_list})
 
-@app.route('/api/organization/categories/<int:id>', methods=['GET'])
-def get_org_ids_by_category(id):
-    org_ids = CategorizedOrganizations.query.filter_by(category_id=id).with_entities(CategorizedOrganizations.org_id).all()
-    org_id_list = [org_id[0] for org_id in org_ids]
-    return json.dumps({'org_ids': org_id_list})
 
+"""
+Get Organizations by Categories
+Endpoint: /api/organization/categorized/all
+Method: GET
+Description: Retrieve organizations grouped by categories.
+Response:
+200 OK: List of categorized organizations with details.
+"""
 @app.route('/api/organization/categorized/all')
 def get_orgs_by_categories():
     result = db.session.query(
@@ -618,9 +1043,9 @@ def get_orgs_by_categories():
         OrganizationCategories.name.label('category_name'),
         db.func.group_concat(
             func.json_object(
-                'org_id',Organizations.org_id,
-                'org_name', Organizations.name,
-                'org_desc', Organizations.about
+                'id',Organizations.org_id,
+                'name', Organizations.name,
+                'about', Organizations.about
             )
         ).label('org_list')
     ).join(
@@ -633,9 +1058,18 @@ def get_orgs_by_categories():
     for category_id, category_name, org_list_str in result:
         orgs = json.loads(f"[{org_list_str.replace('},{', '},{')}]")
         categorized_orgs.append({'category_id': category_id, 'category_name': category_name, 'orgs': orgs})
-    
+   
     return json.dumps(categorized_orgs)
 
+
+"""
+Get Categories by Organization
+Endpoint: /api/organization/categories/all
+Method: GET
+Description: Retrieve categories associated with each organization.
+Response:
+200 OK: List of organizations with associated category names.
+"""
 @app.route('/api/organization/categories/all')
 def get_categories_by_org():
     result = db.session.query(
@@ -648,6 +1082,18 @@ def get_categories_by_org():
     categorized_orgs = [{'org_id': org_id, 'category_names': category_names.split(',')} for org_id, category_names in result]
     return json.dumps(categorized_orgs)
 
+
+
+"""
+Get All Events from an Organization
+Endpoint: /api/organization/events/<id>
+Method: GET
+Description: Retrieve all events hosted by a specific organization.
+Parameters:
+id (String): Organization ID.
+Response:
+200 OK: List of event IDs hosted by the organization.
+"""
 @app.route('/api/organization/events/<id>')
 def get_all_events_from_org(id):
     events = EventHosts.query.filter_by(org_id=id).with_entities(EventHosts.event_id).all()
@@ -659,6 +1105,17 @@ def get_all_events_from_org(id):
     except Exception as e:
         return json.dumps({'error': str(e)}), 500
 
+
+"""
+Get Organizations Joined by Followees
+Endpoint: /api/organization/joined/followees/<uid>
+Method: GET
+Description: Retrieve organizations joined by users followed by a specific user.
+Parameters:
+uid (String): User ID.
+Response:
+200 OK: List of organizations joined by followees of the user.
+"""
 @app.route('/api/organization/joined/followees/<uid>')
 def orgs_joined_by_followees(uid):
     result = db.session.query(
@@ -673,6 +1130,26 @@ def orgs_joined_by_followees(uid):
     orgs_joined = [{'org_id': org[0], 'org_name': org[1]} for org in result]
     return json.dumps({'uid': uid, 'orgs': orgs_joined})
 
+
+"""
+Add User
+Endpoint: /api/users/add/
+Method: POST
+Description: Add a new user.
+Request:
+JSON Payload:
+    {
+  "uid": "user123",
+  "netid": "netid123",
+  "firstName": "John",
+  "lastName": "Doe",
+  "isOfficer": true,
+  "organization": "OrganizationXYZ"
+}
+
+Response:
+200 OK: User added successfully.
+"""
 @app.route('/api/users/add/', methods=['POST'])
 def add_user():
     data = request.get_data()
@@ -682,15 +1159,25 @@ def add_user():
     firstname = data['firstName']
     lastname = data['lastName']
     isOfficer = 1 if data['isOfficer'] else 0
-    user = Users(user_id=uid, netid=netid, username=netid, firstname=firstname, lastname=lastname, isOfficer=isOfficer)
+    organization = data['organization']
+    user = Users(user_id=uid, netid=netid, username=netid, firstname=firstname, lastname=lastname, isOfficer=isOfficer, organization=organization)
     account = Users.query.filter_by(user_id=uid).first()
     if account is None:
         db.session.add(user)
         db.session.commit()
-        return json.dumps({'success': True, 'uid': uid, 'netid': netid, 'firstName': firstname, 'lastName': lastname, 'isOfficer': isOfficer})
+        return json.dumps({'success': True, 'uid': uid, 'netid': netid, 'firstName': firstname, 'lastName': lastname, 'isOfficer': isOfficer, 'organization': organization})
     else:
         return json.dumps({'account already exists': True})
 
+
+"""
+Get All Users
+Endpoint: /api/users/all
+Method: GET
+Description: Retrieve a list of all users.
+Response:
+200 OK: List of users with details.
+"""
 @app.route('/api/users/all')
 def get_users():
     all_users = Users.query.all()
@@ -708,6 +1195,18 @@ def get_users():
         user_list.append(user_dict)
     return json.dumps({'users': user_list})
 
+
+
+"""
+Get User by ID
+Endpoint: /api/users/<uid>
+Method: GET
+Description: Retrieve user details by user ID.
+Parameters:
+uid (String): User ID.
+Response:
+200 OK: Details of the user.
+"""
 @app.route('/api/users/<uid>')
 def get_user(uid):
     user  = Users.query.filter_by(user_id=uid).first()
@@ -725,25 +1224,23 @@ def get_user(uid):
         return json.dumps({'user': user_info})
     else:
         return json.dumps({'error': 'User not found'})
-    
-@app.route('/api/users/netid/<netid>')
-def get_user_by_netid(netid):
-    user = Users.query.filter_by(netid=netid).first()
-    if(user):
-        user_info = {
-            'user_id': user.user_id,
-            'netid': user.netid,
-            'username': user.username,
-            'bio_descrip': user.bio_descrip,
-            'firstname': user.firstname,
-            'lastname': user.lastname,
-            'isOfficer': user.isOfficer,
-            'organization': user.organization,
-            }
-        return json.dumps({'user': user_info})
-    else:
-        return json.dumps({'error': 'User not found'})
 
+
+
+"""
+Update User Bio
+Endpoint: /api/users/changeBio
+Method: POST
+Description: Update the bio description of a user.
+Request:
+JSON Payload:
+    {
+  "uid": "user123",
+  "newBio": "New user bio description."
+    }
+Response:
+200 OK: Bio updated successfully.
+"""
 @app.route('/api/users/changeBio', methods=['POST'])
 def update_bio():
    data = request.get_data()
@@ -758,6 +1255,18 @@ def update_bio():
    else:
        return json.dumps({'error': 'User not found'})
 
+
+
+"""
+Get Users Followed by a User
+Endpoint: /api/users/follows/<uid>
+Method: GET
+Description: Retrieve users followed by a specific user.
+Parameters:
+uid (String): User ID.
+Response:
+200 OK: List of users followed by the specified user.
+"""
 @app.route('/api/users/follows/<uid>')
 def follows(uid):
     follows_data = db.session.query(
@@ -777,6 +1286,17 @@ def follows(uid):
         follows.append(followee_dict)
     return json.dumps({'follower': uid, 'follows': follows})
 
+
+"""
+Get Followers of a User
+Endpoint: /api/users/followers/<uid>
+Method: GET
+Description: Retrieve followers of a specific user.
+Parameters:
+uid (String): User ID.
+Response:
+200 OK: List of users following the specified user.
+"""
 @app.route('/api/users/followers/<uid>')
 def followers(uid):
     followers_data = db.session.query(
@@ -795,7 +1315,22 @@ def followers(uid):
         }
         followers.append(follower_dict)
     return json.dumps({'followee': uid, 'followers': followers})
-    
+
+
+"""
+Follow User
+Endpoint: /api/users/follow/
+Method: POST
+Description: Follow a user.
+Request:
+JSON Payload:
+    {
+  "follower_uid": "follower123",
+  "followee_uid": "followee456"
+    }
+Response:
+200 OK: Followed successfully.
+"""
 @app.route('/api/users/follow/', methods=['POST'])
 def follow_user():
     data = request.get_data()
@@ -814,7 +1349,22 @@ def follow_user():
         return json.dumps({'success': True, 'follower': follower, 'followee': follow})
     else:
         return json.dumps({'relation already exists': True})
-    
+
+
+"""
+Unfollow User
+Endpoint: /api/users/unfollow/
+Method: POST
+Description: Unfollow a user.
+Request:
+JSON Payload:
+    {
+  "follower_id": "follower123",
+  "followee_id": "followee456"
+    }
+Response:
+200 OK: Unfollowed successfully.
+"""
 @app.route('/api/users/unfollow/', methods=['POST'])
 def unfollow_user():
     data = request.get_data()
@@ -833,6 +1383,21 @@ def unfollow_user():
     else:
         return json.dumps({'message': 'Never followed this user.'})
 
+
+"""
+Add Event Perk Preferences
+Endpoint: /api/event/perk/preference/add/
+Method: POST
+Description: Add preferences for event perks for a user.
+Request:
+JSON Payload:
+    {
+  "uid": "user123",
+  "perk_ids": ["perk_id1", "perk_id2", ...]
+    }
+Response:
+200 OK: Preferences added successfully.
+"""
 @app.route('/api/event/perk/preference/add/', methods=['POST'])
 def add_event_perk_pref():
     data = request.get_data()
@@ -850,7 +1415,7 @@ def add_event_perk_pref():
                 if pref is None:
                     perk_pref = PreferredEventPerks(user_id=uid, perk_id=perk_id)
                     db.session.add(perk_pref)
-                    
+                   
             db.session.commit()
             return json.dumps({'success': True, 'uid': uid, 'perk_ids': perk_ids})
 
@@ -860,6 +1425,17 @@ def add_event_perk_pref():
 
     return json.dumps({'error': 'no user or no perks'}), 400
 
+
+"""
+Recommend Events by Perk Preferences
+Endpoint: /api/events/perk/preference/<uid>
+Method: GET
+Description: Get recommended events based on user's perk preferences.
+Parameters:
+uid (String): User ID.
+Response:
+200 OK: List of recommended events.
+"""
 @app.route('/api/events/perk/preference/<uid>')
 def recommend_events_by_perk(uid):
     all_events = db.session.query(
@@ -880,6 +1456,21 @@ def recommend_events_by_perk(uid):
 
     return json.dumps({'events': events})
 
+
+"""
+Add Event Theme Preferences
+Endpoint: /api/event/theme/preference/add/
+Method: POST
+Description: Add preferences for event themes for a user.
+Request:
+JSON Payload:
+    {
+  "uid": "user123",
+  "theme_ids": ["theme_id1", "theme_id2", ...]
+    }
+Response:
+200 OK: Preferences added successfully.
+"""
 @app.route('/api/event/theme/preference/add/', methods=['POST'])
 def add_event_theme_pref():
     data = request.get_data()
@@ -897,7 +1488,7 @@ def add_event_theme_pref():
                 if pref is None:
                     theme_pref = PreferredEventThemes(user_id=uid, theme_id=theme_id)
                     db.session.add(theme_pref)
-                    
+                   
             db.session.commit()
             return json.dumps({'success': True, 'uid': uid, 'theme_ids': theme_ids})
 
@@ -907,6 +1498,17 @@ def add_event_theme_pref():
 
     return json.dumps({'error': 'no user or no theme'}), 400
 
+
+"""
+Recommend Events by Theme Preferences
+Endpoint: /api/events/theme/preference/<uid>
+Method: GET
+Description: Get recommended events based on user's theme preferences.
+Parameters:
+uid (String): User ID.
+Response:
+200 OK: List of recommended events.
+"""
 @app.route('/api/events/theme/preference/<uid>')
 def recommend_events_by_theme(uid):
     all_events = db.session.query(
@@ -927,6 +1529,21 @@ def recommend_events_by_theme(uid):
 
     return json.dumps({'events': events})
 
+
+"""
+Add Event Category Preferences
+Endpoint: /api/event/category/preference/add/
+Method: POST
+Description: Add preferences for event categories for a user.
+Request:
+JSON Payload:
+    {
+  "uid": "user123",
+  "category_ids": ["category_id1", "category_id2", ...]
+    }
+Response:
+200 OK: Preferences added successfully.
+"""
 @app.route('/api/event/category/preference/add/', methods=['POST'])
 def add_event_category_pref():
     data = request.get_data()
@@ -944,7 +1561,7 @@ def add_event_category_pref():
                 if pref is None:
                     cat_pref = PreferredEventCategories(user_id=uid, category_id=category_id)
                     db.session.add(cat_pref)
-                    
+                   
             db.session.commit()
             return json.dumps({'success': True, 'uid': uid, 'category_ids': category_ids})
 
@@ -954,6 +1571,18 @@ def add_event_category_pref():
 
     return json.dumps({'error': 'no user or no theme'}), 400
 
+
+
+"""
+Recommend Events by Category Preferences
+Endpoint: /api/events/category/preference/<uid>
+Method: GET
+Description: Get recommended events based on user's category preferences.
+Parameters:
+uid (String): User ID.
+Response:
+200 OK: List of recommended events.
+"""
 @app.route('/api/events/category/preference/<uid>')
 def recommend_events_by_category(uid):
     all_events = db.session.query(
@@ -974,6 +1603,21 @@ def recommend_events_by_category(uid):
 
     return json.dumps({'events': events})
 
+
+"""
+Add Organization Category Preferences
+Endpoint: /api/organization/category/preference/add/
+Method: POST
+Description: Add preferences for organization categories for a user.
+Request:
+JSON Payload:
+    {
+  "uid": "user123",
+  "category_ids": ["category_id1", "category_id2", ...]
+    }
+Response:
+200 OK: Preferences added successfully.
+"""
 @app.route('/api/organization/category/preference/add/', methods=['POST'])
 def add_org_category_pref():
     data = request.get_data()
@@ -991,7 +1635,7 @@ def add_org_category_pref():
                 if pref is None:
                     cat_pref = PreferredOrganizationCategories(user_id=uid, category_id=category_id)
                     db.session.add(cat_pref)
-                    
+                   
             db.session.commit()
             return json.dumps({'success': True, 'uid': uid, 'category_ids': category_ids})
 
@@ -1002,6 +1646,17 @@ def add_org_category_pref():
     return json.dumps({'error': 'no user or no theme'}), 400
 
 
+
+"""
+Recommend Organizations by Category Preferences
+Endpoint: /api/organization/category/preference/<uid>
+Method: GET
+Description: Get recommended organizations based on user's category preferences.
+Parameters:
+uid (String): User ID.
+Response:
+200 OK: List of recommended organizations.
+"""
 @app.route('/api/organization/category/preference/<uid>')
 def recommend_orgs_by_category(uid):
     all_orgs = db.session.query(
@@ -1022,6 +1677,23 @@ def recommend_orgs_by_category(uid):
 
     return json.dumps({'orgs': orgs})
 
+
+
+"""
+Update Organization About Information
+Endpoint: /api/officers/change/about/
+Method: POST
+Description: Update the "About" information of an organization (only accessible by officers).
+Request:
+JSON Payload:
+    {
+  "uid": "user123",
+  "org_id": "org_id1",
+  "newAbout": "New about information for the organization."
+    }
+Response:
+200 OK: About information updated successfully.
+"""
 @app.route('/api/officers/change/about/', methods=['POST'])
 def update_org_about():
     data = request.get_data()
@@ -1042,6 +1714,23 @@ def update_org_about():
     else:
         return json.dumps({'error': 'User not found or user is not officer of this organization'})
 
+
+
+"""
+Update Organization Contact Information
+Endpoint: /api/officers/change/contact/
+Method: POST
+Description: Update the contact information of an organization (only accessible by officers).
+Request:
+JSON Payload:
+    {
+  "uid": "user123",
+  "org_id": "org_id1",
+  "newContact": "New contact information for the organization."
+    }
+Response:
+200 OK: Contact information updated successfully.
+"""
 @app.route('/api/officers/change/contact/', methods=['POST'])
 def update_org_contact():
     data = request.get_data()
@@ -1061,5 +1750,8 @@ def update_org_contact():
     else:
         return json.dumps({'error': 'User not found or user is not officer of this organization'})
 
+# Check if the script is being run directly (not imported as a module)
 if __name__ == '__main__':
+    # Start the Flask application in debug mode
+    # Debug mode allows for automatic reloading of the server upon code changes
     app.run(debug=True)
