@@ -13,7 +13,7 @@ RUGoing? is a cross-platform application that allows Rutgers students to find di
 * Home screen that provides a detailed peek into events that you're attending or might be interested in
 * and more!
 
-## Is RUGoing? secure?
+## Is RUGoing secure?
 When signing up, we require each user to enter their Rutgers NetID and verify their Rutgers Scarletmail account in order to access the app. Additionally, we allow users to change the privacy/visibility setting on their account if they're interested in having a private account. 
 
 ## Tech stack
